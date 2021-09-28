@@ -1,0 +1,47 @@
+plugins {
+  id 'java'
+  id 'application'
+  id 'org.openjfx.javafxplugin' version '0.0.10'
+  id 'org.beryx.jlink' version '2.24.0'
+}
+
+group 'edu.missouristate'
+version '0.1.0'
+sourceCompatibility = '1.11'
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/java'
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+java {
+     modularity.inferModulePath = true
+}
+
+application {
+     mainModule = 'edu.missouristate.taschedulegenerator' // name defined in module-info.java
+     mainClass = 'edu.missouristate.taschedulegenerator.Main'
+}
+
+javafx {
+    version = "11"
+    modules = [ 'javafx.controls' ]
+}
+
+jlink {
+    launcher {
+        name = 'TAScheduleGenerator'
+    }
+}
+
+dependencies {
+	compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.20'
+	annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.20'
+}
