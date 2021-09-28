@@ -1,8 +1,8 @@
 plugins {
-  id 'java'
-  id 'application'
-  id 'org.openjfx.javafxplugin' version '0.0.10'
-  id 'org.beryx.jlink' version '2.24.0'
+	id 'java'
+	id 'application'
+	id 'org.openjfx.javafxplugin' version '0.0.10'
+	id 'org.beryx.jlink' version '2.24.0'
 }
 
 group 'edu.missouristate'
@@ -15,6 +15,12 @@ sourceSets {
             srcDir 'src/main/java'
         }
     }
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
 }
 
 repositories {
@@ -55,5 +61,6 @@ jlink {
 
 dependencies {
 	compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.20'
-	annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.20'
+	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.5'
+	implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.12.5'
 }
