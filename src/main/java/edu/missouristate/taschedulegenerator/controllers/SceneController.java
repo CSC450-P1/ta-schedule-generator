@@ -8,14 +8,14 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class ViewController {
+public class SceneController {
 	
-	public static final ViewController INSTANCE = new ViewController();
+	public static final SceneController INSTANCE = new SceneController();
 	
 	private Stage primaryStage;
 	private Map<String, Parent> scenes = new HashMap<>();
 	
-	private ViewController() { }
+	private SceneController() { }
 	
 	public void init(final Stage primaryStage, final String ... scenes) {
 		this.primaryStage = primaryStage;

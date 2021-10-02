@@ -7,7 +7,7 @@ public class DashboardController {
 	
 	@FXML
 	public void addCourseInfoClicked(ActionEvent event) {
-		ViewController.INSTANCE.showScene("courseInfo");
+		SceneController.INSTANCE.showScene("courseInfo");
 	}
 
 }
