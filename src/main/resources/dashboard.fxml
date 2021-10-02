@@ -45,7 +45,7 @@
                         </TableView>
                      </content>
                   </ScrollPane>
-                  <Button mnemonicParsing="false" onAction="#addCourseInfoClicked" text="Add Course Information" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="5.0" />
+                  <Button mnemonicParsing="false" onAction="#addCourseInfo" text="Add Course Information" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="5.0" />
                </children>
             </AnchorPane>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">

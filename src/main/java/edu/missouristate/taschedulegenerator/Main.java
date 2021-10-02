@@ -1,6 +1,5 @@
 package edu.missouristate.taschedulegenerator;
 
-import edu.missouristate.taschedulegenerator.controllers.SceneController;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -13,7 +12,7 @@ public class Main extends Application {
 	@Override
 	public void start(final Stage primaryStage) throws Exception {
 		primaryStage.setTitle("TA Schedule Generator");
-		SceneController.INSTANCE.init(primaryStage, "dashboard", "courseInfo", "taInfo", "schedules");
+		SceneManager.init(primaryStage, "dashboard", "courseInfo", "taInfo", "schedules");
 		primaryStage.show();
 	}
 }
