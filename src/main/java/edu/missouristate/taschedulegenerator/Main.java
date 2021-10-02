@@ -14,8 +14,8 @@ public class Main extends Application {
 
 	@Override
 	public void start(final Stage primaryStage) throws Exception {
-		primaryStage.setTitle("Example");
-		Parent root = ViewLoader.loadView("example");
+		primaryStage.setTitle("TA Schedule Generator");
+		Parent root = ViewLoader.loadView("dashboard");
 		primaryStage.setScene(new Scene(root));
 		primaryStage.show();
 	}
