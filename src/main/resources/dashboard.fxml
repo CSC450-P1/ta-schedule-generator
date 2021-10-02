@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="TOP_CENTER" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+<VBox alignment="TOP_CENTER" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.missouristate.taschedulegenerator.controllers.DashboardController">
    <children>
       <GridPane alignment="TOP_CENTER" prefHeight="439.0" prefWidth="800.0" VBox.vgrow="ALWAYS">
         <columnConstraints>
@@ -45,7 +45,7 @@
                         </TableView>
                      </content>
                   </ScrollPane>
-                  <Button mnemonicParsing="false" text="Add Course Information" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="5.0" />
+                  <Button mnemonicParsing="false" onAction="#addCourseInfoClicked" text="Add Course Information" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="5.0" />
                </children>
             </AnchorPane>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
