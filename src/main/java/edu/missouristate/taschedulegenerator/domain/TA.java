@@ -6,13 +6,13 @@ public class TA {
     public String name;
     public boolean isGA;
     public int maxHours;
-    public List<String> courses;
+    public List<TimeBlock> notAvailable;
 
-    TA(String name, boolean isGA, int maxHours, List<String>courses){
+    TA(String name, boolean isGA, int maxHours, List<TimeBlock> notAvailable){
         this.name = name;
         this.isGA = isGA;
         this.maxHours = maxHours;
-        this.courses = courses;
+        this.notAvailable = notAvailable;
     }
 
     public String getName(){
@@ -33,10 +33,8 @@ public class TA {
     public void setMaxHours(int maxHours){
         this.maxHours = maxHours;
     }
-    public List<String> getCourses(){
-        return this.courses;
+    public List<TimeBlock> getNotAvailable(){
+        return this.notAvailable;
     }
-    public void setCourses(List<String> courses){
-        this.courses = courses;
-    }
+    public void setNotAvailable(List<TimeBlock> notAvailable){this.notAvailable = notAvailable;}
 }
