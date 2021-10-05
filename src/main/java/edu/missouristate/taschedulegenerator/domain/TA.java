@@ -27,9 +27,7 @@ public class TA {
     public void setIsGA(boolean isGA){
         this.isGA = isGA;
     }
-    public int getMaxHours(){
-        return this.maxHours;
-    }
+    public int getMaxHours(){return this.maxHours;}
     public void setMaxHours(int maxHours){
         this.maxHours = maxHours;
     }
