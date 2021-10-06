@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.missouristate.taschedulegenerator.controllers.TAController">
    <children>
       <Label text="Add TA Information">
          <font>
@@ -38,7 +38,7 @@
                   <Insets />
                </VBox.margin>
             </Label>
-            <TextField promptText="The TA's name">
+            <TextField fx:id="TAName" promptText="The TA's name">
                <font>
                   <Font size="14.0" />
                </font>
@@ -58,7 +58,7 @@
                   <Insets />
                </VBox.margin>
             </Label>
-            <TextField promptText="The max hours per week the TA can work">
+            <TextField fx:id="MaxHoursPerWeek" promptText="The max hours per week the TA can work">
                <font>
                   <Font size="14.0" />
                </font>
@@ -80,15 +80,12 @@
             </Label>
             <HBox>
                <children>
-                  <RadioButton mnemonicParsing="false" text="Yes">
+                  <RadioButton mnemonicParsing="false" fx:id="YesGAButton" text="Yes" toggleGroup="$isGA">
                      <font>
                         <Font size="14.0" />
                      </font>
-                     <toggleGroup>
-                        <ToggleGroup fx:id="isGA" />
-                     </toggleGroup>
                   </RadioButton>
-                  <RadioButton mnemonicParsing="false" selected="true" text="No" toggleGroup="$isGA">
+                  <RadioButton mnemonicParsing="false" text="No" fx:id="NoGAButton" toggleGroup="$isGA">
                      <font>
                         <Font size="14.0" />
                      </font>
@@ -172,7 +169,7 @@
       </Separator>
       <HBox alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" text="Cancel">
+            <Button mnemonicParsing="false" onAction="#cancel" text="Cancel">
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding>
@@ -183,7 +180,7 @@
                   <Insets right="5.0" />
                </HBox.margin>
             </Button>
-            <Button mnemonicParsing="false" text="Save TA Information">
+            <Button mnemonicParsing="false" onAction="#saveTAInfo" text="Save TA Information">
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding>
