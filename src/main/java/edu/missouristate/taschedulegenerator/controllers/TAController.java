@@ -44,10 +44,8 @@ public class TAController implements Controller<String> {
 		
 		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
 		alert.setTitle("Warning");
-		alert.setHeaderText("Possible Invalid Data Entry");
-		//ButtonType type = new ButtonType("Ok", ButtonData.OK_DONE);
-		//alert.setContentText("Please confirm that ");
-		
+		alert.setHeaderText("Invalid Data Entry");
+		//String contentText = "";
 		if(!TAName.getText().matches("[a-zA-Z ]+")) {
 			alert.setContentText("Please confirm that '" + TAName.getText() + "' only contains alphabetic characters.");
 			alert.showAndWait();
@@ -56,14 +54,21 @@ public class TAController implements Controller<String> {
 			alert.setContentText("Please confirm that '" + MaxHoursPerWeek.getText() + "' only contains numeric characters.");
 			alert.showAndWait();
 		}
+		//If user selects both options
+		if(YesGAButton.isSelected() && NoGAButton.isSelected()) {
+			alert.setContentText("Please only select one option if the TA is a GA.");
+			alert.showAndWait();
+		//If user does not select any option
+		} else if (YesGAButton.isSelected() == false && NoGAButton.isSelected() == false) {
+			alert.setContentText("Please select whether the TA is also a GA.");
+			alert.showAndWait();
+		}
 		
-		System.out.print("Is GA: ");
-		System.out.println(isGA);
-		//System.out.println(isGA.getSelectedToggle().getUserData().toString());
+		
 	
 	}
 
-
+	//Function to assist in data validation of the MaxHoursPerWeek TextField contents
 	private static Boolean isNumeric(String strNum) {
 		if (strNum == null) {
 	        return false;
