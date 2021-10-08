@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Course {
-    public String courseCode;
-    public String instructorName;
-    public List<Activity> activities = new ArrayList<>();
+    private String courseCode;
+    private String instructorName;
+    private List<Activity> activities = new ArrayList<>();
 }

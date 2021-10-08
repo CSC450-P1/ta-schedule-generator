@@ -11,8 +11,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TA {
-    public String name;
-    public boolean isGA;
-    public int maxHours;
-    public List<TimeBlock> notAvailable = new ArrayList<>();
+    private String name;
+    private boolean isGA;
+    private int maxHours;
+    private List<TimeBlock> notAvailable = new ArrayList<>();
 }
