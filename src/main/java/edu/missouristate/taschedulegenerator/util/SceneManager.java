@@ -1,4 +1,4 @@
-package edu.missouristate.taschedulegenerator;
+package edu.missouristate.taschedulegenerator.util;
 
 import java.io.IOException;
 import java.util.HashMap;

@@ -1,7 +1,7 @@
 package edu.missouristate.taschedulegenerator.controllers;
 
-import edu.missouristate.taschedulegenerator.SceneManager;
-import edu.missouristate.taschedulegenerator.SceneManager.Controller;
+import edu.missouristate.taschedulegenerator.util.SceneManager;
+import edu.missouristate.taschedulegenerator.util.SceneManager.Controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
