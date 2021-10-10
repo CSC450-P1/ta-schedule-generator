@@ -65,7 +65,7 @@ public class AppData {
 		try {
 			MAPPER.writeValue(new File(SAVE_FILE), new CoursesAndTAs(courses, tas));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			System.err.println("Could not save file " + SAVE_FILE);
 			e.printStackTrace();
 		}
 	}
