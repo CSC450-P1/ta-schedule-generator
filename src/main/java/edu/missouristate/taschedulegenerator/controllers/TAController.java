@@ -1,14 +1,27 @@
 package edu.missouristate.taschedulegenerator.controllers;
 
+import java.net.URL;
+import java.time.LocalTime;
+import java.util.List;
+import java.util.ResourceBundle;
+
+
 import edu.missouristate.taschedulegenerator.SceneManager;
 import edu.missouristate.taschedulegenerator.SceneManager.Controller;
+import edu.missouristate.taschedulegenerator.domain.TimeBlock;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 public class TAController implements Controller<String> {
 	
@@ -26,18 +39,61 @@ public class TAController implements Controller<String> {
 	
 	@FXML
 	private ToggleGroup isGA;
-
+	
+	@FXML
+	private TableView<TimeBlock> unavailableTable;
+	
+	@FXML
+	private TableColumn<TimeBlock, String> dayUnavailable;
+	
+	
+	
 	@Override
-	public void initData(String data) {
-		// TODO Auto-generated method stub
+	public void initialize(URL location, ResourceBundle resources) {
 		
 	}
 	
+	//private ObservableList<TimeBlock> testing = FXCollections.observableArrayList(
+	//	new TimeBlock("Monday", "5:34", "6:44"),
+	//		new TimeBlock("Tuesday", "2:11", "5:55")
+	//	);
+	
+	
+	
 	
 	@FXML
-	public void cancel(ActionEvent event) {
-		SceneManager.showScene("dashboard");
+	public void addTimeUnavailable(ActionEvent event) {
+		
+		//unavailableTable.getItems().clear();
+		
+		//unavailableTable = new TableView<TimeBlock>();
+		//unavailableTable.setEditable(true);
+		
+		
+		//unavailableTable.setItems(data);
+		
+		
+		//System.out.print(test.getBeginTimeUnavailable());
+		
+		//tbData.getItems().add(test);
+		//tbData.getItems().add(test);
+		//dayUnavailable.setCellValueFactory(new PropertyValueFactory<>("dayUnavailable"));
+		//dayUnavailable.setCellValueFactory(new PropertyValueFactory<>("Time Block"));
+		
+		
+		//final ObservableList<TimeBlock> data = FXCollections.observableArrayList(
+		//		new TimeBlock("Monday", "5:30", "6:45"),
+		//		new TimeBlock("Tuesday", "2:00", "5:00")
+				
+		//		);
+		//unavailableTable.setItems(data);
+		//unavailableTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+		//unavailableTable.getColumns().addAll(null)
+		//System.out.println(unavailableTable.getItems().size());
+		//tbData.getItems().add(new TimeBlock("Monday","5:30","6:45"));
+		//test.setBeginTimeUnavailable(null);
 	}
+	
 	
 	@FXML
 	public void saveTAInfo(ActionEvent event) {
@@ -50,8 +106,13 @@ public class TAController implements Controller<String> {
 			alert.setContentText("Please confirm that '" + TAName.getText() + "' only contains alphabetic characters.");
 			alert.showAndWait();
 		}
+		//checking if MaxHoursPerWeek is numeric as well as under or equal to 20
 		if(!isNumeric(MaxHoursPerWeek.getText())) {
 			alert.setContentText("Please confirm that '" + MaxHoursPerWeek.getText() + "' only contains numeric characters.");
+			alert.showAndWait();
+		}
+		if(Integer.parseInt(MaxHoursPerWeek.getText()) > 20) {
+			alert.setContentText("Please make sure the max hours are below or equal to 20.");
 			alert.showAndWait();
 		}
 		//If user selects both options
@@ -64,6 +125,9 @@ public class TAController implements Controller<String> {
 			alert.showAndWait();
 		}
 		
+		
+		//Where the TA information should be collected and made into the TA object
+		//since the data is verified ?
 		
 	
 	}
@@ -80,4 +144,19 @@ public class TAController implements Controller<String> {
 	    }
 	    return true;
 	}
+	@Override
+	public void initData(String data) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
+	@FXML
+	public void cancel(ActionEvent event) {
+		SceneManager.showScene("dashboard");
+	}
+
+
+	
+	
 }

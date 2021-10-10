@@ -1,8 +1,10 @@
 package edu.missouristate.taschedulegenerator;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -67,6 +69,8 @@ public class SceneManager {
 	public interface Controller<T> {
 		
 		void initData(T data);
+
+		void initialize(URL location, ResourceBundle resources);
 
 	}
 

@@ -1,5 +1,8 @@
 package edu.missouristate.taschedulegenerator.controllers;
 
+import java.net.URL;
+import java.util.ResourceBundle;
+
 import edu.missouristate.taschedulegenerator.SceneManager;
 import edu.missouristate.taschedulegenerator.SceneManager.Controller;
 import javafx.event.ActionEvent;
@@ -21,6 +24,12 @@ public class CourseController implements Controller<String> {
 	public void initData(String data) {
 		// This is where you would process data before showing the view
 		courseCode.setText(data);
+	}
+
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
