@@ -45,7 +45,7 @@
       </VBox>
       <VBox spacing="2.0">
          <children>
-            <Label text="Faculty">
+            <Label text="Instructor Name">
                <font>
                   <Font size="18.0" />
                </font>
@@ -53,7 +53,7 @@
                   <Insets />
                </VBox.margin>
             </Label>
-            <TextField promptText="The faculty that teaches this course">
+            <TextField promptText="The instructor that teaches this course">
                <font>
                   <Font size="14.0" />
                </font>
