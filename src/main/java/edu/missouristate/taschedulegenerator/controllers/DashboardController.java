@@ -12,4 +12,10 @@ public class DashboardController {
 		SceneManager.showScene("courseInfo", "CSC450");
 	}
 
+	@FXML
+	public void showTAInfo(ActionEvent event) {
+		// This is an example of how to switch scenes and pass data to the new scene's controller to process before showing
+		SceneManager.showScene("taInfo");
+	}
+
 }

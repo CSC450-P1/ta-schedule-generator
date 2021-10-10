@@ -68,7 +68,7 @@
                         </TableView>
                      </content>
                   </ScrollPane>
-                  <Button mnemonicParsing="false" text="Add TA Information" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="0.0" />
+                  <Button mnemonicParsing="false" onAction="#showTAInfo" text="Add TA Information" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="0.0" />
                </children>
             </AnchorPane>
          </children>

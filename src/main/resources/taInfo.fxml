@@ -38,7 +38,7 @@
                   <Insets />
                </VBox.margin>
             </Label>
-            <TextField promptText="The TA's name">
+            <TextField fx:id="taName" promptText="The TA's name">
                <font>
                   <Font size="14.0" />
                </font>
@@ -58,7 +58,7 @@
                   <Insets />
                </VBox.margin>
             </Label>
-            <TextField promptText="The max hours per week the TA can work">
+            <TextField fx:id="maxHours" promptText="The max hours per week the TA can work">
                <font>
                   <Font size="14.0" />
                </font>
