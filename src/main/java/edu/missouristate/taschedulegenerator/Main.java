@@ -15,7 +15,7 @@ public class Main extends Application {
 	public void start(final Stage primaryStage) throws Exception {
 		primaryStage.setTitle("TA Schedule Generator");
 		AppData.load();
-		SceneManager.init(primaryStage, "dashboard", "courseInfo", "taInfo", "schedules");
+		SceneManager.init(primaryStage, "dashboard", "courseInfo", "taInfo", "schedules", "timeUnavailable");
 		primaryStage.show();
 	}
 }

@@ -1,28 +1,19 @@
 package edu.missouristate.taschedulegenerator.controllers;
 
 import java.net.URL;
-import java.time.LocalTime;
-import java.util.List;
 import java.util.ResourceBundle;
 
-
-import edu.missouristate.taschedulegenerator.SceneManager;
-import edu.missouristate.taschedulegenerator.SceneManager.Controller;
-import edu.missouristate.taschedulegenerator.domain.TA;
 import edu.missouristate.taschedulegenerator.domain.TimeBlock;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import edu.missouristate.taschedulegenerator.util.SceneManager;
+import edu.missouristate.taschedulegenerator.util.SceneManager.Controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.RadioButton;
-import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.control.cell.PropertyValueFactory;
 
 public class TAController implements Controller<String> {
 	
@@ -45,15 +36,9 @@ public class TAController implements Controller<String> {
 	
 	
 	
-	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		
 	}
-	
-	//private ObservableList<TimeBlock> testing = FXCollections.observableArrayList(
-	//	new TimeBlock("Monday", "5:34", "6:44"),
-	//		new TimeBlock("Tuesday", "2:11", "5:55")
-	//	);
 	
 	
 	@FXML

@@ -70,8 +70,6 @@ public class SceneManager {
 		
 		void initData(T data);
 
-		void initialize(URL location, ResourceBundle resources);
-
 	}
 
 }

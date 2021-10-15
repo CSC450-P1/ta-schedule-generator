@@ -7,9 +7,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
-
-import edu.missouristate.taschedulegenerator.SceneManager;
-import edu.missouristate.taschedulegenerator.SceneManager.Controller;
+import edu.missouristate.taschedulegenerator.util.SceneManager;
+import edu.missouristate.taschedulegenerator.util.SceneManager.Controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -24,9 +23,9 @@ public class TimeUnavailableController implements Controller<String>, Initializa
 	
 	@FXML
 	private ComboBox<String> endSelection;
+	
 	@FXML
 	private RadioButton Monday, Tuesday, Wednesday, Thursday, Friday;
-	
 	
 	private List<RadioButton> daysOfWeek = new ArrayList<RadioButton>();
 	
@@ -64,8 +63,6 @@ public class TimeUnavailableController implements Controller<String>, Initializa
 		//daysofWeek = 
 		
 	}
-	
-	
 	
 	
 	
