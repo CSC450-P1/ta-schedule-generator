@@ -8,6 +8,7 @@ import java.util.ResourceBundle;
 
 import edu.missouristate.taschedulegenerator.SceneManager;
 import edu.missouristate.taschedulegenerator.SceneManager.Controller;
+import edu.missouristate.taschedulegenerator.domain.TA;
 import edu.missouristate.taschedulegenerator.domain.TimeBlock;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -25,17 +26,13 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 public class TAController implements Controller<String> {
 	
-	@FXML
-	private TextField TAName;
+	
 	
 	@FXML
-	private TextField MaxHoursPerWeek;
+	private TextField TAName, MaxHoursPerWeek;
 	
 	@FXML
-	private RadioButton YesGAButton;
-	
-	@FXML
-	private RadioButton NoGAButton;
+	private RadioButton YesGAButton, NoGAButton;
 	
 	@FXML
 	private ToggleGroup isGA;
@@ -59,39 +56,14 @@ public class TAController implements Controller<String> {
 	//	);
 	
 	
-	
+	@FXML
+	public void addTAInfo(ActionEvent event) {
+		SceneManager.showScene("taInfo");
+	}
 	
 	@FXML
 	public void addTimeUnavailable(ActionEvent event) {
-		
-		//unavailableTable.getItems().clear();
-		
-		//unavailableTable = new TableView<TimeBlock>();
-		//unavailableTable.setEditable(true);
-		
-		
-		//unavailableTable.setItems(data);
-		
-		
-		//System.out.print(test.getBeginTimeUnavailable());
-		
-		//tbData.getItems().add(test);
-		//tbData.getItems().add(test);
-		//dayUnavailable.setCellValueFactory(new PropertyValueFactory<>("dayUnavailable"));
-		//dayUnavailable.setCellValueFactory(new PropertyValueFactory<>("Time Block"));
-		
-		
-		//final ObservableList<TimeBlock> data = FXCollections.observableArrayList(
-		//		new TimeBlock("Monday", "5:30", "6:45"),
-		//		new TimeBlock("Tuesday", "2:00", "5:00")
-				
-		//		);
-		//unavailableTable.setItems(data);
-		//unavailableTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-		//unavailableTable.getColumns().addAll(null)
-		//System.out.println(unavailableTable.getItems().size());
-		//tbData.getItems().add(new TimeBlock("Monday","5:30","6:45"));
-		//test.setBeginTimeUnavailable(null);
+		SceneManager.showScene("timeUnavailable");
 	}
 	
 	
@@ -124,12 +96,6 @@ public class TAController implements Controller<String> {
 			alert.setContentText("Please select whether the TA is also a GA.");
 			alert.showAndWait();
 		}
-		
-		
-		//Where the TA information should be collected and made into the TA object
-		//since the data is verified ?
-		
-	
 	}
 
 	//Function to assist in data validation of the MaxHoursPerWeek TextField contents
