@@ -10,3 +10,4 @@
 .springBeans
 .sts4-cache
 session.json
+/build/
