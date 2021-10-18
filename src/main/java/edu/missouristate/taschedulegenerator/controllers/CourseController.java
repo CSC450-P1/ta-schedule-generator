@@ -17,6 +17,12 @@ public class CourseController implements Controller<String> {
 		SceneManager.showScene("dashboard");
 	}
 
+	@FXML
+	public void addActivity(ActionEvent event) {
+		// This is an example of how to switch scenes and pass data to the new scene's controller to process before showing
+		SceneManager.showScene("activityInfo");
+	}
+
 	@Override
 	public void initData(String data) {
 		// This is where you would process data before showing the view

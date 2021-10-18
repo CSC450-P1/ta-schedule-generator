@@ -1,14 +1,19 @@
 package edu.missouristate.taschedulegenerator.controllers;
 
-import edu.missouristate.taschedulegenerator.SceneManager;
+import edu.missouristate.taschedulegenerator.domain.TimeBlock;
+import edu.missouristate.taschedulegenerator.util.SceneManager;
 import edu.missouristate.taschedulegenerator.domain.TA;
-import edu.missouristate.taschedulegenerator.SceneManager.Controller;
+import edu.missouristate.taschedulegenerator.util.SceneManager.Controller;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
-public class TAController implements Controller<String>{
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+public class TAController implements SceneManager.Controller<String> {
     @FXML private TextField taName;
     @FXML private TextField maxHours;
     @FXML private ToggleGroup isGA;
@@ -24,6 +29,12 @@ public class TAController implements Controller<String>{
     public void cancel(ActionEvent event) {
         // This is an example of how to switch scenes without passing data
         SceneManager.showScene("dashboard");
+    }
+
+    @FXML
+    public void addActivity(ActionEvent event) {
+        // This is an example of how to switch scenes and pass data to the new scene's controller to process before showing
+        SceneManager.showScene("activityInfo");
     }
 
     @FXML
@@ -43,5 +54,12 @@ public class TAController implements Controller<String>{
         }
 
         ObservableList<TableColumn> columns = timeblockTable.getColumns();
+        for (int i = 0; i < columns.size(); i++){
+            TimeBlock timeBlock = new TimeBlock();
+            List<TimeBlock> timeblocks = new ArrayList<TimeBlock>();
+            TableColumn currCol = columns.get(i);
+            Map<Object, Object> values = currCol.getProperties();
+
+        }
     }
 }
