@@ -5,6 +5,8 @@ module edu.missouristate.taschedulegenerator {
 	requires com.fasterxml.jackson.core;
 	requires com.fasterxml.jackson.annotation;
 	requires com.fasterxml.jackson.databind;
+	requires org.apache.commons.lang3;
 	opens edu.missouristate.taschedulegenerator.controllers to javafx.fxml;
+	opens edu.missouristate.taschedulegenerator.domain to javafx.base, com.fasterxml.jackson.databind;
 	exports edu.missouristate.taschedulegenerator;
 }
