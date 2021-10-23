@@ -2,6 +2,8 @@ package edu.missouristate.taschedulegenerator.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -20,6 +22,22 @@ public class AppData {
 	private static ObservableList<Course> courses = FXCollections.observableArrayList();
 	
 	private static ObservableList<TA> tas = FXCollections.observableArrayList();
+
+	public static final ObservableList<String> TIMES;
+
+	public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("h:mm a");
+
+	private static final LocalTime START_TIME = LocalTime.of(8, 0);
+	private static final LocalTime END_TIME = LocalTime.of(20, 0);
+
+	static {
+		final ObservableList<String> times = FXCollections.observableArrayList();
+		for(LocalTime time = START_TIME; time.compareTo(END_TIME) <= 0; time=time.plusMinutes(15)) {
+			times.add(TIME_FORMATTER.format(time));
+		}
+		TIMES = FXCollections.unmodifiableObservableList(times);
+	}
+
 	
 	private AppData() {}
 

@@ -170,7 +170,7 @@
                               <Insets />
                            </VBox.margin>
                         </Label>
-                        <TextField fx:id="TAName" promptText="Activity Name">
+                        <TextField fx:id="activityName" promptText="Activity Name">
                            <font>
                               <Font size="14.0" />
                            </font>
@@ -187,14 +187,14 @@
                               <Insets />
                            </VBox.margin>
                         </Label>
-                        <TextField fx:id="TAName1" promptText="Estimated hours per week">
+                        <TextField fx:id="estimatedHours" promptText="Estimated hours per week">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </TextField>
                      </children>
                   </VBox>
-                  <CheckBox layoutX="12.0" layoutY="161.0" mnemonicParsing="false" text="Monday">
+                  <CheckBox fx:id="Monday" layoutX="12.0" layoutY="161.0" mnemonicParsing="false" text="Monday">
                      <font>
                         <Font size="14.0" />
                      </font>
@@ -202,7 +202,7 @@
                         <Insets top="5.0" />
                      </padding>
                   </CheckBox>
-                  <CheckBox layoutX="12.0" layoutY="184.0" mnemonicParsing="false" text="Tuesday">
+                  <CheckBox fx:id="Tuesday" layoutX="12.0" layoutY="184.0" mnemonicParsing="false" text="Tuesday">
                      <font>
                         <Font size="14.0" />
                      </font>
@@ -210,7 +210,7 @@
                         <Insets top="5.0" />
                      </padding>
                   </CheckBox>
-                  <CheckBox layoutX="12.0" layoutY="209.0" mnemonicParsing="false" text="Wednesday">
+                  <CheckBox fx:id="Wednesday" layoutX="12.0" layoutY="209.0" mnemonicParsing="false" text="Wednesday">
                      <font>
                         <Font size="14.0" />
                      </font>
@@ -218,7 +218,7 @@
                         <Insets top="5.0" />
                      </padding>
                   </CheckBox>
-                  <CheckBox layoutX="12.0" layoutY="234.0" mnemonicParsing="false" text="Thursday">
+                  <CheckBox fx:id="Thursday" layoutX="12.0" layoutY="234.0" mnemonicParsing="false" text="Thursday">
                      <font>
                         <Font size="14.0" />
                      </font>
@@ -226,7 +226,7 @@
                         <Insets top="5.0" />
                      </padding>
                   </CheckBox>
-                  <CheckBox layoutX="12.0" layoutY="258.0" mnemonicParsing="false" text="Friday">
+                  <CheckBox fx:id="Friday" layoutX="12.0" layoutY="258.0" mnemonicParsing="false" text="Friday">
                      <font>
                         <Font size="14.0" />
                      </font>

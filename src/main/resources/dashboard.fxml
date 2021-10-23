@@ -35,11 +35,7 @@
                   </Label>
                   <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="50.0">
                      <content>
-                        <TableView prefHeight="121.0" prefWidth="200.0">
-                           <columns>
-                              <TableColumn editable="false" prefWidth="300.0" text="Course" />
-                              <TableColumn editable="false" prefWidth="125.0" sortable="false" text="Actions" />
-                           </columns>
+                        <TableView fx:id="courseTable" prefHeight="121.0" prefWidth="200.0">
                            <columnResizePolicy>
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                            </columnResizePolicy>
