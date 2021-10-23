@@ -30,14 +30,6 @@ public class AppData {
 	public static ObservableList<TA> getTAs() {
 		return tas;
 	}
-
-	public static void clearCourses() {
-		courses = null;
-	}
-
-	public static void clearTAs() {
-		tas = null;
-	}
 	
 	public static void load() {
 		final File saveFile = new File(SAVE_FILE);

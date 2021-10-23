@@ -21,8 +21,8 @@ public class DashboardController {
 
 	@FXML
 	public void clearInfo(ActionEvent event) {
-		AppData.clearCourses();
-		AppData.clearTAs();
+		AppData.getCourses().clear();
+		AppData.getTAs().clear();
 	}
 
 }
