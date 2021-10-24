@@ -60,7 +60,7 @@
                   <Insets />
                </VBox.margin>
             </Label>
-            <TextField promptText="The instructor that teaches this course">
+            <TextField fx:id="instructorName" promptText="The instructor that teaches this course">
                <font>
                   <Font size="14.0" />
                </font>
@@ -242,8 +242,6 @@
                      <content>
                         <TableView prefHeight="200.0" prefWidth="200.0" fx:id="activityTable">
                            <columns>
-                              <TableColumn editable="false" prefWidth="229.0" text="Activity" />
-                              <TableColumn prefWidth="75.0" text="Action" />
                            </columns>
                            <columnResizePolicy>
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -276,7 +274,7 @@
                   <Insets right="5.0" />
                </HBox.margin>
             </Button>
-            <Button mnemonicParsing="false" text="Save Course Information">
+            <Button mnemonicParsing="false" text="Save Course Information" onAction="#saveCourseInfo">
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding>
