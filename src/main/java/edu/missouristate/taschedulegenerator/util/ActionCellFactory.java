@@ -40,12 +40,10 @@ public class ActionCellFactory<T> implements Callback<TableColumn<T, Void>, Tabl
             edit.setOnAction((e) -> {
                 editCallback.accept(getTableView().getItems().get(getIndex()));
             });
-            
             final Button remove = new Button("Remove");
             remove.setOnAction((e) -> {
                 removeCallback.accept(getTableView().getItems().get(getIndex()));
             });
-            
             root.getChildren().addAll(edit, remove);
         }
 

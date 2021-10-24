@@ -104,6 +104,7 @@
             <Insets bottom="5.0" />
          </VBox.margin>
       </VBox>
+      <Separator prefHeight="10.0" prefWidth="697.0" />
       <GridPane VBox.vgrow="ALWAYS">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -136,9 +137,6 @@
                   </TableView>
                   <Separator layoutX="-348.0" layoutY="33.0" prefHeight="10.0" prefWidth="697.0" />
                </children>
-               <GridPane.margin>
-                  <Insets left="5.0" />
-               </GridPane.margin>
             </AnchorPane>
             <AnchorPane fx:id="anchorTest" prefHeight="271.0" prefWidth="323.0">
                <padding>
