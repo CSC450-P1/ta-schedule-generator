@@ -24,9 +24,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 
 
 
@@ -34,9 +31,6 @@ public class DashboardController implements Controller<Boolean> , Initializable 
 	
 	@FXML
 	private TableView<TA> TAtable;
-	
-	@FXML
-	private TableColumn<TA, String> nameCol, maxHoursCol;
 	
 	@FXML 
 	private TableView<Course> courseTable;
@@ -72,36 +66,22 @@ public class DashboardController implements Controller<Boolean> , Initializable 
 				}));
 		courseTable.getColumns().add(courseActionColumn);
 	
-		nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
-		maxHoursCol.setCellValueFactory(new PropertyValueFactory<>("maxHours"));
-	
-		TableColumn<TA, Void> TAactionCol = new TableColumn<TA, Void>("Action");
-		TAactionCol.setCellFactory(col -> new TableCell<TA, Void>() {
-			private final HBox buttonContainer;
-			{
-				Button editBtn = new Button("Edit");
-				Button deleteBtn = new Button("Delete");
-				
-				editBtn.setOnAction(event -> {
-					TA data = getTableView().getItems().get(getIndex());
-					SceneManager.showScene("taInfo", data);
-					getTableView().getItems().remove(getIndex());
-				});
-				
-				deleteBtn.setOnAction(event -> {
-					TA data = getTableView().getItems().get(getIndex());
-					getTableView().getItems().remove(getIndex());
-				});
-				buttonContainer = new HBox(3, editBtn, deleteBtn);
-			}
-			
-			@Override
-		    public void updateItem(Void item, boolean empty) {
-		        super.updateItem(item, empty);
-		        setGraphic(empty ? null : buttonContainer);
-		    }
-		});
-
+		//TA table
+		TAtable.setPlaceholder(new Label("No TAs have been added."));
+		TAtable.setItems(AppData.getTAs());
+		final TableColumn<TA, String> taColumn = new TableColumn<>("TA");
+		taColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+		TAtable.getColumns().add(taColumn);
+		
+		final TableColumn<TA, Void> TAactionCol = new TableColumn<TA, Void>("Action");
+		TAactionCol.setCellFactory(new ActionCellFactory<>(
+				(ta) -> { // edit
+					SceneManager.showScene("taInfo", ta);
+					AppData.getTAs().remove(ta);
+				},
+				(ta) -> { // remove
+					AppData.getTAs().remove(ta);
+				}));
 		TAtable.getColumns().add(TAactionCol);
 		
 	}

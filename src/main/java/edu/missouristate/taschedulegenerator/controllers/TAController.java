@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import edu.missouristate.taschedulegenerator.domain.TA;
 import edu.missouristate.taschedulegenerator.domain.TimeBlock;
+import edu.missouristate.taschedulegenerator.util.AppData;
 import edu.missouristate.taschedulegenerator.util.SceneManager;
 import edu.missouristate.taschedulegenerator.util.SceneManager.Controller;
 import javafx.collections.FXCollections;
@@ -110,7 +111,8 @@ public class TAController implements Controller<TA>, Initializable {
 			
 			toSave.getNotAvailable().addAll(unavailableTable.getItems());
 			
-			SceneManager.showScene("dashboard", toSave);
+			AppData.getTAs().add(toSave);
+			SceneManager.showScene("dashboard", true);
 			clearCurrentTimeBlockEntry(null);
 			
 			TAName.setText(null);
