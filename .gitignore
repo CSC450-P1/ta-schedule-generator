@@ -9,5 +9,6 @@
 .settings
 .springBeans
 .sts4-cache
+/build/
 session.json
 /build/

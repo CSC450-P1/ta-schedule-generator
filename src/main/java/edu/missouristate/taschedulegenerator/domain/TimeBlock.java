@@ -15,12 +15,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TimeBlock {
 	
+	private LocalTime startTime;
+	private LocalTime endTime;
 	private List<DayOfWeek> days;
     
-    private LocalTime startTime;
-    
-    private LocalTime endTime;
-    
+
     public boolean intersects(TimeBlock t) {
         boolean dayOverlap = days.stream().anyMatch(day -> t.days.contains(day));
         if(dayOverlap) {
