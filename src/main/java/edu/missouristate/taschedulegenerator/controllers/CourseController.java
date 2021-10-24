@@ -34,6 +34,9 @@ public class CourseController implements Controller<String>, Initializable {
 	private RadioButton yesTA;
 	@FXML
 	private RadioButton noTA;
+	@FXML
+	private TextField instructorName;
+
 	@FXML private CheckBox Monday;
 	@FXML private CheckBox Tuesday;
 	@FXML private CheckBox Wednesday;
@@ -42,15 +45,16 @@ public class CourseController implements Controller<String>, Initializable {
 	@FXML private ComboBox<String> startSelection;
 	@FXML private ComboBox<String> endSelection;
 	@FXML private TableView<Activity> activityTable;
-	@FXML
-	private TableColumn<Activity, String> activityNameCol;
-
-	public ObservableList<Activity> activities;
 
 	@FXML
 	public void cancel(ActionEvent event) {
-		// This is an example of how to switch scenes without passing data
-		SceneManager.showScene("dashboard");
+		try {
+			saveCourseInfo(null);
+			activityTable.getItems().clear();
+		} catch (Exception e) {
+			SceneManager.showScene("dashboard");
+		}
+
 	}
 
 	@FXML
@@ -84,8 +88,23 @@ public class CourseController implements Controller<String>, Initializable {
 		timeBlock.setStartTime(LocalTime.parse(startSelection.getValue(), AppData.TIME_FORMATTER));
 		timeBlock.setEndTime(LocalTime.parse(endSelection.getValue(), AppData.TIME_FORMATTER));
 		newActivity.setTime(timeBlock);
-		activities.add(newActivity);
 		activityTable.getItems().add(newActivity);
+	}
+
+	@FXML
+	public void saveCourseInfo(ActionEvent event) {
+		Course newCourse = new Course();
+
+		newCourse.setCourseCode(courseCode.getText());
+		newCourse.setInstructorName(instructorName.getText());
+		newCourse.setActivities(activityTable.getItems());
+
+
+		AppData.getCourses().add(newCourse);
+		SceneManager.showScene("dashboard", true);
+
+		courseCode.setText(null);
+		instructorName.setText(null);
 	}
 
 	@Override
@@ -98,7 +117,9 @@ public class CourseController implements Controller<String>, Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 		startSelection.setItems(AppData.TIMES);
 		endSelection.setItems(AppData.TIMES);
-		activityTable.setItems(activities);
 
+		final TableColumn<Activity, String> activityColumn = new TableColumn<>("Activity");
+		activityColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+		activityTable.getColumns().add(activityColumn);
 	}
 }
