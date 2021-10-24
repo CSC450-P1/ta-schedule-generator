@@ -1,6 +1,12 @@
 package edu.missouristate.taschedulegenerator.controllers;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
+
+import edu.missouristate.taschedulegenerator.domain.CoursesAndTAs;
+import edu.missouristate.taschedulegenerator.domain.TA;
 import java.util.ResourceBundle;
 
 import edu.missouristate.taschedulegenerator.domain.Course;
@@ -11,12 +17,20 @@ import edu.missouristate.taschedulegenerator.util.SceneManager.Controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
+import javafx.scene.control.Label;
 
-public class DashboardController implements Controller<Boolean>, Initializable {
+
+
+public class DashboardController implements Controller<Boolean> , Initializable {
+	
+	@FXML
+	private TableView<TA> TAtable;
 	
 	@FXML 
 	private TableView<Course> courseTable;
@@ -24,10 +38,15 @@ public class DashboardController implements Controller<Boolean>, Initializable {
 	@FXML
 	public void addCourseInfo(ActionEvent event) {
 		// This is an example of how to switch scenes and pass data to the new scene's controller to process before showing
-		SceneManager.showScene("courseInfo", "CSC450");
+		SceneManager.showScene("courseInfo");
+	}
+	
+	@FXML
+	public void addTAInfo(ActionEvent event) {
+		SceneManager.showScene("taInfo");
 	}
 
-	@FXML
+	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		//Course Table
@@ -46,10 +65,33 @@ public class DashboardController implements Controller<Boolean>, Initializable {
 					AppData.getCourses().remove(course);
 				}));
 		courseTable.getColumns().add(courseActionColumn);
+	
+		//TA table
+		TAtable.setPlaceholder(new Label("No TAs have been added."));
+		TAtable.setItems(AppData.getTAs());
+		final TableColumn<TA, String> taColumn = new TableColumn<>("TA");
+		taColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+		TAtable.getColumns().add(taColumn);
+		
+		final TableColumn<TA, Void> TAactionCol = new TableColumn<TA, Void>("Action");
+		TAactionCol.setCellFactory(new ActionCellFactory<>(
+				(ta) -> { // edit
+					SceneManager.showScene("taInfo", ta);
+					AppData.getTAs().remove(ta);
+				},
+				(ta) -> { // remove
+					AppData.getTAs().remove(ta);
+				}));
+		TAtable.getColumns().add(TAactionCol);
+		
 	}
 
 	@Override
-	public void initData(Boolean data) {
+	public void initData(Boolean refresh) {
+		if(refresh) {
+			TAtable.refresh();
+			courseTable.refresh();
+			}
 		// TODO Auto-generated method stub
 		
 	}
