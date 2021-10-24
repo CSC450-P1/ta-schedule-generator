@@ -55,15 +55,6 @@ public class TAController implements Controller<TA>, Initializable {
 	
 	private List<CheckBox> daysOfWeek = null;
 	
-	private static final List<String> TIMES = new ArrayList<>();
-	private static final LocalTime END_TIME = LocalTime.of(20, 0);
-	private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("h:mm a");
-
-	static {
-	    for(LocalTime time = LocalTime.of(8, 0); time.compareTo(END_TIME) <= 0; time=time.plusMinutes(15)) {
-	        TIMES.add(time.format(TIME_FORMATTER));
-	    }
-	}
 	
 	private TA testTA = null;
 	
@@ -75,8 +66,8 @@ public class TAController implements Controller<TA>, Initializable {
 			  daysSelected.add(DayOfWeek.valueOf(day.getId().toUpperCase()));
 			} 
 		}
-		LocalTime beginTime = LocalTime.parse(startSelection.getValue(), TIME_FORMATTER);
-		LocalTime endTime = LocalTime.parse(endSelection.getValue(), TIME_FORMATTER);
+		LocalTime beginTime = LocalTime.parse(startSelection.getValue(), AppData.TIME_FORMATTER);
+		LocalTime endTime = LocalTime.parse(endSelection.getValue(), AppData.TIME_FORMATTER);
 	
 		// Still need to add time validation 
 		TimeBlock unavailable = new TimeBlock(beginTime, endTime, daysSelected);
@@ -166,9 +157,9 @@ public class TAController implements Controller<TA>, Initializable {
 		}
 		//Resetting Time Selections
 		startSelection.getItems().clear();
-		startSelection.getItems().addAll(TIMES);
+		startSelection.getItems().addAll(AppData.TIMES);
 		endSelection.getItems().clear();
-        endSelection.getItems().addAll(TIMES);
+        endSelection.getItems().addAll(AppData.TIMES);
         
         unavailableTable.getItems().clear();
 	}
@@ -194,9 +185,9 @@ public class TAController implements Controller<TA>, Initializable {
 		daysOfWeek = Arrays.asList(Monday, Tuesday, Wednesday, Thursday, Friday);
 		//Adding times to the time ComboBoxes
         startSelection.getItems().clear();
-        startSelection.getItems().addAll(TIMES);
+        startSelection.getItems().addAll(AppData.TIMES);
         endSelection.getItems().clear();
-        endSelection.getItems().addAll(TIMES);
+        endSelection.getItems().addAll(AppData.TIMES);
         
         
         startTimeCol.setCellValueFactory(new PropertyValueFactory<>("startTime"));

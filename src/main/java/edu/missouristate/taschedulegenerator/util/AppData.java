@@ -2,6 +2,10 @@ package edu.missouristate.taschedulegenerator.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -13,7 +17,15 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
 public class AppData {
-	
+	public static final List<String> TIMES = new ArrayList<>();
+	public static final LocalTime END_TIME = LocalTime.of(20, 0);
+	public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("h:mm a");
+
+	static {
+	    for(LocalTime time = LocalTime.of(8, 0); time.compareTo(END_TIME) <= 0; time=time.plusMinutes(15)) {
+	        TIMES.add(time.format(TIME_FORMATTER));
+	    }
+	}
 	private static final String SAVE_FILE = "session.json";
 	private static final ObjectMapper MAPPER = new ObjectMapper().findAndRegisterModules();
 	
