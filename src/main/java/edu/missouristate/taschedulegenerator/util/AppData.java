@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -17,20 +15,7 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
 public class AppData {
-	public static final ObservableList<String> TIMES;
-
-	public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("h:mm a");
-
-	private static final LocalTime START_TIME = LocalTime.of(8, 0);
-	private static final LocalTime END_TIME = LocalTime.of(20, 0);
-
-	static {
-		final ObservableList<String> times = FXCollections.observableArrayList();
-		for(LocalTime time = START_TIME; time.compareTo(END_TIME) <= 0; time=time.plusMinutes(15)) {
-			times.add(TIME_FORMATTER.format(time));
-		}
-		TIMES = FXCollections.unmodifiableObservableList(times);
-	}
+	
 	private static final String SAVE_FILE = "session.json";
 	private static final ObjectMapper MAPPER = new ObjectMapper().findAndRegisterModules();
 	
