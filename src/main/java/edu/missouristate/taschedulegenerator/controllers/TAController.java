@@ -9,14 +9,17 @@ import edu.missouristate.taschedulegenerator.util.SceneManager.Controller;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 
+import java.net.URL;
 import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
-public class TAController implements SceneManager.Controller<String> {
+public class TAController implements SceneManager.Controller<String>, Initializable {
     @FXML private TextField taName;
     @FXML private TextField maxHours;
     @FXML private ToggleGroup isGA;
@@ -65,6 +68,7 @@ public class TAController implements SceneManager.Controller<String> {
             days.add(DayOfWeek.FRIDAY);
         }
         newTimeBlock.setDays(days);
+
         timeblockTable.getItems().add(newTimeBlock);
     }
 
@@ -92,5 +96,11 @@ public class TAController implements SceneManager.Controller<String> {
             Map<Object, Object> values = currCol.getProperties();
 
         }
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        startSelection.setItems(AppData.TIMES);
+        endSelection.setItems(AppData.TIMES);
     }
 }

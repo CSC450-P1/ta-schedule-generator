@@ -1,21 +1,28 @@
 package edu.missouristate.taschedulegenerator.controllers;
 
 import edu.missouristate.taschedulegenerator.domain.Activity;
+import edu.missouristate.taschedulegenerator.domain.Course;
+import edu.missouristate.taschedulegenerator.domain.TA;
 import edu.missouristate.taschedulegenerator.domain.TimeBlock;
+import edu.missouristate.taschedulegenerator.util.ActionCellFactory;
+import edu.missouristate.taschedulegenerator.util.AppData;
 import edu.missouristate.taschedulegenerator.util.SceneManager;
 import edu.missouristate.taschedulegenerator.util.SceneManager.Controller;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
+import javafx.fxml.Initializable;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 
+import java.net.URL;
 import java.time.DayOfWeek;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
-public class CourseController implements Controller<String> {
+public class CourseController implements Controller<String>, Initializable {
 	
 	@FXML
 	private TextField courseCode;
@@ -24,13 +31,22 @@ public class CourseController implements Controller<String> {
 	@FXML
 	private TextField estimatedHours;
 	@FXML
-	private ToggleGroup mustBeTA;
+	private RadioButton yesTA;
+	@FXML
+	private RadioButton noTA;
 	@FXML private CheckBox Monday;
 	@FXML private CheckBox Tuesday;
 	@FXML private CheckBox Wednesday;
 	@FXML private CheckBox Thursday;
 	@FXML private CheckBox Friday;
-	
+	@FXML private ComboBox<String> startSelection;
+	@FXML private ComboBox<String> endSelection;
+	@FXML private TableView<Activity> activityTable;
+	@FXML
+	private TableColumn<Activity, String> activityNameCol;
+
+	public ObservableList<Activity> activities;
+
 	@FXML
 	public void cancel(ActionEvent event) {
 		// This is an example of how to switch scenes without passing data
@@ -46,12 +62,7 @@ public class CourseController implements Controller<String> {
 		newActivity.setName(activityName.getText());
 		newActivity.setHoursNeeded(Integer.parseInt(estimatedHours.getText()));
 
-		RadioButton mustBeTAField = (RadioButton) mustBeTA.getSelectedToggle();
-		if (mustBeTAField.getText() == "No"){
-			newActivity.setMustBeTA(false);
-		}else{
-			newActivity.setMustBeTA(true);
-		}
+		newActivity.setMustBeTA(yesTA.isSelected());
 
 		if(Monday.isSelected()){
 			days.add(DayOfWeek.MONDAY);
@@ -69,7 +80,12 @@ public class CourseController implements Controller<String> {
 			days.add(DayOfWeek.FRIDAY);
 		}
 		timeBlock.setDays(days);
+
+		timeBlock.setStartTime(LocalTime.parse(startSelection.getValue(), AppData.TIME_FORMATTER));
+		timeBlock.setEndTime(LocalTime.parse(endSelection.getValue(), AppData.TIME_FORMATTER));
 		newActivity.setTime(timeBlock);
+		activities.add(newActivity);
+		activityTable.getItems().add(newActivity);
 	}
 
 	@Override
@@ -78,4 +94,11 @@ public class CourseController implements Controller<String> {
 		courseCode.setText(data);
 	}
 
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		startSelection.setItems(AppData.TIMES);
+		endSelection.setItems(AppData.TIMES);
+		activityTable.setItems(activities);
+
+	}
 }
