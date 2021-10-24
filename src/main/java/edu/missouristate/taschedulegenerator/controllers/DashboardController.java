@@ -52,21 +52,26 @@ public class DashboardController implements Controller<Boolean> , Initializable 
 		SceneManager.showScene("taInfo");
 	}
 
-	@Override
-	public void initData(TA data) {
-		//listOfTAs.add(data);
-		//System.out.println("The TA about to be added to dashboard/list is : " + data);
-		//listOfTAs.add(data);
-		
-		TAtable.getItems().add(data);
-		//listOfTAs.add(data);
-		//System.out.println("The list after: " + listOfTAs);
-		//System.out.println("After" + TAtable.getItems());
-	}
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		//Course Table
+		courseTable.setPlaceholder(new Label("No courses have been added."));
+		courseTable.setItems(AppData.getCourses());
+		final TableColumn<Course, String> courseColumn = new TableColumn<>("Course");
+		courseColumn.setCellValueFactory(new PropertyValueFactory<>("courseCode"));
+		courseTable.getColumns().add(courseColumn);
 		
+		final TableColumn<Course, Void> courseActionColumn = new TableColumn<>("Action");
+		courseActionColumn.setCellFactory(new ActionCellFactory<>(
+				(course) -> {
+					SceneManager.showScene("courseInfo", course);
+				},
+				(course) -> {
+					AppData.getCourses().remove(course);
+				}));
+		courseTable.getColumns().add(courseActionColumn);
+	
 		nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
 		maxHoursCol.setCellValueFactory(new PropertyValueFactory<>("maxHours"));
 	
@@ -101,29 +106,12 @@ public class DashboardController implements Controller<Boolean> , Initializable 
 		
 	}
 
-	@FXML
 	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		//Course Table
-		courseTable.setPlaceholder(new Label("No courses have been added."));
-		courseTable.setItems(AppData.getCourses());
-		final TableColumn<Course, String> courseColumn = new TableColumn<>("Course");
-		courseColumn.setCellValueFactory(new PropertyValueFactory<>("courseCode"));
-		courseTable.getColumns().add(courseColumn);
-		
-		final TableColumn<Course, Void> courseActionColumn = new TableColumn<>("Action");
-		courseActionColumn.setCellFactory(new ActionCellFactory<>(
-				(course) -> {
-					SceneManager.showScene("courseInfo", course);
-				},
-				(course) -> {
-					AppData.getCourses().remove(course);
-				}));
-		courseTable.getColumns().add(courseActionColumn);
-	}
-
-	@Override
-	public void initData(Boolean data) {
+	public void initData(Boolean refresh) {
+		if(refresh) {
+			TAtable.refresh();
+			courseTable.refresh();
+			}
 		// TODO Auto-generated method stub
 		
 	}
