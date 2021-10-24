@@ -30,7 +30,7 @@ public class DashboardController implements Controller<TA> , Initializable {
 	private TableColumn<TA, String> nameCol, maxHoursCol;
 	
 	
-	private List<TA> listOfTAs = new ArrayList<TA>();
+	//private List<TA> listOfTAs = new ArrayList<TA>();
 	
 	@FXML
 	public void addCourseInfo(ActionEvent event) {
@@ -46,12 +46,12 @@ public class DashboardController implements Controller<TA> , Initializable {
 	@Override
 	public void initData(TA data) {
 		//listOfTAs.add(data);
-		System.out.println("The TA about to be added to dashboard/list is : " + data);
-		listOfTAs.add(data);
+		//System.out.println("The TA about to be added to dashboard/list is : " + data);
+		//listOfTAs.add(data);
 		
 		TAtable.getItems().add(data);
 		//listOfTAs.add(data);
-		System.out.println("The list after: " + listOfTAs);
+		//System.out.println("The list after: " + listOfTAs);
 		//System.out.println("After" + TAtable.getItems());
 	}
 	
@@ -70,11 +70,8 @@ public class DashboardController implements Controller<TA> , Initializable {
 				
 				editBtn.setOnAction(event -> {
 					TA data = getTableView().getItems().get(getIndex());
-					System.out.println("The TA to be edited is :" + data.getNotAvailable());
-					
 					SceneManager.showScene("taInfo", data);
-					//Test to see if just removing it will make it easier to edit
-					//getTableView().getItems().remove(getIndex());
+					getTableView().getItems().remove(getIndex());
 				});
 				
 				deleteBtn.setOnAction(event -> {
@@ -92,7 +89,6 @@ public class DashboardController implements Controller<TA> , Initializable {
 		});
 
 		TAtable.getColumns().add(TAactionCol);
-		listOfTAs = new ArrayList<TA>();
 		
 	}
 

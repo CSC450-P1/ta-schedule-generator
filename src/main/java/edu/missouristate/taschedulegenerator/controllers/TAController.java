@@ -15,6 +15,7 @@ import edu.missouristate.taschedulegenerator.domain.TA;
 import edu.missouristate.taschedulegenerator.domain.TimeBlock;
 import edu.missouristate.taschedulegenerator.util.SceneManager;
 import edu.missouristate.taschedulegenerator.util.SceneManager.Controller;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -62,11 +63,11 @@ public class TAController implements Controller<TA>, Initializable {
 	        TIMES.add(time.format(TIME_FORMATTER));
 	    }
 	}
+	
 	private TA testTA = null;
 	
 	@FXML
 	public void addTimeUnavailable(ActionEvent event) {
-		//testTA = new TA();
 		List<DayOfWeek> daysSelected = new ArrayList<DayOfWeek>();
 		for(CheckBox day : daysOfWeek) {
 			if(day.isSelected()) {
@@ -78,22 +79,24 @@ public class TAController implements Controller<TA>, Initializable {
 	
 		// Still need to add time validation 
 		TimeBlock unavailable = new TimeBlock(beginTime, endTime, daysSelected);
-		//blockUnavailable.add(unavailable);
-		//testingDumb.setGA(Arrays.asList(unavailable) != null);
 		unavailableTable.getItems().add(unavailable);
-				//clearCurrentTimeBlockEntry(null);
 	}
 	
 	
 	@FXML
 	public void cancel(ActionEvent event) {
-		SceneManager.showScene("dashboard");
+		try {
+			saveTAInfo(null);
+			unavailableTable.getItems().clear();
+		} catch (Exception e) {
+			SceneManager.showScene("dashboard");
+		}
+		
 	}
-	//TA testTA = null;
+	
 	@FXML
 	public void saveTAInfo(ActionEvent event) {
-		//testTA = new TA();
-		TA toSave = new TA();
+		TA toSave;
 		if(validate()) {
 			toSave = new TA();
 			toSave.setName(TAName.getText());
@@ -104,17 +107,18 @@ public class TAController implements Controller<TA>, Initializable {
 			if(NoGAButton.isSelected()) {
 				toSave.setGA(false);
 			}
-			toSave.setNotAvailable(unavailableTable.getItems());
+			
+			toSave.getNotAvailable().addAll(unavailableTable.getItems());
 			
 			SceneManager.showScene("dashboard", toSave);
 			clearCurrentTimeBlockEntry(null);
-			//unavailableTable.getItems().clear();
+			
 			TAName.setText(null);
 			MaxHoursPerWeek.setText(null);
 			isGA.getSelectedToggle().setSelected(false);
 		} 
 		
-		//System.out.println("Saving TA to Dashbaord" + testTA);
+	
 		
 	}
 
@@ -128,8 +132,6 @@ public class TAController implements Controller<TA>, Initializable {
 			alert.showAndWait();
 			dataValidated = false;
 		} 
-		//checking if MaxHoursPerWeek is numeric as well as under or equal to 20
-		//!isNumeric(MaxHoursPerWeek.getText())
 		if(!StringUtils.isNumeric(MaxHoursPerWeek.getText())){
 			alert.setContentText("Please confirm that 'Max Hours' only contains numeric characters and is not empty.");
 			alert.showAndWait();
@@ -173,8 +175,6 @@ public class TAController implements Controller<TA>, Initializable {
 	@Override
 	public void initData(TA data) {
 		if (data != null) {
-			//TA is being passed to edit so populate fields
-			System.out.println(data);
 			TAName.setText(data.getName());
 			MaxHoursPerWeek.setText(String.valueOf(data.getMaxHours()));
 			if (data.isGA()) {
@@ -182,12 +182,8 @@ public class TAController implements Controller<TA>, Initializable {
 			} else {
 				NoGAButton.setSelected(true);
 			}
-			//System.out.println("The passed TA has these times unavailable " + data.getNotAvailable());
-			unavailableTable.getItems().addAll(data.getNotAvailable());
-
-		} else {
-			//testTA = new TA();
-		}
+			unavailableTable.setItems(FXCollections.observableList(data.getNotAvailable()));
+		} 
 		
 	}
 
