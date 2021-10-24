@@ -19,10 +19,7 @@ public class TimeBlock {
 	private LocalTime endTime;
 	private List<DayOfWeek> days;
     
-    
-    
-    
-    
+
     public boolean intersects(TimeBlock t) {
         boolean dayOverlap = days.stream().anyMatch(day -> t.days.contains(day));
         if(dayOverlap) {
