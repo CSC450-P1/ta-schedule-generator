@@ -3,6 +3,7 @@ package edu.missouristate.taschedulegenerator.controllers;
 import java.net.URL;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -53,6 +54,9 @@ public class TAController implements Controller<TA>, Initializable {
 	private TableColumn<TimeBlock, String> timeUnavailableCol, startTimeCol, endTimeCol, daysCol, updateTimeOffCol;
 	
 	private List<CheckBox> daysOfWeek = null;
+	
+	
+	private TA testTA = null;
 	
 	@FXML
 	public void addTimeUnavailable(ActionEvent event) {
@@ -106,9 +110,6 @@ public class TAController implements Controller<TA>, Initializable {
 			MaxHoursPerWeek.setText(null);
 			isGA.getSelectedToggle().setSelected(false);
 		} 
-		
-	
-		
 	}
 
 	private boolean validate() {
