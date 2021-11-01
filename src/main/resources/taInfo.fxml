@@ -89,7 +89,7 @@
                         <ToggleGroup fx:id="isGA" />
                      </toggleGroup>
                   </RadioButton>
-                  <RadioButton fx:id="NoGAButton" mnemonicParsing="false" text="No" toggleGroup="$isGA">
+                  <RadioButton fx:id="NoGAButton" mnemonicParsing="false" selected="true" text="No" toggleGroup="$isGA">
                      <font>
                         <Font size="14.0" />
                      </font>
@@ -186,7 +186,7 @@
                         <Font size="14.0" />
                      </font>
                   </CheckBox>
-                  <CheckBox fx:id="Wednesday" layoutX="15.0" layoutY="140.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="86.0" text="Wednesday">
+                  <CheckBox fx:id="Wednesday" layoutX="15.0" layoutY="140.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="102.0" text="Wednesday">
                      <font>
                         <Font size="14.0" />
                      </font>

@@ -1,8 +1,13 @@
 package edu.missouristate.taschedulegenerator.domain;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,6 +18,16 @@ import lombok.NoArgsConstructor;
 public class TA {
     private String name;
     private boolean isGA;
-    private int maxHours;
-    private List<TimeBlock> notAvailable = new ArrayList<TimeBlock>();
+    private int maxHours = 20;
+    private ObservableList<TimeBlock> notAvailable = FXCollections.observableArrayList();
+    
+    @JsonGetter("notAvailable")
+    public List<TimeBlock> serializeNotAvailable() {
+    	return Collections.unmodifiableList(notAvailable);
+    }
+    
+    @JsonSetter("notAvailable")
+    public void deserializeNotAvailable(List<TimeBlock> notAvailable) {
+    	this.notAvailable = FXCollections.observableArrayList(notAvailable);
+    }
 }

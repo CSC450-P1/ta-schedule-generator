@@ -8,7 +8,6 @@
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleGroup?>
@@ -142,7 +141,7 @@
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <Button layoutX="167.0" layoutY="240.0" mnemonicParsing="false" text="Clear">
+                  <Button layoutX="167.0" layoutY="240.0" mnemonicParsing="false" onAction="#clearActivityInputs" text="Clear">
                      <padding>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding>
@@ -150,7 +149,7 @@
                         <Font size="14.0" />
                      </font>
                   </Button>
-                  <Button onAction="#addActivity" layoutX="271.0" layoutY="238.0" mnemonicParsing="false"  text="Add">
+                  <Button layoutX="271.0" layoutY="238.0" mnemonicParsing="false" onAction="#addActivity" text="Add">
                      <padding>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding>
@@ -240,7 +239,7 @@
                <children>
                   <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0">
                      <content>
-                        <TableView prefHeight="200.0" prefWidth="200.0" fx:id="activityTable">
+                        <TableView fx:id="activityTable" prefHeight="200.0" prefWidth="200.0">
                            <columns>
                            </columns>
                            <columnResizePolicy>
@@ -274,7 +273,7 @@
                   <Insets right="5.0" />
                </HBox.margin>
             </Button>
-            <Button mnemonicParsing="false" text="Save Course Information" onAction="#saveCourseInfo">
+            <Button mnemonicParsing="false" onAction="#saveCourseInfo" text="Save Course Information">
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding>
