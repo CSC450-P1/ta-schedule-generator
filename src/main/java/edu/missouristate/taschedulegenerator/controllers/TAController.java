@@ -15,7 +15,6 @@ import edu.missouristate.taschedulegenerator.domain.TimeBlock;
 import edu.missouristate.taschedulegenerator.util.AppData;
 import edu.missouristate.taschedulegenerator.util.SceneManager;
 import edu.missouristate.taschedulegenerator.util.SceneManager.Controller;
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -54,8 +53,14 @@ public class TAController implements Controller<TA>, Initializable {
 	
 	private List<CheckBox> daysOfWeek = null;
 	
+	private boolean isNew;
+	private TA ta;
+	
 	@FXML
 	public void addTimeUnavailable(ActionEvent event) {
+		if(!validateTimeUnavailable()) {
+			return;
+		}
 		List<DayOfWeek> daysSelected = new ArrayList<DayOfWeek>();
 		for(CheckBox day : daysOfWeek) {
 			if(day.isSelected()) {
@@ -64,83 +69,79 @@ public class TAController implements Controller<TA>, Initializable {
 		}
 		LocalTime beginTime = LocalTime.parse(startSelection.getValue(), AppData.TIME_FORMATTER);
 		LocalTime endTime = LocalTime.parse(endSelection.getValue(), AppData.TIME_FORMATTER);
-	
-		// Still need to add time validation 
-		TimeBlock unavailable = new TimeBlock(beginTime, endTime, daysSelected);
-		unavailableTable.getItems().add(unavailable);
+
+		ta.getNotAvailable().add(new TimeBlock(beginTime, endTime, daysSelected));
+
+		clearCurrentTimeBlockEntry(null);
 	}
 	
 	
 	@FXML
 	public void cancel(ActionEvent event) {
-		try {
-			saveTAInfo(null);
-			unavailableTable.getItems().clear();
-		} catch (Exception e) {
-			SceneManager.showScene("dashboard");
-		}
-		
+		SceneManager.showScene("dashboard");
 	}
 	
 	@FXML
 	public void saveTAInfo(ActionEvent event) {
-		TA toSave;
-		if(validate()) {
-			toSave = new TA();
-			toSave.setName(TAName.getText());
-			toSave.setMaxHours(Integer.parseInt(MaxHoursPerWeek.getText()));
-			if(YesGAButton.isSelected()) {
-				toSave.setGA(true);
-			}
-			if(NoGAButton.isSelected()) {
-				toSave.setGA(false);
-			}
-			
-			toSave.getNotAvailable().addAll(unavailableTable.getItems());
-			
-			AppData.getTAs().add(toSave);
-			SceneManager.showScene("dashboard", true);
-			clearCurrentTimeBlockEntry(null);
-			
-			TAName.setText(null);
-			MaxHoursPerWeek.setText(null);
-			isGA.getSelectedToggle().setSelected(false);
-		} 
+		if(!validate()) {
+			return;
+		}
+		ta.setName(TAName.getText());
+		ta.setMaxHours(Integer.parseInt(MaxHoursPerWeek.getText()));
+		ta.setGA(YesGAButton.isSelected());
 		
-	
-		
+		if(isNew) {
+			AppData.getTAs().add(ta);
+		} else {
+			AppData.save();
+		}
+			
+		SceneManager.showScene("dashboard", true);
 	}
 
 	private boolean validate() {
-		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-		alert.setTitle("Warning");
-		alert.setHeaderText("Invalid Data Entry");
-		Boolean dataValidated = true;
-		if(!StringUtils.isAlphaSpace(TAName.getText()) | TAName.getText().isEmpty()) {
-			alert.setContentText("Please confirm that the 'TA Name' only contains alphabetic characters and is not empty.");
-			alert.showAndWait();
-			dataValidated = false;
-		} 
-		if(!StringUtils.isNumeric(MaxHoursPerWeek.getText())){
-			alert.setContentText("Please confirm that 'Max Hours' only contains numeric characters and is not empty.");
-			alert.showAndWait();
-			dataValidated = false;
-		}
-		String maxHours = MaxHoursPerWeek.getText();
-		if(StringUtils.isNumeric(maxHours) && Double.parseDouble(maxHours) > 20) {
-			alert.setContentText("Please confirm that 'Max Hours' is less than 20.");
-			alert.showAndWait();
-			dataValidated = false;
-			
+		String errorMessage = null;
+		
+		final String maxHours = MaxHoursPerWeek.getText();
+		if(!StringUtils.isAlphaSpace(TAName.getText()) || StringUtils.isBlank(TAName.getText())) {
+			errorMessage = "Please confirm that the 'TA Name' only contains alphabetic characters and is not empty.";
+		} else if(!StringUtils.isNumeric(maxHours)){
+			errorMessage = "Please confirm that 'Max Hours' only contains numeric characters and is not empty.";
+		} else if(StringUtils.isNumeric(maxHours) && Integer.parseInt(maxHours) > 20) {
+			errorMessage = "Please confirm that 'Max Hours' is less than 20.";
+		} else if(!YesGAButton.isSelected() && !NoGAButton.isSelected()) {
+			errorMessage = "Please select an option whether the TA is also a GA.";
 		}
 		
-		if(!YesGAButton.isSelected() && !NoGAButton.isSelected()) {
-			alert.setContentText("Please select an option whether the TA is also a GA.");
-			alert.showAndWait();
-			dataValidated = false;
+		if(errorMessage != null) {
+			showErrorMessage(errorMessage);
 		}
-		return dataValidated;
 		
+		return errorMessage == null;
+	}
+	
+	private boolean validateTimeUnavailable() {
+		String errorMessage = null;
+		
+		if(!(Monday.isSelected() || Tuesday.isSelected() || Wednesday.isSelected() || Thursday.isSelected() || Friday.isSelected())) {
+			errorMessage = "Please select at least one day of the week.";
+		} else if(StringUtils.isBlank(startSelection.getValue())) {
+			errorMessage = "Please make sure to select a start time.";
+		} else if(StringUtils.isBlank(endSelection.getValue())) {
+			errorMessage = "Please make sure to select an end time";
+		} else { // This validation should go last
+			final LocalTime startTime = LocalTime.parse(startSelection.getValue(), AppData.TIME_FORMATTER);
+			final LocalTime endTime = LocalTime.parse(endSelection.getValue(), AppData.TIME_FORMATTER);
+			if(startTime.compareTo(endTime) >= 0) {
+				errorMessage = "The end time must be after the start time";
+			}
+		}
+		
+		if(errorMessage != null) {
+			showErrorMessage(errorMessage);
+		}
+		
+		return errorMessage == null;
 	}
 	
 	@FXML
@@ -152,48 +153,49 @@ public class TAController implements Controller<TA>, Initializable {
 			} 
 		}
 		//Resetting Time Selections
-		startSelection.getItems().clear();
-		startSelection.getItems().addAll(AppData.TIMES);
-		endSelection.getItems().clear();
-        endSelection.getItems().addAll(AppData.TIMES);
-        
-        unavailableTable.getItems().clear();
+		startSelection.setValue(null);
+		endSelection.setValue(null);
 	}
 	
 
 	@Override
-	public void initData(TA data) {
-		if (data != null) {
-			TAName.setText(data.getName());
-			MaxHoursPerWeek.setText(String.valueOf(data.getMaxHours()));
-			if (data.isGA()) {
-				YesGAButton.setSelected(true);
-			} else {
-				NoGAButton.setSelected(true);
-			}
-			unavailableTable.setItems(FXCollections.observableList(data.getNotAvailable()));
-		} 
-		
+	public void initData(TA ta) {
+		isNew = ta == null;
+		if(isNew) {
+			ta = new TA();
+		}
+		this.ta = ta;
+		TAName.setText(ta.getName());
+		MaxHoursPerWeek.setText(String.valueOf(ta.getMaxHours()));
+		if(ta.isGA()) {
+			YesGAButton.setSelected(true);
+		} else {
+			NoGAButton.setSelected(true);
+		}
+		unavailableTable.setItems(ta.getNotAvailable());
+
+		clearCurrentTimeBlockEntry(null);
 	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		daysOfWeek = Arrays.asList(Monday, Tuesday, Wednesday, Thursday, Friday);
 		//Adding times to the time ComboBoxes
-        startSelection.getItems().clear();
-        startSelection.getItems().addAll(AppData.TIMES);
-        endSelection.getItems().clear();
-        endSelection.getItems().addAll(AppData.TIMES);
+        startSelection.setItems(AppData.TIMES);
+        endSelection.setItems(AppData.TIMES);
         
         
         startTimeCol.setCellValueFactory(new PropertyValueFactory<>("startTime"));
         endTimeCol.setCellValueFactory(new PropertyValueFactory<>("endTime"));
         daysCol.setCellValueFactory(new PropertyValueFactory<>("days"));
-        
-        
 	}
 
+	private void showErrorMessage(String message) {
+		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+		alert.setTitle("Warning");
+		alert.setHeaderText("Invalid Data Entry");
+		alert.setContentText(message);
+		alert.showAndWait();
+	}
 
-	
-	
 }
