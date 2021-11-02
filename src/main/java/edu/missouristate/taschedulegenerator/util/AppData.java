@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import edu.missouristate.taschedulegenerator.domain.Course;
 import edu.missouristate.taschedulegenerator.domain.CoursesAndTAs;
@@ -17,7 +18,7 @@ import javafx.collections.ObservableList;
 public class AppData {
 	
 	private static final String SAVE_FILE = "session.json";
-	private static final ObjectMapper MAPPER = new ObjectMapper().findAndRegisterModules();
+	private static final ObjectMapper MAPPER = new ObjectMapper().registerModule(new JavaTimeModule());	
 	
 	private static ObservableList<Course> courses = FXCollections.observableArrayList();
 	
