@@ -35,6 +35,11 @@ public class DashboardController implements Controller<Boolean> , Initializable 
 	public void addTAInfo(ActionEvent event) {
 		SceneManager.showScene("taInfo", null);
 	}
+	
+	@FXML
+	public void generateSchedules(ActionEvent event) {
+		SceneManager.showScene("schedules");
+	}
 
 	
 	@Override

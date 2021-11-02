@@ -10,12 +10,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<VBox alignment="CENTER" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+<VBox alignment="CENTER" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.missouristate.taschedulegenerator.controllers.ScheduleController">
    <children>
       <BorderPane>
          <left>
-            <Button mnemonicParsing="false" text="Back to Information" BorderPane.alignment="CENTER">
+            <Button mnemonicParsing="false" onAction="#backToDashboard" text="Back to Dashboard" BorderPane.alignment="CENTER">
                <font>
                   <Font size="14.0" />
                </font>
