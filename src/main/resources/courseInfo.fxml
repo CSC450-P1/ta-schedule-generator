@@ -126,12 +126,12 @@
                         </HBox>
                      </children>
                   </VBox>
-                  <Label layoutX="150.0" layoutY="141.0" text="Start Time">
+                  <Label layoutX="140.0" layoutY="141.0" text="Start Time">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <Label layoutX="257.0" layoutY="141.0" text="End Time">
+                  <Label layoutX="248.0" layoutY="141.0" text="End Time">
                      <font>
                         <Font size="18.0" />
                      </font>
@@ -157,8 +157,8 @@
                         <Font size="14.0" />
                      </font>
                   </Button>
-                  <ComboBox fx:id="startSelection" layoutX="150.0" layoutY="171.0" prefHeight="25.0" prefWidth="86.0" visibleRowCount="5" />
-                  <ComboBox fx:id="endSelection" layoutX="253.0" layoutY="171.0" prefHeight="25.0" prefWidth="86.0" visibleRowCount="5" />
+                  <ComboBox fx:id="startSelection" layoutX="130.0" layoutY="172.0" prefHeight="25.0" prefWidth="100.0" visibleRowCount="5" />
+                  <ComboBox fx:id="endSelection" layoutX="241.0" layoutY="171.0" prefHeight="25.0" prefWidth="100.0" visibleRowCount="5" />
                   <VBox layoutY="5.0" spacing="2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="15.0">
                      <children>
                         <Label text="Activity Name">
