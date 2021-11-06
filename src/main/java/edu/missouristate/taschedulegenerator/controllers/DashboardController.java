@@ -38,7 +38,7 @@ public class DashboardController implements Controller<Boolean> , Initializable 
 	
 	@FXML
 	public void generateSchedules(ActionEvent event) {
-		SceneManager.showScene("schedules");
+		SceneManager.showScene("schedules", null);
 	}
 
 	

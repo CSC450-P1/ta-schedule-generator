@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
-import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
 
 import edu.missouristate.taschedulegenerator.domain.Activity;
 import edu.missouristate.taschedulegenerator.domain.Schedule;
@@ -20,7 +20,7 @@ import edu.missouristate.taschedulegenerator.domain.TA;
  * TODO: Add repair method that fixes simple issues like GA sections having over/under or GAs over/under
  * TODO: Improve error calculating
  */
-public class GeneticAlgorithm implements Callable<List<Schedule>>, Comparator<int[]> {
+public class GeneticAlgorithm implements Runnable, Comparator<int[]> {
 	
 	private static final int POPULATION_SIZE = 250;
 	private static final int TOURNAMENT_SIZE = 10;
@@ -41,14 +41,16 @@ public class GeneticAlgorithm implements Callable<List<Schedule>>, Comparator<in
 	private final List<Activity> activities;
 	private final Map<Integer, List<Integer>> tasByActivity = new HashMap<>();
 	private final int geneLength;
+	private final CompletableFuture<List<Schedule>> completableFuture;
 	
 	private final Random random = new Random();
 	
-	public GeneticAlgorithm(final List<TA> tas, final List<Activity> activities) {
+	public GeneticAlgorithm(final List<TA> tas, final List<Activity> activities, final CompletableFuture<List<Schedule>> completableFuture) {
 		super();
 		this.tas = tas;
 		this.activities = activities;
 		this.geneLength = activities.size() * 2 + 1;
+		this.completableFuture = completableFuture;
 		
 		for(int activityIdx = 0; activityIdx < activities.size(); activityIdx++) {
 			final Activity activity = activities.get(activityIdx);
@@ -66,13 +68,13 @@ public class GeneticAlgorithm implements Callable<List<Schedule>>, Comparator<in
 	}
 
 	@Override
-	public List<Schedule> call() throws Exception {
+	public void run() {
 		int[][] population = new int[POPULATION_SIZE][];
 		for(int i = 0; i < POPULATION_SIZE; i++) {
 			population[i] = getRandomSchedule();
 		}
 		Arrays.sort(population, this);
-		while(!Thread.interrupted()) {
+		while(!Thread.currentThread().isInterrupted()) {
 			crossover(population);
 			mutate(population);
 			
@@ -90,7 +92,7 @@ public class GeneticAlgorithm implements Callable<List<Schedule>>, Comparator<in
 			}
 			bestSchedules.add(new Schedule(scheduledActivities, population[i][geneLength - 1]));
 		}
-		return new ArrayList<>(bestSchedules);
+		completableFuture.complete(new ArrayList<>(bestSchedules));
 	}
 	
 	private void crossover(final int[][] population) {

@@ -4,19 +4,20 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
+import java.util.function.Supplier;
 
 import edu.missouristate.taschedulegenerator.domain.Activity;
 import edu.missouristate.taschedulegenerator.domain.Course;
 import edu.missouristate.taschedulegenerator.domain.Schedule;
 import edu.missouristate.taschedulegenerator.domain.TA;
 
-public class TAScheduler implements Callable<List<Schedule>> {
+public class TAScheduler implements Supplier<List<Schedule>> {
 	
 	private static final long MAX_RUNTIME_MILLISECONDS = 14500l;
 	private static final long SLEEP_TIME_MILLISECONDS = 100l;
@@ -31,12 +32,16 @@ public class TAScheduler implements Callable<List<Schedule>> {
 		}
 	});
 	
-	public static Future<List<Schedule>> schedule(final List<TA> tas, final List<Course> courses) {
+	public static CompletableFuture<List<Schedule>> schedule(final List<TA> tas, final List<Course> courses) {
 		final List<Activity> activities = new ArrayList<>();
 		for(final Course course : courses) {
-			activities.addAll(course.getActivities());
+			final List<Activity> courseActivities = course.getActivities();
+			for(final Activity activity : courseActivities) {
+				activity.setCourse(course);
+			}
+			activities.addAll(courseActivities);
 		}
-		return THREAD_POOL.submit(new TAScheduler(tas, activities));
+		return CompletableFuture.supplyAsync(new TAScheduler(tas, activities), THREAD_POOL);
 	}
 	
 	private final List<TA> tas;
@@ -50,10 +55,13 @@ public class TAScheduler implements Callable<List<Schedule>> {
 	}
 
 	@Override
-	public List<Schedule> call() {
-		final List<Future<List<Schedule>>> threads = new ArrayList<>(MAX_THREADS - 1);
+	public List<Schedule> get() {
+		final List<Future<?>> threads = new ArrayList<>(MAX_THREADS - 1);
+		final List<CompletableFuture<List<Schedule>>> futures = new ArrayList<>(MAX_THREADS - 1);
 		for(int i = 0; i < MAX_THREADS - 1; i++) {
-			threads.add(THREAD_POOL.submit(new GeneticAlgorithm(tas, activities)));
+			final CompletableFuture<List<Schedule>> future = new CompletableFuture<>();
+			futures.add(future);
+			threads.add(THREAD_POOL.submit(new GeneticAlgorithm(tas, activities, future)));
 		}
 		while(System.currentTimeMillis() - startTime < MAX_RUNTIME_MILLISECONDS) {
 			try {
@@ -62,13 +70,14 @@ public class TAScheduler implements Callable<List<Schedule>> {
 				break;
 			}
 		}
-		for(final Future<List<Schedule>> thread : threads) {
+		for(final Future<?> thread : threads) {
 			thread.cancel(true);
 		}
 		final HashSet<Schedule> bestSchedules = new LinkedHashSet<>();
-		for(final Future<List<Schedule>> thread : threads) {
+		for(final CompletableFuture<List<Schedule>> future : futures) {
 			try {
-				bestSchedules.addAll(thread.get());
+				bestSchedules.addAll(future.get());
+				
 			} catch (InterruptedException | ExecutionException e) {
 				System.err.println("Error getting results from thread:");
 				e.printStackTrace();
