@@ -4,8 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -91,10 +91,10 @@ public class AppData {
 		}
 	}
 	
-	public static void generateSchedules(Consumer<List<Schedule>> callback) {
-		 // For testing use the line below but with null changed out with a List<ScheduledActivity>:
-		 // callback.accept(Arrays.asList(new Schedule(null, 0)));
-		TAScheduler.schedule(tas, courses).thenAccept(callback);
+	public static CompletableFuture<List<Schedule>> generateSchedules(Consumer<List<Schedule>> callback) {
+		final CompletableFuture<List<Schedule>> future = TAScheduler.schedule(tas, courses);
+		future.thenAccept(callback);
+		return future;
 	}
 
 }

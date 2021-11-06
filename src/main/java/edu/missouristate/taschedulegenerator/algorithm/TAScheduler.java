@@ -65,9 +65,12 @@ public class TAScheduler implements Supplier<List<Schedule>> {
 		}
 		while(System.currentTimeMillis() - startTime < MAX_RUNTIME_MILLISECONDS) {
 			try {
+				if(Thread.currentThread().isInterrupted()) {
+					return null;
+				}
 				Thread.sleep(SLEEP_TIME_MILLISECONDS);
 			} catch (InterruptedException e) {
-				break;
+				return null;
 			}
 		}
 		for(final Future<?> thread : threads) {
