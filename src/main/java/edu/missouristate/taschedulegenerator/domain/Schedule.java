@@ -16,6 +16,8 @@ public class Schedule {
 	
 	private final int error;
 	
+	private final List<String> errorLog = new ArrayList<>();
+	
 	public ObservableList<ScheduledTA> getActivitiesByTA() {
 		final Map<TA, ScheduledTA> activitiesByTA = new HashMap<>();
 		for(final ScheduledActivity activity : scheduledActivities) {

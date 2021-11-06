@@ -90,7 +90,9 @@ public class GeneticAlgorithm implements Runnable, Comparator<int[]> {
 			for(int j = 0; j < geneLength - 1; j += 2) {
 				scheduledActivities.add(new ScheduledActivity(activities.get(j / 2), tas.get(population[i][j]), population[i][j + 1]));
 			}
-			bestSchedules.add(new Schedule(scheduledActivities, population[i][geneLength - 1]));
+			final Schedule schedule = new Schedule(scheduledActivities, population[i][geneLength - 1]);
+			calculateScheduleError(population[i], schedule.getErrorLog());
+			bestSchedules.add(schedule);
 		}
 		completableFuture.complete(new ArrayList<>(bestSchedules));
 	}
@@ -144,7 +146,8 @@ public class GeneticAlgorithm implements Runnable, Comparator<int[]> {
 		return schedule;
 	}
 	
-	public int calculateScheduleError(final int[] schedule, final boolean log) {
+	private int calculateScheduleError(final int[] schedule, final List<String> errorLog) {
+		final boolean log = errorLog != null;
 		int error = 0;
 		for(int i = 0; i < geneLength - 3; i += 2) {
 			for(int j = i + 2; j < geneLength - 2; j += 2) {
@@ -155,8 +158,8 @@ public class GeneticAlgorithm implements Runnable, Comparator<int[]> {
 							&& activityOne.getTime().intersects(activityTwo.getTime())) {
 						error += SECTION_OVERLAP;
 						if(log) {
-							System.out.format("Activity %s - %s and %s - %s overlap", activityOne.getCourse().getCourseCode(), activityOne.getName(),
-									activityTwo.getCourse().getCourseCode(), activityTwo.getName());
+							errorLog.add(String.format("Activity %s - %s and %s - %s overlap", activityOne.getCourse().getCourseCode(), activityOne.getName(),
+									activityTwo.getCourse().getCourseCode(), activityTwo.getName()));
 						}
 					}
 				}
@@ -174,19 +177,19 @@ public class GeneticAlgorithm implements Runnable, Comparator<int[]> {
 			//else {
 			//	error += MISSED_SECTION;
 			//	if(log) {
-			//		System.out.format("Missed Activity %s", activityName);
+			//		errorLog.add(String.format("Missed Activity %s", activityName));
 			//	}
 			//}
 			
 			if(activity.getHoursNeeded() > schedule[i + 1]) {
 				error += ACTIVITY_UNDER_HOURS * (activity.getHoursNeeded() - schedule[i + 1]);
 				if(log) {
-					System.out.format("Activity %s under hours", activityName);
+					errorLog.add(String.format("Activity %s under hours", activityName));
 				}
 			} else if(activity.getHoursNeeded() < schedule[i + 1]) {
 				error += ACTIVITY_OVER_HOURS * (schedule[i + 1] - activity.getHoursNeeded());
 				if(log) {
-					System.out.format("Activity %s over hours", activityName);
+					errorLog.add(String.format("Activity %s over hours", activityName));
 				}
 			}
 		}
@@ -196,12 +199,12 @@ public class GeneticAlgorithm implements Runnable, Comparator<int[]> {
 			if(hours > ta.getMaxHours()) {
 				error += TA_OVER_HOURS * (hours - ta.getMaxHours());
 				if(log) {
-					System.out.format("TA %s over hours", ta.getName());
+					errorLog.add(String.format("TA %s over hours", ta.getName()));
 				}
 			} else if(hours < ta.getMaxHours()) {
 				error += TA_UNDER_HOURS * (ta.getMaxHours() - hours);
 				if(log) {
-					System.out.format("TA %s under hours", ta.getName());
+					errorLog.add(String.format("TA %s under hours", ta.getName()));
 				}
 			}
 		}
@@ -211,10 +214,10 @@ public class GeneticAlgorithm implements Runnable, Comparator<int[]> {
 	@Override
 	public int compare(int[] s1, int[] s2) {
 		if(s1[geneLength - 1] == -1) {
-			s1[geneLength - 1] = calculateScheduleError(s1, false);
+			s1[geneLength - 1] = calculateScheduleError(s1, null);
 		}
 		if(s2[geneLength - 1] == -1) {
-			s2[geneLength - 1] = calculateScheduleError(s2, false);
+			s2[geneLength - 1] = calculateScheduleError(s2, null);
 		}
 		return s1[geneLength - 1] - s2[geneLength - 1];
 	}
