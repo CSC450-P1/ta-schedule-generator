@@ -27,7 +27,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 
-public class CourseController implements Controller<String>, Initializable {
+public class CourseController implements Controller<Course>, Initializable {
 	
 	@FXML
 	private TextField courseCode;
@@ -50,16 +50,13 @@ public class CourseController implements Controller<String>, Initializable {
 	@FXML private ComboBox<String> startSelection;
 	@FXML private ComboBox<String> endSelection;
 	@FXML private TableView<Activity> activityTable;
+	
+	private boolean isNew;
+	private Course course;
 
 	@FXML
 	public void cancel(ActionEvent event) {
-		try {
-			saveCourseInfo(null);
-			activityTable.getItems().clear();
-		} catch (Exception e) {
-			SceneManager.showScene("dashboard");
-		}
-
+		SceneManager.showScene("dashboard");
 	}
 
 	@FXML
@@ -68,14 +65,11 @@ public class CourseController implements Controller<String>, Initializable {
 			return;
 		}
 		
-		Activity newActivity = new Activity();
-		TimeBlock timeBlock = new TimeBlock();
-		List<DayOfWeek> days = new ArrayList<DayOfWeek>();
-
-		newActivity.setName(activityName.getText());
-		newActivity.setHoursNeeded(Integer.parseInt(estimatedHours.getText()));
-
-		newActivity.setMustBeTA(yesTA.isSelected());
+		final String name = activityName.getText();
+		final int hours = Integer.parseInt(estimatedHours.getText());
+		final boolean mustBeTA = yesTA.isSelected();
+		
+		final List<DayOfWeek> days = new ArrayList<DayOfWeek>();
 
 		if(Monday.isSelected()){
 			days.add(DayOfWeek.MONDAY);
@@ -93,16 +87,16 @@ public class CourseController implements Controller<String>, Initializable {
 			days.add(DayOfWeek.FRIDAY);
 		}
 		
-		if(days.isEmpty() || StringUtils.isBlank(startSelection.getValue()) || StringUtils.isBlank(startSelection.getValue())) {
-			newActivity.setTime(null);
-		} else {
-			timeBlock.setDays(days);
-			timeBlock.setStartTime(LocalTime.parse(startSelection.getValue(), AppData.TIME_FORMATTER));
-			timeBlock.setEndTime(LocalTime.parse(endSelection.getValue(), AppData.TIME_FORMATTER));
-			newActivity.setTime(timeBlock);
+		TimeBlock time = null;
+		if(!days.isEmpty() && StringUtils.isNotBlank(startSelection.getValue()) && StringUtils.isNotBlank(startSelection.getValue())) {
+			final LocalTime startTime = LocalTime.parse(startSelection.getValue(), AppData.TIME_FORMATTER);
+			final LocalTime endTime = LocalTime.parse(endSelection.getValue(), AppData.TIME_FORMATTER);
+			time = new TimeBlock(startTime, endTime, days);
 		}
 		
-		activityTable.getItems().add(newActivity);
+		course.getActivities().add(new Activity(name, mustBeTA, hours, time, course));
+		
+		clearActivityInputs(null);
 	}
 
 	@FXML
@@ -110,24 +104,44 @@ public class CourseController implements Controller<String>, Initializable {
 		if(!validate()) {
 			return;
 		}
-		Course newCourse = new Course();
+		
+		course.setCourseCode(courseCode.getText());
+		course.setInstructorName(instructorName.getText());
 
-		newCourse.setCourseCode(courseCode.getText());
-		newCourse.setInstructorName(instructorName.getText());
-		newCourse.setActivities(activityTable.getItems());
-
-
-		AppData.getCourses().add(newCourse);
+		if(isNew) {
+			AppData.getCourses().add(course);
+		} else {
+			AppData.save();
+		}
+		
 		SceneManager.showScene("dashboard", true);
-
-		courseCode.setText(null);
-		instructorName.setText(null);
+	}
+	
+	@FXML
+	private void clearActivityInputs(ActionEvent event) {
+		activityName.setText(null);
+		estimatedHours.setText(null);
+		noTA.setSelected(true);
+		Monday.setSelected(false);
+		Tuesday.setSelected(false);
+		Wednesday.setSelected(false);
+		Thursday.setSelected(false);
+		Friday.setSelected(false);
+		startSelection.setValue(null);
+		endSelection.setValue(null);
 	}
 
 	@Override
-	public void initData(String data) {
-		// This is where you would process data before showing the view
-		courseCode.setText(data);
+	public void initData(Course course) {
+		isNew = course == null;
+		if(isNew) {
+			course = new Course();
+		}
+		this.course = course;
+		courseCode.setText(course.getCourseCode());
+		instructorName.setText(course.getInstructorName());
+		activityTable.setItems(course.getActivities());
+		clearActivityInputs(null);
 	}
 
 	@Override
@@ -141,46 +155,49 @@ public class CourseController implements Controller<String>, Initializable {
 	}
 	
 	private boolean validate() {
-		boolean valid = true;
 		String errorMessage = null;
 		if(StringUtils.isBlank(courseCode.getText())) {
-			valid = false;
 			errorMessage = "Please confirm that course code is not empty.";
 		} else if(StringUtils.isBlank(instructorName.getText())) {
-			valid = false;
 			errorMessage = "Please confirm that instructor name is not empty.";
 		} else if(activityTable.getItems().isEmpty()) {
-			valid = false;
-			errorMessage = "Please confirm that there is at least on activity.";
+			errorMessage = "Please confirm that there is at least one activity.";
 		}
 		
-		if(!valid) {
+		if(errorMessage != null) {
 			showErrorMessage(errorMessage);
 		}
 		
-		return valid;
+		return errorMessage == null;
 	}
 	
 	private boolean validateActivity() {
-		boolean valid = true;
 		String errorMessage = null;
 		
+		final boolean daySelected = Monday.isSelected() || Tuesday.isSelected() || Wednesday.isSelected() || Thursday.isSelected() || Friday.isSelected();
 		if(StringUtils.isBlank(activityName.getText())) {
-			valid = false;
 			errorMessage = "Please confirm that activity name is not empty.";
 		} else if(StringUtils.isBlank(estimatedHours.getText()) || !StringUtils.isNumeric(estimatedHours.getText())) {
-			valid = false;
 			errorMessage = "Please confirm that estimated hours is a number and is not empty.";
 		} else if(!yesTA.isSelected() && !noTA.isSelected()) {
-			valid = false;
 			errorMessage = "Please select an option on if the activity needs a TA.";
+		} else if(daySelected && (StringUtils.isBlank(startSelection.getValue()) || StringUtils.isBlank(endSelection.getValue()))) {
+			errorMessage = "Start and end times must be selected if the TA needs to be available on certain days.";
+		} else if(!daySelected && (StringUtils.isNotBlank(startSelection.getValue()) || StringUtils.isNotBlank(endSelection.getValue()))) {
+			errorMessage = "At least one day must be selected if the TA needs to be available at certain times.";
+		} else if(daySelected) { // This validation should go last
+			final LocalTime startTime = LocalTime.parse(startSelection.getValue(), AppData.TIME_FORMATTER);
+			final LocalTime endTime = LocalTime.parse(endSelection.getValue(), AppData.TIME_FORMATTER);
+			if(startTime.compareTo(endTime) >= 0) {
+				errorMessage = "The end time must be after the start time";
+			}
 		}
 		
-		if(!valid) {
+		if(errorMessage != null) {
 			showErrorMessage(errorMessage);
 		}
 		
-		return valid;
+		return errorMessage == null;
 	}
 	
 	private void showErrorMessage(String message) {
@@ -190,4 +207,5 @@ public class CourseController implements Controller<String>, Initializable {
 		alert.setContentText(message);
 		alert.showAndWait();
 	}
+
 }

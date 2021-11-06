@@ -28,12 +28,17 @@ public class DashboardController implements Controller<Boolean> , Initializable 
 	@FXML
 	public void addCourseInfo(ActionEvent event) {
 		// This is an example of how to switch scenes and pass data to the new scene's controller to process before showing
-		SceneManager.showScene("courseInfo");
+		SceneManager.showScene("courseInfo", null);
 	}
 	
 	@FXML
 	public void addTAInfo(ActionEvent event) {
-		SceneManager.showScene("taInfo");
+		SceneManager.showScene("taInfo", null);
+	}
+	
+	@FXML
+	public void generateSchedules(ActionEvent event) {
+		SceneManager.showScene("schedules");
 	}
 
 	
@@ -67,7 +72,6 @@ public class DashboardController implements Controller<Boolean> , Initializable 
 		TAactionCol.setCellFactory(new ActionCellFactory<>(
 				(ta) -> { // edit
 					SceneManager.showScene("taInfo", ta);
-					AppData.getTAs().remove(ta);
 				},
 				(ta) -> { // remove
 					AppData.getTAs().remove(ta);
@@ -82,14 +86,6 @@ public class DashboardController implements Controller<Boolean> , Initializable 
 			TAtable.refresh();
 			courseTable.refresh();
 			}
-		// TODO Auto-generated method stub
-		
-	}
-
-	@FXML
-	public void showTAInfo(ActionEvent event) {
-		// This is an example of how to switch scenes and pass data to the new scene's controller to process before showing
-		SceneManager.showScene("taInfo");
 	}
 
 	@FXML
