@@ -3,18 +3,23 @@ package edu.missouristate.taschedulegenerator.controllers;
 import java.net.URL;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
 import edu.missouristate.taschedulegenerator.domain.TA;
 import edu.missouristate.taschedulegenerator.domain.TimeBlock;
+import edu.missouristate.taschedulegenerator.util.ActionCellFactory;
 import edu.missouristate.taschedulegenerator.util.AppData;
 import edu.missouristate.taschedulegenerator.util.SceneManager;
 import edu.missouristate.taschedulegenerator.util.SceneManager.Controller;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -26,7 +31,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.control.cell.PropertyValueFactory;
 
 public class TAController implements Controller<TA>, Initializable {
 	
@@ -47,9 +51,6 @@ public class TAController implements Controller<TA>, Initializable {
 	
 	@FXML
 	private TableView<TimeBlock> unavailableTable;
-	
-	@FXML
-	private TableColumn<TimeBlock, String> timeUnavailableCol, startTimeCol, endTimeCol, daysCol, updateTimeOffCol;
 	
 	private List<CheckBox> daysOfWeek = null;
 	
@@ -123,7 +124,7 @@ public class TAController implements Controller<TA>, Initializable {
 	private boolean validateTimeUnavailable() {
 		String errorMessage = null;
 		
-		if(!(Monday.isSelected() || Tuesday.isSelected() || Wednesday.isSelected() || Thursday.isSelected() || Friday.isSelected())) {
+		if(daysOfWeek.stream().noneMatch(day -> day.isSelected())) {
 			errorMessage = "Please select at least one day of the week.";
 		} else if(StringUtils.isBlank(startSelection.getValue())) {
 			errorMessage = "Please make sure to select a start time.";
@@ -184,10 +185,29 @@ public class TAController implements Controller<TA>, Initializable {
         startSelection.setItems(AppData.TIMES);
         endSelection.setItems(AppData.TIMES);
         
-        
-        startTimeCol.setCellValueFactory(new PropertyValueFactory<>("startTime"));
-        endTimeCol.setCellValueFactory(new PropertyValueFactory<>("endTime"));
-        daysCol.setCellValueFactory(new PropertyValueFactory<>("days"));
+        final TableColumn<TimeBlock, String> timeColumn = new TableColumn<>("Time");
+        timeColumn.setCellValueFactory(cell -> {
+        	final TimeBlock time = cell.getValue();
+        	return new SimpleStringProperty(String.format("%s %s - %s", 
+        			time.getDays().stream().map(day -> day.getDisplayName(TextStyle.NARROW_STANDALONE, Locale.getDefault())).collect(Collectors.joining()),
+        			AppData.TIME_FORMATTER.format(time.getStartTime()),
+        			AppData.TIME_FORMATTER.format(time.getEndTime())
+        		));
+        });
+		unavailableTable.getColumns().add(timeColumn);
+
+        final TableColumn<TimeBlock, Void> actionColumn = new TableColumn<>("Action");
+		actionColumn.setCellFactory(new ActionCellFactory<>(
+				(time) -> {
+					daysOfWeek.forEach(day -> day.setSelected(time.getDays().contains(DayOfWeek.valueOf(day.getId().toUpperCase()))));
+					startSelection.setValue(AppData.TIME_FORMATTER.format(time.getStartTime()));
+					endSelection.setValue(AppData.TIME_FORMATTER.format(time.getEndTime()));
+					unavailableTable.getItems().remove(time);
+				},
+				(time) -> {
+					unavailableTable.getItems().remove(time);
+				}));
+		unavailableTable.getColumns().add(actionColumn);
 	}
 
 	private void showErrorMessage(String message) {
