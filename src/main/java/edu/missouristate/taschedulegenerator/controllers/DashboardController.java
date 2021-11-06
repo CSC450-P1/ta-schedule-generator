@@ -47,9 +47,14 @@ public class DashboardController implements Controller<Boolean> , Initializable 
 		//Course Table
 		courseTable.setPlaceholder(new Label("No courses have been added."));
 		courseTable.setItems(AppData.getCourses());
+		
 		final TableColumn<Course, String> courseColumn = new TableColumn<>("Course");
 		courseColumn.setCellValueFactory(new PropertyValueFactory<>("courseCode"));
 		courseTable.getColumns().add(courseColumn);
+		
+		final TableColumn<Course, String> instructorColumn = new TableColumn<>("Instructor");
+		instructorColumn.setCellValueFactory(new PropertyValueFactory<>("instructorName"));
+		courseTable.getColumns().add(instructorColumn);
 		
 		final TableColumn<Course, Void> courseActionColumn = new TableColumn<>("Action");
 		courseActionColumn.setCellFactory(new ActionCellFactory<>(
@@ -64,6 +69,7 @@ public class DashboardController implements Controller<Boolean> , Initializable 
 		//TA table
 		TAtable.setPlaceholder(new Label("No TAs have been added."));
 		TAtable.setItems(AppData.getTAs());
+		
 		final TableColumn<TA, String> taColumn = new TableColumn<>("TA");
 		taColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 		TAtable.getColumns().add(taColumn);
