@@ -129,12 +129,12 @@ public class TAController implements Controller<TA>, Initializable {
 		} else if(StringUtils.isBlank(startSelection.getValue())) {
 			errorMessage = "Please make sure to select a start time.";
 		} else if(StringUtils.isBlank(endSelection.getValue())) {
-			errorMessage = "Please make sure to select an end time";
+			errorMessage = "Please make sure to select an end time.";
 		} else { // This validation should go last
 			final LocalTime startTime = LocalTime.parse(startSelection.getValue(), AppData.TIME_FORMATTER);
 			final LocalTime endTime = LocalTime.parse(endSelection.getValue(), AppData.TIME_FORMATTER);
 			if(startTime.compareTo(endTime) >= 0) {
-				errorMessage = "The end time must be after the start time";
+				errorMessage = "The end time must be after the start time.";
 			}
 		}
 		
