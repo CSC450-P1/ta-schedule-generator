@@ -53,12 +53,8 @@
                         <Insets top="10.0" />
                      </VBox.margin>
                   </Label>
-                  <TableView fx:id="taTable" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                  <TableView prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" fx:id="taTable">
                     <columns>
-                      <TableColumn prefWidth="200.0" text="TA" />
-                      <TableColumn maxWidth="500.0" prefWidth="115.0" text="Max Hours" />
-                        <TableColumn maxWidth="500.0" prefWidth="115.0" text="Assigned Hours" />
-                        <TableColumn prefWidth="405.0" text="Courses" />
                     </columns>
                      <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -72,13 +68,8 @@
                         <Insets top="10.0" />
                      </VBox.margin>
                   </Label>
-                  <TableView fx:id="courseTable" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                  <TableView prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" fx:id="courseTable">
                      <columns>
-                        <TableColumn prefWidth="150.0" text="Course" />
-                        <TableColumn prefWidth="250.0" text="Activity" />
-                        <TableColumn maxWidth="500.0" prefWidth="115.0" text="Hours Needed" />
-                        <TableColumn maxWidth="500.0" prefWidth="115.0" text="Assigned Hours" />
-                        <TableColumn prefWidth="200.0" text="TA" />
                      </columns>
                      <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
