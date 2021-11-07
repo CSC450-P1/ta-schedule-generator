@@ -16,7 +16,21 @@ public class ScheduleController implements Controller<Void> {
 	public void backToDashboard(ActionEvent event) {
 		SceneManager.showScene("dashboard");
 	}
-
+	
+	@FXML
+	public void displayPreviousSchedule(ActionEvent event) {
+		//Get previous schedule and display it on schedules.fxml
+	}
+	
+	@FXML
+	public void displayNextSchedule(ActionEvent event) {
+		//Get next schedule and display it on schedules.fxml
+	}
+	
+	@FXML
+	public void exportSchedule(ActionEvent event) {
+		//Export schedule
+	}
 	@Override
 	public void initData(Void data) {
 		// TODO: Show loading here

@@ -74,8 +74,8 @@
                   </Label>
                   <TableView prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                      <columns>
-                        <TableColumn prefWidth="150.0" text="Course" />
-                        <TableColumn prefWidth="250.0" text="Activity" />
+                        <TableColumn prefWidth="405.0" text="Course" />
+                        <TableColumn prefWidth="405.0" text="Activity" />
                         <TableColumn maxWidth="500.0" prefWidth="115.0" text="Hours Needed" />
                         <TableColumn maxWidth="500.0" prefWidth="115.0" text="Assigned Hours" />
                         <TableColumn prefWidth="200.0" text="TA" />
