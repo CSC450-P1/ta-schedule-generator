@@ -24,7 +24,7 @@
             </Button>
          </left>
          <center>
-            <Label text="Schedule 1 of 34" BorderPane.alignment="CENTER">
+            <Label fx:id="scheduleNum" text="Schedule 1 of 34" BorderPane.alignment="CENTER">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>

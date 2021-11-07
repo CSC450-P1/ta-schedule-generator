@@ -13,6 +13,7 @@ import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 
 public class ScheduleController implements Controller<Void> {
@@ -20,6 +21,9 @@ public class ScheduleController implements Controller<Void> {
 	private List<Schedule> schedules;
 	
 	private int index = 0;
+	
+	@FXML
+	private Label scheduleNum;
 	
 	@FXML
 	private TableView<ScheduledTA> taTable;
@@ -68,13 +72,14 @@ public class ScheduleController implements Controller<Void> {
 	}
 	
 	@FXML
-	public void nextSchedule(ActionEvent event) {
+	public void nextSchedule(ActionEvent event) {		
 		if(!validateDisplay()) {
 			return;
 		}
 		
 		courseTable.setItems(FXCollections.observableArrayList(schedules.get(++index % schedules.size()).getScheduledActivities()));
-		taTable.setItems(FXCollections.observableArrayList(schedules.get(index).getActivitiesByTA()));		
+		taTable.setItems(FXCollections.observableArrayList(schedules.get(index).getActivitiesByTA()));
+		scheduleNum.setText("Schedule" + (index + 1) + " of " + schedules.size());
 	}
 	
 	@FXML
@@ -84,7 +89,8 @@ public class ScheduleController implements Controller<Void> {
 		}
 		
 		courseTable.setItems(FXCollections.observableArrayList(schedules.get(--index + schedules.size() % schedules.size()).getScheduledActivities()));
-		taTable.setItems(FXCollections.observableArrayList(schedules.get(index).getActivitiesByTA()));		
+		taTable.setItems(FXCollections.observableArrayList(schedules.get(index).getActivitiesByTA()));
+		scheduleNum.setText("Schedule" + (index + 1) + " of " + schedules.size());
 	}
 	
 	private boolean validateDisplay() {
