@@ -53,7 +53,7 @@
                         <Insets top="10.0" />
                      </VBox.margin>
                   </Label>
-                  <TableView prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                  <TableView fx:id="taTable" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                     <columns>
                       <TableColumn prefWidth="200.0" text="TA" />
                       <TableColumn maxWidth="500.0" prefWidth="115.0" text="Max Hours" />
@@ -72,7 +72,7 @@
                         <Insets top="10.0" />
                      </VBox.margin>
                   </Label>
-                  <TableView prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                  <TableView fx:id="courseTable" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                      <columns>
                         <TableColumn prefWidth="150.0" text="Course" />
                         <TableColumn prefWidth="250.0" text="Activity" />
@@ -90,7 +90,7 @@
       </ScrollPane>
       <BorderPane>
          <right>
-            <Button mnemonicParsing="false" text="Next Schedule &gt;" BorderPane.alignment="CENTER">
+            <Button mnemonicParsing="false" onAction="#nextSchedule" text="Next Schedule &gt;" BorderPane.alignment="CENTER">
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding>
@@ -103,7 +103,7 @@
             <Insets top="10.0" />
          </VBox.margin>
          <left>
-            <Button mnemonicParsing="false" text="&lt; Previous Schedule" BorderPane.alignment="CENTER">
+            <Button mnemonicParsing="false" onAction="#previousSchedule" text="&lt; Previous Schedule" BorderPane.alignment="CENTER">
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding>
