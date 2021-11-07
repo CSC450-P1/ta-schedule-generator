@@ -33,6 +33,13 @@ public class ScheduleController implements Controller<Void>, Initializable {
 
 	@FXML
 	private TableView<Schedule.ScheduledActivity> courseTable;
+	
+	private List<Schedule> schedules;
+	
+	private int index = 0;
+	
+	@FXML
+	private Label scheduleNum;
 
 	@FXML
 	public void backToDashboard(ActionEvent event) {
@@ -119,10 +126,15 @@ public class ScheduleController implements Controller<Void>, Initializable {
 
 	@Override
 	public void initData(Void data) {
+		
 		// TODO: Show loading here
 		System.out.println("Started Generating Schedules");
 		final long startTime = System.currentTimeMillis();
 		AppData.generateSchedules(schedules -> {
+			this.schedules = schedules;
+			this.index = 0;
+			courseTable.setItems(FXCollections.observableArrayList(schedules.get(index).getScheduledActivities()));
+			taTable.setItems(FXCollections.observableArrayList(schedules.get(index).getActivitiesByTA()));
 			// TODO: Store schedules and populate schedule tables here
 			// The code below is just for testing the genetic algorithm
 			System.out.println("Generated " + schedules.size() + " schedules in " + (System.currentTimeMillis() - startTime) + "ms" );
@@ -152,5 +164,47 @@ public class ScheduleController implements Controller<Void>, Initializable {
 			System.out.println("All Schedules Errors: " + schedules.stream().map(s -> String.valueOf(s.getError())).collect(Collectors.joining("\n")));
 		});
 	}
-
+	
+	@FXML
+	public void nextSchedule(ActionEvent event) {		
+		if(!validateDisplay()) {
+			return;
+		}
+		
+		courseTable.setItems(FXCollections.observableArrayList(schedules.get(++index % schedules.size()).getScheduledActivities()));
+		taTable.setItems(FXCollections.observableArrayList(schedules.get(index).getActivitiesByTA()));
+		scheduleNum.setText("Schedule" + (index + 1) + " of " + schedules.size());
+	}
+	
+	@FXML
+	public void previousSchedule(ActionEvent event) {
+		if(!validateDisplay()) {
+			return;
+		}
+		
+		courseTable.setItems(FXCollections.observableArrayList(schedules.get(--index + schedules.size() % schedules.size()).getScheduledActivities()));
+		taTable.setItems(FXCollections.observableArrayList(schedules.get(index).getActivitiesByTA()));
+		scheduleNum.setText("Schedule" + (index + 1) + " of " + schedules.size());
+	}
+	
+	private boolean validateDisplay() {
+		String errorMessage = null;
+		
+		if (schedules == null || schedules.isEmpty())
+			errorMessage = "No schedules available to be displayed.";
+		
+		if(errorMessage != null) {
+			showErrorMessage(errorMessage);
+		}
+		
+		return errorMessage == null;
+	}
+	
+	private void showErrorMessage(String message) {
+		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+		alert.setTitle("Warning");
+		alert.setHeaderText("Unexpected output");
+		alert.setContentText(message);
+		alert.showAndWait();
+	}
 }
