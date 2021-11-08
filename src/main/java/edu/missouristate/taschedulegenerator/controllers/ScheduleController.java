@@ -163,8 +163,8 @@ public class ScheduleController implements Controller<Void>, Initializable {
 		if(!validateDisplay()) {
 			return;
 		}
-		
-		courseTable.setItems(FXCollections.observableArrayList(schedules.get(++index % schedules.size()).getScheduledActivities()));
+		index = (index + 1) % schedules.size();
+		courseTable.setItems(FXCollections.observableArrayList(schedules.get(index).getScheduledActivities()));
 		taTable.setItems(FXCollections.observableArrayList(schedules.get(index).getActivitiesByTA()));
 		scheduleNum.setText("Schedule " + (index + 1) + " of " + schedules.size());
 	}
@@ -174,8 +174,8 @@ public class ScheduleController implements Controller<Void>, Initializable {
 		if(!validateDisplay()) {
 			return;
 		}
-		
-		courseTable.setItems(FXCollections.observableArrayList(schedules.get(--index + schedules.size() % schedules.size()).getScheduledActivities()));
+		index = (index - 1 + schedules.size()) % schedules.size();
+		courseTable.setItems(FXCollections.observableArrayList(schedules.get(index).getScheduledActivities()));
 		taTable.setItems(FXCollections.observableArrayList(schedules.get(index).getActivitiesByTA()));
 		scheduleNum.setText("Schedule " + (index + 1) + " of " + schedules.size());
 	}
