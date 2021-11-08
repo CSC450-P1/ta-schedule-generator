@@ -5,25 +5,20 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-import edu.missouristate.taschedulegenerator.domain.Course;
 import edu.missouristate.taschedulegenerator.domain.Schedule;
 import edu.missouristate.taschedulegenerator.domain.Schedule.ScheduledActivity;
-import edu.missouristate.taschedulegenerator.domain.TA;
-import edu.missouristate.taschedulegenerator.util.ActionCellFactory;
 import edu.missouristate.taschedulegenerator.util.AppData;
 import edu.missouristate.taschedulegenerator.util.SceneManager;
 import edu.missouristate.taschedulegenerator.util.SceneManager.Controller;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 
 public class ScheduleController implements Controller<Void>, Initializable {
@@ -126,16 +121,14 @@ public class ScheduleController implements Controller<Void>, Initializable {
 
 	@Override
 	public void initData(Void data) {
-		
 		// TODO: Show loading here
 		System.out.println("Started Generating Schedules");
 		final long startTime = System.currentTimeMillis();
 		AppData.generateSchedules(schedules -> {
 			this.schedules = schedules;
 			this.index = 0;
-			courseTable.setItems(FXCollections.observableArrayList(schedules.get(index).getScheduledActivities()));
-			taTable.setItems(FXCollections.observableArrayList(schedules.get(index).getActivitiesByTA()));
-			// TODO: Store schedules and populate schedule tables here
+			showSchedule();
+			
 			// The code below is just for testing the genetic algorithm
 			System.out.println("Generated " + schedules.size() + " schedules in " + (System.currentTimeMillis() - startTime) + "ms" );
 			System.out.println("Best Generated Schedule:");
@@ -170,10 +163,8 @@ public class ScheduleController implements Controller<Void>, Initializable {
 		if(!validateDisplay()) {
 			return;
 		}
-		
-		courseTable.setItems(FXCollections.observableArrayList(schedules.get(++index % schedules.size()).getScheduledActivities()));
-		taTable.setItems(FXCollections.observableArrayList(schedules.get(index).getActivitiesByTA()));
-		scheduleNum.setText("Schedule" + (index + 1) + " of " + schedules.size());
+		index = (index + 1) % schedules.size();
+		showSchedule();
 	}
 	
 	@FXML
@@ -181,10 +172,14 @@ public class ScheduleController implements Controller<Void>, Initializable {
 		if(!validateDisplay()) {
 			return;
 		}
-		
-		courseTable.setItems(FXCollections.observableArrayList(schedules.get(--index + schedules.size() % schedules.size()).getScheduledActivities()));
+		index = (index - 1 + schedules.size()) % schedules.size();
+		showSchedule();
+	}
+	
+	private void showSchedule() {
+		courseTable.setItems(FXCollections.observableArrayList(schedules.get(index).getScheduledActivities()));
 		taTable.setItems(FXCollections.observableArrayList(schedules.get(index).getActivitiesByTA()));
-		scheduleNum.setText("Schedule" + (index + 1) + " of " + schedules.size());
+		scheduleNum.setText("Schedule " + (index + 1) + " of " + schedules.size());
 	}
 	
 	private boolean validateDisplay() {
