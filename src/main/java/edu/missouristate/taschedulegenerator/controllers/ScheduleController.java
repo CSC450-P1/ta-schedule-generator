@@ -126,8 +126,8 @@ public class ScheduleController implements Controller<Void>, Initializable {
 		final long startTime = System.currentTimeMillis();
 		AppData.generateSchedules(schedules -> {
 			this.schedules = schedules;
-			this.index = -1;
-			this.nextSchedule(null);
+			this.index = 0;
+			showSchedule();
 			
 			// The code below is just for testing the genetic algorithm
 			System.out.println("Generated " + schedules.size() + " schedules in " + (System.currentTimeMillis() - startTime) + "ms" );
@@ -164,9 +164,7 @@ public class ScheduleController implements Controller<Void>, Initializable {
 			return;
 		}
 		index = (index + 1) % schedules.size();
-		courseTable.setItems(FXCollections.observableArrayList(schedules.get(index).getScheduledActivities()));
-		taTable.setItems(FXCollections.observableArrayList(schedules.get(index).getActivitiesByTA()));
-		scheduleNum.setText("Schedule " + (index + 1) + " of " + schedules.size());
+		showSchedule();
 	}
 	
 	@FXML
@@ -175,6 +173,10 @@ public class ScheduleController implements Controller<Void>, Initializable {
 			return;
 		}
 		index = (index - 1 + schedules.size()) % schedules.size();
+		showSchedule();
+	}
+	
+	private void showSchedule() {
 		courseTable.setItems(FXCollections.observableArrayList(schedules.get(index).getScheduledActivities()));
 		taTable.setItems(FXCollections.observableArrayList(schedules.get(index).getActivitiesByTA()));
 		scheduleNum.setText("Schedule " + (index + 1) + " of " + schedules.size());
