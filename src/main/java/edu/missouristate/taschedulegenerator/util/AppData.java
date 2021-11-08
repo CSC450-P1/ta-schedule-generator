@@ -16,6 +16,7 @@ import edu.missouristate.taschedulegenerator.domain.Course;
 import edu.missouristate.taschedulegenerator.domain.CoursesAndTAs;
 import edu.missouristate.taschedulegenerator.domain.Schedule;
 import edu.missouristate.taschedulegenerator.domain.TA;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -93,7 +94,9 @@ public class AppData {
 	
 	public static CompletableFuture<List<Schedule>> generateSchedules(Consumer<List<Schedule>> callback) {
 		final CompletableFuture<List<Schedule>> future = TAScheduler.schedule(tas, courses);
-		future.thenAccept(callback);
+		future.thenAccept(schedules -> {
+			Platform.runLater(() -> callback.accept(schedules));
+		});
 		return future;
 	}
 
