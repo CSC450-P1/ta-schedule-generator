@@ -19,7 +19,7 @@ import edu.missouristate.taschedulegenerator.domain.TA;
 
 public class TAScheduler implements Supplier<List<Schedule>> {
 	
-	private static final long MAX_RUNTIME_MILLISECONDS = 14500l;
+	private static final long MAX_RUNTIME_MILLISECONDS = 14800l;
 	private static final long SLEEP_TIME_MILLISECONDS = 100l;
 	
 	private static final int MAX_THREADS = 4;
