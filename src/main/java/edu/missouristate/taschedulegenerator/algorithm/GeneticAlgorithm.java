@@ -63,6 +63,7 @@ public class GeneticAlgorithm implements Runnable, Comparator<int[]> {
 					tasForActivity.add(taIdx);
 				}
 			}
+			// TODO: If no TAs can take activity then throw exception
 			tasByActivity.put(activityIdx, tasForActivity);
 		}
 	}
@@ -146,6 +147,7 @@ public class GeneticAlgorithm implements Runnable, Comparator<int[]> {
 		return schedule;
 	}
 	
+	// TODO: Instead of weighting by hours off, weight by ratio of hours off
 	private int calculateScheduleError(final int[] schedule, final List<String> errorLog) {
 		final boolean log = errorLog != null;
 		int error = 0;
