@@ -17,6 +17,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import edu.missouristate.taschedulegenerator.domain.Schedule;
 import edu.missouristate.taschedulegenerator.domain.Schedule.ScheduledActivity;
+import edu.missouristate.taschedulegenerator.domain.Schedule.ScheduledTA;
 import edu.missouristate.taschedulegenerator.util.AppData;
 import edu.missouristate.taschedulegenerator.util.SceneManager;
 import edu.missouristate.taschedulegenerator.util.SceneManager.Controller;
@@ -75,25 +76,29 @@ public class ScheduleController implements Controller<Void>, Initializable {
 		
 			XSSFRow row = spreadsheet.createRow(0);
 			
-			
+			// Setting the TA Table Column values
 			for (int j = 0; j < taTable.getColumns().size(); j++) {
 				row.createCell(j).setCellValue(taTable.getColumns().get(j).getText());
-				spreadsheet.autoSizeColumn(j);
 			}
 			
-			for (int i = 0; i < taTable.getItems().size(); i++) {
-	            row = spreadsheet.createRow(i + 1);
-	            spreadsheet.autoSizeColumn(i);
-	            for (int j = 0; j < taTable.getColumns().size(); j++) {
-	                if(taTable.getColumns().get(j).getCellData(i) != null) { 
-	                    row.createCell(j).setCellValue(taTable.getColumns().get(j).getCellData(i).toString());
-	                    spreadsheet.autoSizeColumn(j);
-	                }
-	                else {
-	                    row.createCell(j).setCellValue("");
-	                }   
-	            }
-	        }
+			int l = 1;
+			for (ScheduledTA ta : taTable.getItems()) {
+				row = spreadsheet.createRow(l);
+				System.out.println(ta.toString());
+				
+				row.createCell(0).setCellValue(ta.getTA().getName());
+				row.createCell(1).setCellValue(ta.getTA().getMaxHours());
+				int assignedHours = 0;
+				for (ScheduledActivity activity : ta.getActivities()) {
+					assignedHours = assignedHours + activity.getHours();
+				}
+				row.createCell(2).setCellValue(assignedHours);
+				row.createCell(3).setCellValue(ta.getTA().getName());
+				spreadsheet.autoSizeColumn(l);
+				l++;
+				
+			
+			}
 			
 			
 			List<String> courses = new ArrayList<String>();
@@ -114,10 +119,9 @@ public class ScheduleController implements Controller<Void>, Initializable {
 			for (int i = 1; i < workbook.getNumberOfSheets(); i++) {
 				XSSFSheet editSheet = workbook.getSheetAt(i);
 				row = editSheet.createRow(0);
-				
+				//Setting the Column Title values
 				for (int j = 0; j < courseTable.getColumns().size(); j++) {
 					row.createCell(j).setCellValue(courseTable.getColumns().get(j).getText());
-					editSheet.autoSizeColumn(j);
 				}
 				int k =1;
 				for (ScheduledActivity item : courseTable.getItems()) {
@@ -130,11 +134,9 @@ public class ScheduleController implements Controller<Void>, Initializable {
 						row.createCell(2).setCellValue(item.getActivity().getHoursNeeded());
 						row.createCell(3).setCellValue(item.getHours());
 						row.createCell(4).setCellValue(item.getTA().getName());
-						editSheet.autoSizeColumn(k);
 						k++;
-						editSheet.autoSizeColumn(k);
 					}
-				
+					editSheet.autoSizeColumn(k);
 					
 				}
 			}
