@@ -1,12 +1,34 @@
 package edu.missouristate.taschedulegenerator.controllers;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.formula.functions.Column;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.util.CellReference;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import edu.missouristate.taschedulegenerator.domain.Course;
 import edu.missouristate.taschedulegenerator.domain.Schedule;
 import edu.missouristate.taschedulegenerator.domain.Schedule.ScheduledActivity;
+import edu.missouristate.taschedulegenerator.domain.Schedule.ScheduledTA;
 import edu.missouristate.taschedulegenerator.util.AppData;
 import edu.missouristate.taschedulegenerator.util.SceneManager;
 import edu.missouristate.taschedulegenerator.util.SceneManager.Controller;
@@ -16,10 +38,17 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 
 public class ScheduleController implements Controller<Void>, Initializable {
 
@@ -41,20 +70,168 @@ public class ScheduleController implements Controller<Void>, Initializable {
 		SceneManager.showScene("dashboard");
 	}
 	
-	@FXML
-	public void displayPreviousSchedule(ActionEvent event) {
-		//Get previous schedule and display it on schedules.fxml
-	}
+	
 	
 	@FXML
-	public void displayNextSchedule(ActionEvent event) {
-		//Get next schedule and display it on schedules.fxml
-	}
+	public void saveSchedule(ActionEvent event) throws IOException {
+		String errorMessage = null;
+		if (taTable.getItems().size() == 0 && courseTable.getItems().size() == 0) {
+			errorMessage = "Please wait until schedules have been generated.";
+			showErrorMessage(errorMessage);
+			// Processing not done - prompt user with Alert
+			// TODO: Create Alert message for processing not being complete
+			//System.out.println("Processing not done please wait");
+		} else if (taTable.getItems().size() > 0 && courseTable.getItems().size() > 0) {
+			//System.out.println("The index is--------" + index);
+			// Data has been processed so save it
+			XSSFWorkbook workbook = new XSSFWorkbook();
+			XSSFSheet spreadsheet = workbook.createSheet("TA Assignment");
+		
+			XSSFRow row = spreadsheet.createRow(0);
+			
+			for (int j = 0; j < taTable.getColumns().size(); j++) {
+				row.createCell(j).setCellValue(taTable.getColumns().get(j).getText());
+				spreadsheet.autoSizeColumn(j);
+			}
+			
+			for (int i = 0; i < taTable.getItems().size(); i++) {
+	            row = spreadsheet.createRow(i + 1);
+	            spreadsheet.autoSizeColumn(i);
+	            for (int j = 0; j < taTable.getColumns().size(); j++) {
+	                if(taTable.getColumns().get(j).getCellData(i) != null) { 
+	                    row.createCell(j).setCellValue(taTable.getColumns().get(j).getCellData(i).toString());
+	                    spreadsheet.autoSizeColumn(j);
+	                }
+	                else {
+	                    row.createCell(j).setCellValue("");
+	                }   
+	            }
+	        }
+			
+			
+			List<String> courses = new ArrayList<String>();
+			for (int i = 0; i < courseTable.getItems().size(); i++) {
+				String courseCode = courseTable.getItems().get(i).getActivity().getCourse().getCourseCode();
+				String professor = courseTable.getItems().get(i).getActivity().getCourse().getInstructorName();
+				
+				
+				if (!courses.contains(courseCode)) {
+					courses.add(courseCode);
+				} else if (courses.contains(courseCode)) {
+					workbook.createSheet(courseCode + "-" + professor);
+					courses.remove(courseCode);
+				}
+				
+			}
+			
+			for (int i = 1; i < workbook.getNumberOfSheets(); i++) {
+				XSSFSheet editSheet = workbook.getSheetAt(i);
+				row = editSheet.createRow(0);
+				
+				for (int j = 1; j < courseTable.getColumns().size(); j++) {
+					row.createCell(j).setCellValue(courseTable.getColumns().get(j).getText());
+					editSheet.autoSizeColumn(j);
+				}
+				
+				for (int t = 0; t < courseTable.getItems().size(); t++) {
+		            row = editSheet.createRow(t + 1);
+		            editSheet.autoSizeColumn(t);
+		            for (int j = 0; j < courseTable.getColumns().size(); j++) {
+		                if(courseTable.getColumns().get(j).getCellData(t) != null) { 
+		                    row.createCell(j).setCellValue(courseTable.getColumns().get(j).getCellData(t).toString());
+		                    //System.out.println(courseTable.getColumns().get(j).getCellData(t).toString());
+		                    editSheet.autoSizeColumn(j);
+		                }
+		                else {
+		                    row.createCell(j).setCellValue("");
+		                }   
+		            }
+				}
+			}
+			/*
+			// Cleanup Export due to writing all activities to all sheets
+			for (int i = 1; i < workbook.getNumberOfSheets(); i++) {
+				XSSFSheet sheet = workbook.getSheetAt(i);
+				
+				for (int r = sheet.getLastRowNum(); r >= 0; r--) {
+					Row rowTest = sheet.getRow(r);
+					if (rowTest != null) {
+						for (int c = 0; c < rowTest.getLastCellNum(); c++) {
+							Cell cell = rowTest.getCell(c);
+							if(cell.toString().equals(StringUtils.substringBefore(sheet.getSheetName(), "-"))) {
+								System.out.println("Class name and sheet name match!");
+							}
+						}
+					}
+				}
+			}
+			*/
+			
+			Window current = Stage.getWindows().stream().filter(Window::isShowing).findFirst().orElse(null);
+			DirectoryChooser dChooser = new DirectoryChooser();
+			dChooser.setTitle("Save Destination");
+			File selectedDir = dChooser.showDialog(current);
+			
+			if (selectedDir == null) {
+				// Nothing selected
+			} else {
+				File tempFile = new File(selectedDir.getAbsolutePath() + "/Generated TA Schedule.xlsx");
+				if (tempFile.exists()) {
+					Alert alert = new Alert(AlertType.CONFIRMATION, "Are you sure you want to overwrite the existing file?", ButtonType.YES, ButtonType.NO);
+					alert.setTitle("Duplicate File Already Exists");
+					alert.showAndWait().ifPresent(response -> {
+						if(response == ButtonType.YES) {
+							FileOutputStream out;
+							Alert errorAlert = new Alert(AlertType.ERROR);
+							try {
+								out = new FileOutputStream(tempFile.getAbsolutePath());
+								workbook.write(out);
+								out.close();
+							} catch (FileNotFoundException e) {
+								errorAlert.setHeaderText("Error saving schedule, please close any open schedules and try again.");
+								errorAlert.setTitle("Error Occured During Saving");
+								errorAlert.showAndWait();
+							} catch (IOException e) {
+								errorAlert.setHeaderText("Error savng schedule, please try again.");
+								errorAlert.showAndWait();
+								
+							}
+							
+						} else if (response == ButtonType.NO) {
+							// Do Nothing
+						}
+					});
+					
+				} else {
+					// File does not exist so create the new file to save
+					FileOutputStream out = new FileOutputStream(new File(selectedDir.getAbsolutePath() + "/Generated TA Schedule.xlsx"));
+					workbook.write(out);
+					out.close();
+				}
+				
+				
+				
+			}
+				/*
+				for (Row rowt : sheet) {
+					for (Cell cell : rowt) {
+						String className = cell.toString();
+						if (!className.equals(StringUtils.substringBefore(sheet.getSheetName(), "-"))) {
+							//System.out.println("The class and sheet name match!");
+							Row test = cell.getRow();
+							
+							sheet.removeRow(test);
+						}
+						//System.out.println(cell.toString());
+					}
+				}	
+				*/
+			}
+			
+		}
+		
+		
 	
-	@FXML
-	public void exportSchedule(ActionEvent event) {
-		//Export schedule
-	}
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		taTable.setEditable(true);
@@ -212,7 +389,7 @@ public class ScheduleController implements Controller<Void>, Initializable {
 	private void showErrorMessage(String message) {
 		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
 		alert.setTitle("Warning");
-		alert.setHeaderText("Unexpected output");
+		alert.setHeaderText("Processing Incomplete");
 		alert.setContentText(message);
 		alert.showAndWait();
 	}

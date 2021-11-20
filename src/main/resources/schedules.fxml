@@ -13,7 +13,7 @@
    <children>
       <BorderPane>
          <left>
-            <Button mnemonicParsing="false" text="&lt; Previous Schedule" BorderPane.alignment="CENTER">
+            <Button mnemonicParsing="false" onAction="#previousSchedule" text="&lt; Previous Schedule" BorderPane.alignment="CENTER">
                <font>
                   <Font size="14.0" />
                </font>
@@ -30,7 +30,7 @@
             </Label>
          </center>
          <right>
-            <Button mnemonicParsing="false" text="Next Schedule &gt;" BorderPane.alignment="CENTER">
+            <Button mnemonicParsing="false" onAction="#nextSchedule" text="Next Schedule &gt;" BorderPane.alignment="CENTER">
                <font>
                   <Font size="14.0" />
                </font>
@@ -80,12 +80,12 @@
       </ScrollPane>
       <BorderPane>
          <right>
-            <Button mnemonicParsing="false" onAction="#nextSchedule" text="Next Schedule &gt;" BorderPane.alignment="CENTER">
+            <Button mnemonicParsing="false" onAction="#saveSchedule" text="Save Schedule" BorderPane.alignment="CENTER">
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding>
                <font>
-                  <Font size="14.0" />
+                  <Font name="System Bold" size="14.0" />
                </font>
             </Button>
          </right>
@@ -93,7 +93,7 @@
             <Insets top="10.0" />
          </VBox.margin>
          <left>
-            <Button mnemonicParsing="false" onAction="#previousSchedule" text="&lt; Previous Schedule" BorderPane.alignment="CENTER">
+            <Button mnemonicParsing="false" onAction="#backToDashboard" text="Back To Dashboard" BorderPane.alignment="CENTER">
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding>
