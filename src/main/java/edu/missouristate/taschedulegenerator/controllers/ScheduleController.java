@@ -6,29 +6,17 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.formula.functions.Column;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.util.CellReference;
-import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import edu.missouristate.taschedulegenerator.domain.Course;
 import edu.missouristate.taschedulegenerator.domain.Schedule;
 import edu.missouristate.taschedulegenerator.domain.Schedule.ScheduledActivity;
-import edu.missouristate.taschedulegenerator.domain.Schedule.ScheduledTA;
 import edu.missouristate.taschedulegenerator.util.AppData;
 import edu.missouristate.taschedulegenerator.util.SceneManager;
 import edu.missouristate.taschedulegenerator.util.SceneManager.Controller;
@@ -39,14 +27,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
@@ -89,6 +75,7 @@ public class ScheduleController implements Controller<Void>, Initializable {
 		
 			XSSFRow row = spreadsheet.createRow(0);
 			
+			
 			for (int j = 0; j < taTable.getColumns().size(); j++) {
 				row.createCell(j).setCellValue(taTable.getColumns().get(j).getText());
 				spreadsheet.autoSizeColumn(j);
@@ -128,45 +115,31 @@ public class ScheduleController implements Controller<Void>, Initializable {
 				XSSFSheet editSheet = workbook.getSheetAt(i);
 				row = editSheet.createRow(0);
 				
-				for (int j = 1; j < courseTable.getColumns().size(); j++) {
+				for (int j = 0; j < courseTable.getColumns().size(); j++) {
 					row.createCell(j).setCellValue(courseTable.getColumns().get(j).getText());
 					editSheet.autoSizeColumn(j);
 				}
-				
-				for (int t = 0; t < courseTable.getItems().size(); t++) {
-		            row = editSheet.createRow(t + 1);
-		            editSheet.autoSizeColumn(t);
-		            for (int j = 0; j < courseTable.getColumns().size(); j++) {
-		                if(courseTable.getColumns().get(j).getCellData(t) != null) { 
-		                    row.createCell(j).setCellValue(courseTable.getColumns().get(j).getCellData(t).toString());
-		                    //System.out.println(courseTable.getColumns().get(j).getCellData(t).toString());
-		                    editSheet.autoSizeColumn(j);
-		                }
-		                else {
-		                    row.createCell(j).setCellValue("");
-		                }   
-		            }
-				}
-			}
-			/*
-			// Cleanup Export due to writing all activities to all sheets
-			for (int i = 1; i < workbook.getNumberOfSheets(); i++) {
-				XSSFSheet sheet = workbook.getSheetAt(i);
-				
-				for (int r = sheet.getLastRowNum(); r >= 0; r--) {
-					Row rowTest = sheet.getRow(r);
-					if (rowTest != null) {
-						for (int c = 0; c < rowTest.getLastCellNum(); c++) {
-							Cell cell = rowTest.getCell(c);
-							if(cell.toString().equals(StringUtils.substringBefore(sheet.getSheetName(), "-"))) {
-								System.out.println("Class name and sheet name match!");
-							}
-						}
+				int k =1;
+				for (ScheduledActivity item : courseTable.getItems()) {
+					row = editSheet.createRow(k);
+					
+					String sheetName = StringUtils.substringBefore(editSheet.getSheetName(), "-");
+					if (sheetName.equals(item.getActivity().getCourse().getCourseCode())) {
+						row.createCell(0).setCellValue(item.getActivity().getCourse().getCourseCode());
+						row.createCell(1).setCellValue(item.getActivity().getName());
+						row.createCell(2).setCellValue(item.getActivity().getHoursNeeded());
+						row.createCell(3).setCellValue(item.getHours());
+						row.createCell(4).setCellValue(item.getTA().getName());
+						editSheet.autoSizeColumn(k);
+						k++;
+						editSheet.autoSizeColumn(k);
 					}
+				
+					
 				}
 			}
-			*/
 			
+
 			Window current = Stage.getWindows().stream().filter(Window::isShowing).findFirst().orElse(null);
 			DirectoryChooser dChooser = new DirectoryChooser();
 			dChooser.setTitle("Save Destination");
@@ -212,20 +185,6 @@ public class ScheduleController implements Controller<Void>, Initializable {
 				
 				
 			}
-				/*
-				for (Row rowt : sheet) {
-					for (Cell cell : rowt) {
-						String className = cell.toString();
-						if (!className.equals(StringUtils.substringBefore(sheet.getSheetName(), "-"))) {
-							//System.out.println("The class and sheet name match!");
-							Row test = cell.getRow();
-							
-							sheet.removeRow(test);
-						}
-						//System.out.println(cell.toString());
-					}
-				}	
-				*/
 			}
 			
 		}
