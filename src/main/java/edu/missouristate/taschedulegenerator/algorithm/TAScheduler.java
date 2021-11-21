@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -23,7 +22,7 @@ public class TAScheduler implements Supplier<List<Schedule>> {
 	private static final long MAX_RUNTIME_MILLISECONDS = 14800l;
 	private static final long SLEEP_TIME_MILLISECONDS = 100l;
 	
-	private static final int MAX_THREADS = 4;
+	private static final int MAX_THREADS = Math.max(4, Runtime.getRuntime().availableProcessors());
 	private static final ExecutorService THREAD_POOL = Executors.newFixedThreadPool(MAX_THREADS, new ThreadFactory() {
 		@Override
 		public Thread newThread(Runnable r) {
