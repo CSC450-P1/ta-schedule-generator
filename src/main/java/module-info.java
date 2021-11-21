@@ -9,9 +9,8 @@ module edu.missouristate.taschedulegenerator {
 	requires javafx.base;
 	requires javafx.graphics;
 	requires com.fasterxml.jackson.datatype.jsr310;
-	requires poi;
-	requires poi.ooxml;
 	requires java.desktop;
+	requires org.apache.poi.ooxml;
 	opens edu.missouristate.taschedulegenerator.controllers to javafx.fxml;
 	opens edu.missouristate.taschedulegenerator.domain to javafx.base, com.fasterxml.jackson.databind;
 	exports edu.missouristate.taschedulegenerator;
