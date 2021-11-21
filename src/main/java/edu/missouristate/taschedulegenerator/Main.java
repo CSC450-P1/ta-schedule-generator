@@ -15,7 +15,7 @@ public class Main extends Application {
 	@Override
 	public void start(final Stage primaryStage) throws Exception {
 		primaryStage.setTitle("TA Schedule Generator");
-		primaryStage.getIcons().add(new Image("/msubear-icon-96x96.png"));
+		primaryStage.getIcons().add(new Image("/icon.png"));
 		AppData.load();
 		SceneManager.init(primaryStage, "dashboard", "courseInfo", "taInfo", "schedules");
 		primaryStage.show();
