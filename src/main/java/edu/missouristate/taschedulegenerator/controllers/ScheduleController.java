@@ -104,6 +104,7 @@ public class ScheduleController implements Controller<Void>, Initializable {
 			
 			
 			List<String> courses = new ArrayList<String>();
+			
 			for (int i = 0; i < courseTable.getItems().size(); i++) {
 				String courseCode = courseTable.getItems().get(i).getActivity().getCourse().getCourseCode();
 				String professor = courseTable.getItems().get(i).getActivity().getCourse().getInstructorName();
@@ -129,7 +130,7 @@ public class ScheduleController implements Controller<Void>, Initializable {
 				for (ScheduledActivity item : courseTable.getItems()) {
 					row = editSheet.createRow(k);
 					
-					String sheetName = StringUtils.substringBefore(editSheet.getSheetName(), "-");
+					String sheetName = StringUtils.substringBefore(editSheet.getSheetName(), "-" + item.getActivity().getCourse().getInstructorName());
 					if (sheetName.equals(item.getActivity().getCourse().getCourseCode())) {
 						row.createCell(0).setCellValue(item.getActivity().getCourse().getCourseCode());
 						row.createCell(1).setCellValue(item.getActivity().getName());
