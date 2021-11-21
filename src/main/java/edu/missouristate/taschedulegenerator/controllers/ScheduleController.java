@@ -155,6 +155,9 @@ public class ScheduleController implements Controller<Void>, Initializable {
 			System.out.println("Errors:");
 			System.out.println(String.join("\n", bestSchedule.getErrorLog()));
 			System.out.println("All Schedules Errors: " + schedules.stream().map(s -> String.valueOf(s.getError())).collect(Collectors.joining("\n")));
+		},
+		(ex) -> {
+			// TODO: Show error message here
 		});
 	}
 	

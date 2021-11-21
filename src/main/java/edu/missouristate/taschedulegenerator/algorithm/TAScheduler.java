@@ -10,6 +10,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import edu.missouristate.taschedulegenerator.domain.Activity;
@@ -32,7 +33,7 @@ public class TAScheduler implements Supplier<List<Schedule>> {
 		}
 	});
 	
-	public static CompletableFuture<List<Schedule>> schedule(final List<TA> tas, final List<Course> courses) {
+	public static CompletableFuture<List<Schedule>> schedule(final List<TA> tas, final List<Course> courses, final Consumer<Exception> errorCallback) {
 		final List<Activity> activities = new ArrayList<>();
 		for(final Course course : courses) {
 			final List<Activity> courseActivities = course.getActivities();
@@ -41,53 +42,54 @@ public class TAScheduler implements Supplier<List<Schedule>> {
 			}
 			activities.addAll(courseActivities);
 		}
-		return CompletableFuture.supplyAsync(new TAScheduler(tas, activities), THREAD_POOL);
+		return CompletableFuture.supplyAsync(new TAScheduler(tas, activities, errorCallback), THREAD_POOL);
 	}
 	
 	private final List<TA> tas;
 	private final List<Activity> activities;
 	private final long startTime = System.currentTimeMillis();
+	private final Consumer<Exception> errorCallback;
 	
-	public TAScheduler(final List<TA> tas, final List<Activity> activities) {
+	public TAScheduler(final List<TA> tas, final List<Activity> activities, final Consumer<Exception> errorCallback) {
 		super();
 		this.tas = tas;
 		this.activities = activities;
+		this.errorCallback = errorCallback;
 	}
 
 	@Override
 	public List<Schedule> get() {
+		final List<Schedule> sortedBestSchedules = new ArrayList<>((MAX_THREADS - 1) * GeneticAlgorithm.ELITE_COUNT);
 		final List<Future<?>> threads = new ArrayList<>(MAX_THREADS - 1);
 		final List<CompletableFuture<List<Schedule>>> futures = new ArrayList<>(MAX_THREADS - 1);
-		for(int i = 0; i < MAX_THREADS - 1; i++) {
-			final CompletableFuture<List<Schedule>> future = new CompletableFuture<>();
-			futures.add(future);
-			threads.add(THREAD_POOL.submit(new GeneticAlgorithm(tas, activities, future)));
-		}
-		while(System.currentTimeMillis() - startTime < MAX_RUNTIME_MILLISECONDS) {
-			try {
-				if(Thread.currentThread().isInterrupted()) {
+		try {
+			for(int i = 0; i < MAX_THREADS - 1; i++) {
+				final CompletableFuture<List<Schedule>> future = new CompletableFuture<>();
+				futures.add(future);
+				threads.add(THREAD_POOL.submit(new GeneticAlgorithm(tas, activities, future)));
+			}
+			while(System.currentTimeMillis() - startTime < MAX_RUNTIME_MILLISECONDS) {
+				try {
+					if(Thread.currentThread().isInterrupted()) {
+						return null;
+					}
+					Thread.sleep(SLEEP_TIME_MILLISECONDS);
+				} catch (InterruptedException e) {
 					return null;
 				}
-				Thread.sleep(SLEEP_TIME_MILLISECONDS);
-			} catch (InterruptedException e) {
-				return null;
 			}
-		}
-		for(final Future<?> thread : threads) {
-			thread.cancel(true);
-		}
-		final HashSet<Schedule> bestSchedules = new LinkedHashSet<>();
-		for(final CompletableFuture<List<Schedule>> future : futures) {
-			try {
+			for(final Future<?> thread : threads) {
+				thread.cancel(true);
+			}
+			final HashSet<Schedule> bestSchedules = new LinkedHashSet<>();
+			for(final CompletableFuture<List<Schedule>> future : futures) {
 				bestSchedules.addAll(future.get());
-				
-			} catch (InterruptedException | ExecutionException e) {
-				System.err.println("Error getting results from thread:");
-				e.printStackTrace();
 			}
+			sortedBestSchedules.sort((s1, s2) -> s1.getError() - s2.getError());
+		} catch(Exception e) {
+			e.printStackTrace();
+			errorCallback.accept(e);
 		}
-		final List<Schedule> sortedBestSchedules = new ArrayList<>(bestSchedules);
-		sortedBestSchedules.sort((s1, s2) -> s1.getError() - s2.getError());
 		return sortedBestSchedules;
 	}
 
