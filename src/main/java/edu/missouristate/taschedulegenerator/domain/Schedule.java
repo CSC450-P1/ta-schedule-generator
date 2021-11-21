@@ -1,6 +1,7 @@
 package edu.missouristate.taschedulegenerator.domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +27,11 @@ public class Schedule {
 			scheduledTA.activities.add(activity);
 			activitiesByTA.put(ta, scheduledTA);
 		}
-		return FXCollections.observableArrayList(activitiesByTA.values());
+		List<ScheduledTA> result = new ArrayList<>(activitiesByTA.values());
+		Collections.sort(result, (a,b) -> {
+			return a.ta.getName().compareToIgnoreCase(b.ta.getName());
+		});
+		return FXCollections.observableArrayList(result);
 	}
 
 	@Data

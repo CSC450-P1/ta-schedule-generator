@@ -27,6 +27,7 @@ public class GeneticAlgorithm implements Runnable, Comparator<int[]> {
 	private static final int ELITE_COUNT = 10;
 	private static final double CROSSOVER_RATE = 0.5;
 	private static final double MUTATION_RATE = 0.2;
+	private static final double HOURS_STANDARD_DEVIATION = 2.0;
 	// Error multipliers
 	private static final int SECTION_OVERLAP = 1000;
 	private static final int MISSED_SECTION = 1000;
@@ -42,30 +43,41 @@ public class GeneticAlgorithm implements Runnable, Comparator<int[]> {
 	private final Map<Integer, List<Integer>> tasByActivity = new HashMap<>();
 	private final int geneLength;
 	private final CompletableFuture<List<Schedule>> completableFuture;
+	private final double taActivityHoursRatio;
 	
 	private final Random random = new Random();
 	
-	public GeneticAlgorithm(final List<TA> tas, final List<Activity> activities, final CompletableFuture<List<Schedule>> completableFuture) {
+	public GeneticAlgorithm(final List<TA> tas, final List<Activity> activities, final CompletableFuture<List<Schedule>> completableFuture) throws NoTAAvailableException {
 		super();
 		this.tas = tas;
 		this.activities = activities;
 		this.geneLength = activities.size() * 2 + 1;
 		this.completableFuture = completableFuture;
 		
+		int activityHours = 0;
+		int taHours = 0;
 		for(int activityIdx = 0; activityIdx < activities.size(); activityIdx++) {
 			final Activity activity = activities.get(activityIdx);
+			activityHours += activity.getHoursNeeded();
 			final List<Integer> tasForActivity = new ArrayList<>();
 			for(int taIdx = 0; taIdx < tas.size(); taIdx++) {
 				final TA ta = tas.get(taIdx);
+				if(activityIdx == 0) {
+					taHours += ta.getMaxHours();
+				}
 				// If activity needs TA and if TA unavailable times don't intersect with activity time
 				if(!(activity.isMustBeTA() && ta.isGA()) &&
 						(activity.getTime() == null || ta.getNotAvailable().stream().noneMatch(notAvailable -> notAvailable.intersects(activity.getTime())))) {
 					tasForActivity.add(taIdx);
 				}
 			}
-			// TODO: If no TAs can take activity then throw exception
+			if(tasForActivity.isEmpty()) {
+				throw new NoTAAvailableException(String.format("No TA available for %s %s", activity.getCourse().getCourseCode(), activity.getName()));
+			}
 			tasByActivity.put(activityIdx, tasForActivity);
 		}
+		// Prioritize TA hours over activity hours
+		this.taActivityHoursRatio = taHours / (double) activityHours;
 	}
 
 	@Override
@@ -141,8 +153,10 @@ public class GeneticAlgorithm implements Runnable, Comparator<int[]> {
 		int i = 0;
 		for(final Entry<Integer, List<Integer>> entry : tasByActivity.entrySet()) {
 			schedule[i * 2] = entry.getValue().get(random.nextInt(entry.getValue().size()));
-			// TODO: Make better hour generator
-			schedule[i++ * 2 + 1] = (int)Math.max((random.nextGaussian() * 4) + activities.get(entry.getKey()).getHoursNeeded(), 1);
+			schedule[i++ * 2 + 1] = (int) Math.round(Math.max(
+					random.nextGaussian() * HOURS_STANDARD_DEVIATION
+						+ activities.get(entry.getKey()).getHoursNeeded() * taActivityHoursRatio,
+					1.0));
 		}
 		return schedule;
 	}
