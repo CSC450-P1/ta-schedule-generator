@@ -66,11 +66,9 @@ public class ScheduleController implements Controller<Void>, Initializable {
 			errorMessage = "Please wait until schedules have been generated.";
 			showErrorMessage(errorMessage);
 			// Processing not done - prompt user with Alert
-			// TODO: Create Alert message for processing not being complete
-			//System.out.println("Processing not done please wait");
 		} else if (taTable.getItems().size() > 0 && courseTable.getItems().size() > 0) {
-			//System.out.println("The index is--------" + index);
-			// Data has been processed so save it
+			
+			// Data has been processed 
 			XSSFWorkbook workbook = new XSSFWorkbook();
 			XSSFSheet spreadsheet = workbook.createSheet("TA Assignment");
 		
