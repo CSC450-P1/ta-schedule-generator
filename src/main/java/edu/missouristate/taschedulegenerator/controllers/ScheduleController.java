@@ -125,6 +125,9 @@ public class ScheduleController implements Controller<Void>, Initializable {
 		System.out.println("Started Generating Schedules");
 		final long startTime = System.currentTimeMillis();
 		AppData.generateSchedules(schedules -> {
+			if(schedules == null) {
+				return;
+			}
 			this.schedules = schedules;
 			this.index = 0;
 			showSchedule();

@@ -58,7 +58,6 @@ public class TAScheduler implements Supplier<List<Schedule>> {
 
 	@Override
 	public List<Schedule> get() {
-		final List<Schedule> sortedBestSchedules = new ArrayList<>((MAX_THREADS - 1) * GeneticAlgorithm.ELITE_COUNT);
 		final List<Future<?>> threads = new ArrayList<>(MAX_THREADS - 1);
 		final List<CompletableFuture<List<Schedule>>> futures = new ArrayList<>(MAX_THREADS - 1);
 		try {
@@ -84,12 +83,14 @@ public class TAScheduler implements Supplier<List<Schedule>> {
 			for(final CompletableFuture<List<Schedule>> future : futures) {
 				bestSchedules.addAll(future.get());
 			}
+			final List<Schedule> sortedBestSchedules = new ArrayList<>(bestSchedules);
 			sortedBestSchedules.sort((s1, s2) -> s1.getError() - s2.getError());
+			return sortedBestSchedules;
 		} catch(Exception e) {
 			e.printStackTrace();
 			errorCallback.accept(e);
 		}
-		return sortedBestSchedules;
+		return null;
 	}
 
 }
