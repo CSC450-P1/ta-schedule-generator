@@ -87,11 +87,15 @@ public class ScheduleController implements Controller<Void>, Initializable {
 				row.createCell(0).setCellValue(ta.getTA().getName());
 				row.createCell(1).setCellValue(ta.getTA().getMaxHours());
 				int assignedHours = 0;
+				String assignedActivity = "";
 				for (ScheduledActivity activity : ta.getActivities()) {
 					assignedHours = assignedHours + activity.getHours();
+					assignedActivity = assignedActivity + activity.getActivity().getCourse().getCourseCode() + "-" + activity.getActivity().getName() + ", ";
 				}
 				row.createCell(2).setCellValue(assignedHours);
-				row.createCell(3).setCellValue(ta.getTA().getName());
+				//assignedActivity = assignedActivity.substring(0, assignedActivity.length() -1);
+				//System.out.println(assignedActivity);
+				row.createCell(3).setCellValue(assignedActivity);
 				spreadsheet.autoSizeColumn(l);
 				l++;
 				
