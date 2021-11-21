@@ -24,7 +24,7 @@ public class GeneticAlgorithm implements Runnable, Comparator<int[]> {
 	
 	private static final int POPULATION_SIZE = 250;
 	private static final int TOURNAMENT_SIZE = 10;
-	public static final int ELITE_COUNT = 10;
+	private static final int ELITE_COUNT = 10;
 	private static final double CROSSOVER_RATE = 0.5;
 	private static final double MUTATION_RATE = 0.2;
 	private static final double HOURS_STANDARD_DEVIATION = 2.0;
