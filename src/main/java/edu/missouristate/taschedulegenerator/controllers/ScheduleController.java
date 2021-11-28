@@ -6,11 +6,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -34,6 +37,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
@@ -93,13 +97,8 @@ public class ScheduleController implements Controller<Void>, Initializable {
 					assignedActivity = assignedActivity + activity.getActivity().getCourse().getCourseCode() + "-" + activity.getActivity().getName() + ", ";
 				}
 				row.createCell(2).setCellValue(assignedHours);
-				//assignedActivity = assignedActivity.substring(0, assignedActivity.length() -1);
-				//System.out.println(assignedActivity);
-				row.createCell(3).setCellValue(assignedActivity);
-				spreadsheet.autoSizeColumn(l);
+				row.createCell(3).setCellValue(StringUtils.chop(StringUtils.chop(assignedActivity)));
 				l++;
-				
-			
 			}
 			
 			
@@ -139,13 +138,44 @@ public class ScheduleController implements Controller<Void>, Initializable {
 						row.createCell(4).setCellValue(item.getTA().getName());
 						k++;
 					}
-					editSheet.autoSizeColumn(k);
 					
 				}
 			}
 			
+			for( int i = 0; i < workbook.getNumberOfSheets(); i++) {
+				XSSFSheet sheet = workbook.getSheetAt(i);
+				if (sheet.getPhysicalNumberOfRows() > 0) {
+					 XSSFRow rowT = sheet.getRow(sheet.getFirstRowNum());
+			            Iterator<Cell> cellIterator = rowT.cellIterator();
+			            while (cellIterator.hasNext()) {
+			                Cell cell = cellIterator.next();
+			                int columnIndex = cell.getColumnIndex();
+			                sheet.autoSizeColumn(columnIndex);
+			            }
+				}
+			}
 
 			Window current = Stage.getWindows().stream().filter(Window::isShowing).findFirst().orElse(null);
+			FileChooser fChooser = new FileChooser();
+			FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Excel Workbook", "*.xlsx");
+			fChooser.getExtensionFilters().add(extFilter);
+			fChooser.setInitialFileName("Generated TA Schedule " + (index + 1));
+			File tempFile = fChooser.showSaveDialog(current);
+			
+			if (tempFile != null) {
+				try (FileOutputStream out  = new FileOutputStream(tempFile.getAbsolutePath())) {
+					workbook.write(out);
+				}
+				catch (IOException e) {
+					Alert errorAlert = new Alert(AlertType.ERROR);
+					errorAlert.setTitle("Error Occured During Saving");
+					errorAlert.setHeaderText("Error saving schedule, please close any open schedules and try again.");
+					
+					errorAlert.showAndWait();
+					System.out.println(e);
+				}
+			}
+			/*
 			DirectoryChooser dChooser = new DirectoryChooser();
 			dChooser.setTitle("Save Destination");
 			File selectedDir = dChooser.showDialog(current);
@@ -189,7 +219,7 @@ public class ScheduleController implements Controller<Void>, Initializable {
 				
 				
 				
-			}
+			}*/
 			}
 			
 		}
