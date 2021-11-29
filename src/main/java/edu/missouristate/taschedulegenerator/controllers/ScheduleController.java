@@ -44,6 +44,9 @@ public class ScheduleController implements Controller<Void> {
 		System.out.println("Started Generating Schedules");
 		final long startTime = System.currentTimeMillis();
 		AppData.generateSchedules(schedules -> {
+			if(schedules == null) {
+				return;
+			}
 			this.schedules = schedules;
 			this.index = 0;
 			showSchedule();
@@ -68,6 +71,9 @@ public class ScheduleController implements Controller<Void> {
 			System.out.println("Errors:");
 			System.out.println(String.join("\n", bestSchedule.getErrorLog()));
 			System.out.println("All Schedules Errors: " + schedules.stream().map(s -> String.valueOf(s.getError())).collect(Collectors.joining("\n")));
+		},
+		(ex) -> {
+			// TODO: Show error message here
 		});
 	}
 	
