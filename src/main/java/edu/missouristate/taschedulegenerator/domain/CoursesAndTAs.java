@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CoursesAndTAs {
-	
-	private List<Course> courses;
-	
-	private List<TA> tas;
+
+    private List < Course > courses;
+
+    private List < TA > tas;
 
 }

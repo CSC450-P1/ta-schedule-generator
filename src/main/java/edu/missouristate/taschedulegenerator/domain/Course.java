@@ -18,15 +18,15 @@ import lombok.NoArgsConstructor;
 public class Course {
     private String courseCode;
     private String instructorName;
-    private ObservableList<Activity> activities = FXCollections.observableArrayList();
-    
+    private ObservableList < Activity > activities = FXCollections.observableArrayList();
+
     @JsonGetter("activities")
-    public List<Activity> serializeActivities() {
-    	return Collections.unmodifiableList(activities);
+    public List < Activity > serializeActivities() {
+        return Collections.unmodifiableList(activities);
     }
-    
+
     @JsonSetter("activities")
-    public void deserializeActivities(List<Activity> activities) {
-    	this.activities = FXCollections.observableArrayList(activities);
+    public void deserializeActivities(List < Activity > activities) {
+        this.activities = FXCollections.observableArrayList(activities);
     }
 }

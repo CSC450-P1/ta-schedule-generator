@@ -13,17 +13,17 @@ import lombok.ToString;
 @AllArgsConstructor
 @Data
 public class Activity {
-	
-	private String name;
-	
-	private boolean mustBeTA;
-	
-	private int hoursNeeded;
 
-	private TimeBlock time;
-	
-	@ToString.Exclude
-	@EqualsAndHashCode.Exclude
-	@JsonIgnore
-	private Course course;
+    private String name;
+
+    private boolean mustBeTA;
+
+    private int hoursNeeded;
+
+    private TimeBlock time;
+
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @JsonIgnore
+    private Course course;
 }

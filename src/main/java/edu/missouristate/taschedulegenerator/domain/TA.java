@@ -19,15 +19,15 @@ public class TA {
     private String name;
     private boolean isGA;
     private int maxHours = 20;
-    private ObservableList<TimeBlock> notAvailable = FXCollections.observableArrayList();
-    
+    private ObservableList < TimeBlock > notAvailable = FXCollections.observableArrayList();
+
     @JsonGetter("notAvailable")
-    public List<TimeBlock> serializeNotAvailable() {
-    	return Collections.unmodifiableList(notAvailable);
+    public List < TimeBlock > serializeNotAvailable() {
+        return Collections.unmodifiableList(notAvailable);
     }
-    
+
     @JsonSetter("notAvailable")
-    public void deserializeNotAvailable(List<TimeBlock> notAvailable) {
-    	this.notAvailable = FXCollections.observableArrayList(notAvailable);
+    public void deserializeNotAvailable(List < TimeBlock > notAvailable) {
+        this.notAvailable = FXCollections.observableArrayList(notAvailable);
     }
 }
