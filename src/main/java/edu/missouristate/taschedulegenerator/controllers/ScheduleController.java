@@ -5,24 +5,28 @@ import java.util.stream.Collectors;
 
 import edu.missouristate.taschedulegenerator.domain.Schedule;
 import edu.missouristate.taschedulegenerator.domain.Schedule.ScheduledActivity;
+import edu.missouristate.taschedulegenerator.domain.Schedule.ScheduledTA;
 import edu.missouristate.taschedulegenerator.util.AppData;
 import edu.missouristate.taschedulegenerator.util.SceneManager;
 import edu.missouristate.taschedulegenerator.util.SceneManager.Controller;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.layout.Pane;
 
 public class ScheduleController implements Controller<Void> {
 	
 	private List<Schedule> schedules;
 	
 	private int index = 0;
+	
+	//private CompletableFuture<List<Schedule>> generator = null;
+	
+	@FXML
+	private Pane loadingPane;
 	
 	@FXML
 	private Label scheduleNum;
@@ -37,16 +41,18 @@ public class ScheduleController implements Controller<Void> {
 	public void backToDashboard(ActionEvent event) {
 		SceneManager.showScene("dashboard");
 	}
-
+	
 	@Override
 	public void initData(Void data) {
 		// TODO: Show loading here
+		loadingPane.setVisible(true);
 		System.out.println("Started Generating Schedules");
 		final long startTime = System.currentTimeMillis();
 		AppData.generateSchedules(schedules -> {
 			if(schedules == null) {
 				return;
 			}
+			loadingPane.setVisible(false);
 			this.schedules = schedules;
 			this.index = 0;
 			showSchedule();
@@ -77,6 +83,12 @@ public class ScheduleController implements Controller<Void> {
 		});
 	}
 	
+	@FXML
+	public void cancelButton(ActionEvent event) {
+		//generator = true;
+		SceneManager.showScene("dashboard");
+	}
+
 	@FXML
 	public void nextSchedule(ActionEvent event) {		
 		if(!validateDisplay()) {
