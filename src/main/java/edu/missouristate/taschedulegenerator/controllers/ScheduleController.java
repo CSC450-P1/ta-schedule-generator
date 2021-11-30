@@ -1,6 +1,7 @@
 package edu.missouristate.taschedulegenerator.controllers;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import edu.missouristate.taschedulegenerator.domain.Schedule;
@@ -23,7 +24,7 @@ public class ScheduleController implements Controller<Void> {
 	
 	private int index = 0;
 	
-	//private CompletableFuture<List<Schedule>> generator = null;
+	private CompletableFuture<List<Schedule>> generator = null;
 	
 	@FXML
 	private Pane loadingPane;
@@ -48,7 +49,7 @@ public class ScheduleController implements Controller<Void> {
 		loadingPane.setVisible(true);
 		System.out.println("Started Generating Schedules");
 		final long startTime = System.currentTimeMillis();
-		AppData.generateSchedules(schedules -> {
+		generator = AppData.generateSchedules(schedules -> {
 			if(schedules == null) {
 				return;
 			}
@@ -85,7 +86,9 @@ public class ScheduleController implements Controller<Void> {
 	
 	@FXML
 	public void cancelButton(ActionEvent event) {
-		//generator = true;
+		if (generator != null) {
+			generator.cancel(true);
+		}
 		SceneManager.showScene("dashboard");
 	}
 
