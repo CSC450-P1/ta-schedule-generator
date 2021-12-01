@@ -19,7 +19,9 @@
     -fx-faint-focus-color: #33333333;
     -fx-focus-color: #333;
 }
-
+.table-view .table-cell{
+    -fx-font-size:14px;
+}
 .check-box:selected .mark {
     -fx-background-color: #5E0009;
 }
