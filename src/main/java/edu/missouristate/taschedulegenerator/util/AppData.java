@@ -97,8 +97,9 @@ public class AppData {
 		}
 	}
 	
-	public static CompletableFuture<List<Schedule>> generateSchedules(Consumer<List<Schedule>> callback) {
-		final CompletableFuture<List<Schedule>> future = TAScheduler.schedule(tas, courses);
+	public static CompletableFuture<List<Schedule>> generateSchedules(final Consumer<List<Schedule>> callback, final Consumer<Exception> errorCallback) {
+		final CompletableFuture<List<Schedule>> future = TAScheduler.schedule(tas, courses, 
+				(e) -> Platform.runLater(() -> errorCallback.accept(e)));
 		future.thenAccept(schedules -> {
 			Platform.runLater(() -> callback.accept(schedules));
 		});
