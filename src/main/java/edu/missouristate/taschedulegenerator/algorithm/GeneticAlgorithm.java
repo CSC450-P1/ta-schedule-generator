@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 
 import edu.missouristate.taschedulegenerator.domain.Activity;
+import edu.missouristate.taschedulegenerator.domain.Course;
 import edu.missouristate.taschedulegenerator.domain.Schedule;
 import edu.missouristate.taschedulegenerator.domain.Schedule.ScheduledActivity;
 import edu.missouristate.taschedulegenerator.domain.TA;
@@ -23,11 +25,12 @@ import edu.missouristate.taschedulegenerator.domain.TA;
 public class GeneticAlgorithm implements Runnable, Comparator<int[]> {
 	
 	private static final int POPULATION_SIZE = 250;
-	private static final int TOURNAMENT_SIZE = 10;
-	private static final int ELITE_COUNT = 10;
+	private static final int TOURNAMENT_SIZE = 25;
+	private static final int ELITE_COUNT = 5;
 	private static final double CROSSOVER_RATE = 0.5;
-	private static final double MUTATION_RATE = 0.2;
+	private static final double MUTATION_RATE = 0.1;
 	private static final double HOURS_STANDARD_DEVIATION = 2.0;
+	private static final int SCHEDULE_RETURN_COUNT = 10;
 	// Error multipliers
 	private static final int SECTION_OVERLAP = 1000;
 	private static final int MISSED_SECTION = 1000;
@@ -35,7 +38,7 @@ public class GeneticAlgorithm implements Runnable, Comparator<int[]> {
 	private static final int TA_UNDER_HOURS = 150; // TA got assigned too few hours
 	private static final int ACTIVITY_UNDER_HOURS = 100; // Activity got assigned too few hours
 	private static final int ACTIVITY_OVER_HOURS = 50; // Activity got assigned too many hours
-	private static final int NOT_ALL_SAME_TA = 25; // Course activities were assigned to different TAs
+	private static final int NOT_ALL_SAME_TA = 50; // Course activities were assigned to different TAs
 	private static final int RANKINGS_DISTANCE = 5; // The difference between TA course preferences and actual assigned courses
 	
 	private final List<TA> tas;
@@ -98,7 +101,7 @@ public class GeneticAlgorithm implements Runnable, Comparator<int[]> {
 			Arrays.sort(population, this);
 		}
 		final LinkedHashSet<Schedule> bestSchedules = new LinkedHashSet<>();
-		for(int i = 0; bestSchedules.size() < ELITE_COUNT && i < POPULATION_SIZE; i++) {
+		for(int i = 0; bestSchedules.size() < SCHEDULE_RETURN_COUNT && i < POPULATION_SIZE; i++) {
 			final List<ScheduledActivity> scheduledActivities = new ArrayList<>(activities.size());
 			for(int j = 0; j < geneLength - 1; j += 2) {
 				scheduledActivities.add(new ScheduledActivity(activities.get(j / 2), tas.get(population[i][j]), population[i][j + 1]));
@@ -181,6 +184,7 @@ public class GeneticAlgorithm implements Runnable, Comparator<int[]> {
 			}
 		}
 		final HashMap<Integer, Integer> taHours = new HashMap<>();
+		final HashMap<Course, HashSet<Integer>> tasPerCourse = new HashMap<>();
 		for(int i = 0; i < geneLength - 2; i += 2) {
 			final Activity activity = activities.get(i / 2);
 			final String activityName = String.format("%s - %s", activity.getCourse().getCourseCode(), activity.getName());
@@ -206,6 +210,15 @@ public class GeneticAlgorithm implements Runnable, Comparator<int[]> {
 				if(log) {
 					errorLog.add(String.format("Activity %s over hours", activityName));
 				}
+			}
+			HashSet<Integer> tasForCourse = tasPerCourse.getOrDefault(activity.getCourse(), new HashSet<>());
+			tasForCourse.add(schedule[i]);
+			tasPerCourse.put(activity.getCourse(), tasForCourse);
+		}
+		for(Entry<Course, HashSet<Integer>> tasForCourse : tasPerCourse.entrySet()) {
+			error += NOT_ALL_SAME_TA * (tasForCourse.getValue().size() - 1);
+			if(log && tasForCourse.getValue().size() > 1) {
+				errorLog.add(String.format("Course %s has multiple TAs", tasForCourse.getKey().getCourseCode()));
 			}
 		}
 		for(int i = 0; i < tas.size(); i++) {
