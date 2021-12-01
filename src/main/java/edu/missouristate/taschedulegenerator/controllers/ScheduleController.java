@@ -3,10 +3,12 @@ package edu.missouristate.taschedulegenerator.controllers;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import edu.missouristate.taschedulegenerator.domain.Schedule;
 import edu.missouristate.taschedulegenerator.domain.Schedule.ScheduledActivity;
+import edu.missouristate.taschedulegenerator.domain.Schedule.ScheduledTA;
 import edu.missouristate.taschedulegenerator.util.AppData;
 import edu.missouristate.taschedulegenerator.util.SceneManager;
 import edu.missouristate.taschedulegenerator.util.SceneManager.Controller;
@@ -20,27 +22,33 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.layout.Pane;
 
-public class ScheduleController implements Controller<Void>, Initializable {
-
-	@FXML
-	private TableView<Schedule.ScheduledTA> taTable;
-
-	@FXML
-	private TableView<Schedule.ScheduledActivity> courseTable;
+public class ScheduleController implements Controller<Void>, Initializable{
 	
 	private List<Schedule> schedules;
 	
 	private int index = 0;
 	
+	private CompletableFuture<List<Schedule>> generator = null;
+	
+	@FXML
+	private Pane loadingPane;
+	
 	@FXML
 	private Label scheduleNum;
-
+	
+	@FXML
+	private TableView<ScheduledTA> taTable;
+	
+	@FXML
+	private TableView<ScheduledActivity> courseTable;
+	
 	@FXML
 	public void backToDashboard(ActionEvent event) {
 		SceneManager.showScene("dashboard");
 	}
-
+	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		taTable.setEditable(true);
@@ -118,16 +126,17 @@ public class ScheduleController implements Controller<Void>, Initializable {
 		courseTable.getColumns().add(taTableColumn);
 
 	}
-
+	
 	@Override
 	public void initData(Void data) {
-		// TODO: Show loading here
+		loadingPane.setVisible(true);
 		System.out.println("Started Generating Schedules");
 		final long startTime = System.currentTimeMillis();
-		AppData.generateSchedules(schedules -> {
+		generator = AppData.generateSchedules(schedules -> {
 			if(schedules == null) {
 				return;
 			}
+			loadingPane.setVisible(false);
 			this.schedules = schedules;
 			this.index = 0;
 			showSchedule();
@@ -137,12 +146,6 @@ public class ScheduleController implements Controller<Void>, Initializable {
 			System.out.println("Best Generated Schedule:");
 			System.out.println(String.format("%s %10s %s %s", "Course", "Activity", "TA", "Hours"));
 			final Schedule bestSchedule = schedules.get(0);
-
-			List<Schedule.ScheduledTA> scheduledTAs = bestSchedule.getActivitiesByTA();
-			taTable.setItems(FXCollections.observableArrayList(scheduledTAs));
-			List<Schedule.ScheduledActivity> scheduledActivities = bestSchedule.getScheduledActivities();
-			courseTable.setItems(FXCollections.observableArrayList(scheduledActivities));
-
 			System.out.println("Error Total: " + bestSchedule.getError());
 			for(final ScheduledActivity activity : bestSchedule.getScheduledActivities()) {
 				System.out.println(
@@ -164,6 +167,14 @@ public class ScheduleController implements Controller<Void>, Initializable {
 		});
 	}
 	
+	@FXML
+	public void cancelButton(ActionEvent event) {
+		if (generator != null) {
+			generator.cancel(true);
+		}
+		SceneManager.showScene("dashboard");
+	}
+
 	@FXML
 	public void nextSchedule(ActionEvent event) {		
 		if(!validateDisplay()) {
