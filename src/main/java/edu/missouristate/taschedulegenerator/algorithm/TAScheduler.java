@@ -22,6 +22,8 @@ public class TAScheduler implements Supplier<List<Schedule>> {
 	private static final long MAX_RUNTIME_MILLISECONDS = 14800l;
 	private static final long SLEEP_TIME_MILLISECONDS = 100l;
 	
+	private static final int MAX_SCHEDULES = 30;
+	
 	private static final int MAX_THREADS = Math.max(4, Runtime.getRuntime().availableProcessors());
 	private static final ExecutorService THREAD_POOL = Executors.newFixedThreadPool(MAX_THREADS, new ThreadFactory() {
 		@Override
@@ -85,6 +87,9 @@ public class TAScheduler implements Supplier<List<Schedule>> {
 			}
 			final List<Schedule> sortedBestSchedules = new ArrayList<>(bestSchedules);
 			sortedBestSchedules.sort((s1, s2) -> s1.getError() - s2.getError());
+			if(sortedBestSchedules.size() > MAX_SCHEDULES) {
+				return sortedBestSchedules.subList(0, MAX_SCHEDULES);
+			}
 			return sortedBestSchedules;
 		} catch(Exception e) {
 			e.printStackTrace();
