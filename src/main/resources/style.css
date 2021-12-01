@@ -22,6 +22,11 @@
 .table-view .table-cell{
     -fx-font-size:14px;
 }
+
+.table-view .table-cell .button {
+	-fx-font-size:12px;
+}
+
 .check-box:selected .mark {
     -fx-background-color: #5E0009;
 }
