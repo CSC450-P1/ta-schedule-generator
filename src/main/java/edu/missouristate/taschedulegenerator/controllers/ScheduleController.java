@@ -1,12 +1,24 @@
 package edu.missouristate.taschedulegenerator.controllers;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import edu.missouristate.taschedulegenerator.domain.Schedule;
 import edu.missouristate.taschedulegenerator.domain.Schedule.ScheduledActivity;
+import edu.missouristate.taschedulegenerator.domain.Schedule.ScheduledTA;
 import edu.missouristate.taschedulegenerator.util.AppData;
 import edu.missouristate.taschedulegenerator.util.SceneManager;
 import edu.missouristate.taschedulegenerator.util.SceneManager.Controller;
@@ -16,10 +28,14 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 
 public class ScheduleController implements Controller<Void>, Initializable {
 
@@ -40,6 +56,121 @@ public class ScheduleController implements Controller<Void>, Initializable {
 	public void backToDashboard(ActionEvent event) {
 		SceneManager.showScene("dashboard");
 	}
+	
+	@FXML
+    public void saveSchedule(ActionEvent event) throws IOException {
+        String errorMessage = null;
+        if (taTable.getItems().size() == 0 && courseTable.getItems().size() == 0) {
+            errorMessage = "Please wait until schedules have been generated.";
+            showErrorMessage(errorMessage);
+            // Processing not done - prompt user with Alert
+        } else if (taTable.getItems().size() > 0 && courseTable.getItems().size() > 0) {
+
+            // Data has been processed 
+            XSSFWorkbook workbook = new XSSFWorkbook();
+            XSSFSheet spreadsheet = workbook.createSheet("TA Assignment");
+
+            XSSFRow row = spreadsheet.createRow(0);
+
+            // Setting the TA Table Column values
+            for (int j = 0; j < taTable.getColumns().size(); j++) {
+                row.createCell(j).setCellValue(taTable.getColumns().get(j).getText());
+            }
+
+            int l = 1;
+            for (ScheduledTA ta: taTable.getItems()) {
+                row = spreadsheet.createRow(l);
+                System.out.println(ta.toString());
+
+                row.createCell(0).setCellValue(ta.getTA().getName());
+                row.createCell(1).setCellValue(ta.getTA().getMaxHours());
+                int assignedHours = 0;
+                String assignedActivity = "";
+                for (ScheduledActivity activity: ta.getActivities()) {
+                    assignedHours = assignedHours + activity.getHours();
+                    assignedActivity = assignedActivity + activity.getActivity().getCourse().getCourseCode() + "-" + activity.getActivity().getName() + ", ";
+                }
+                row.createCell(2).setCellValue(assignedHours);
+                row.createCell(3).setCellValue(StringUtils.chop(StringUtils.chop(assignedActivity)));
+                l++;
+            }
+
+
+            List <String> courses = new ArrayList <String> ();
+
+            for (int i = 0; i < courseTable.getItems().size(); i++) {
+                String courseCode = courseTable.getItems().get(i).getActivity().getCourse().getCourseCode();
+                String professor = courseTable.getItems().get(i).getActivity().getCourse().getInstructorName();
+
+
+                if (!courses.contains(courseCode)) {
+                    courses.add(courseCode);
+                } else if (courses.contains(courseCode)) {
+                    workbook.createSheet(courseCode + "-" + professor);
+                    courses.remove(courseCode);
+                }
+
+            }
+
+            for (int i = 1; i < workbook.getNumberOfSheets(); i++) {
+                XSSFSheet editSheet = workbook.getSheetAt(i);
+                row = editSheet.createRow(0);
+                //Setting the Column Title values
+                for (int j = 0; j < courseTable.getColumns().size(); j++) {
+                    row.createCell(j).setCellValue(courseTable.getColumns().get(j).getText());
+                }
+                int k = 1;
+                for (ScheduledActivity item: courseTable.getItems()) {
+                    row = editSheet.createRow(k);
+
+                    String sheetName = StringUtils.substringBefore(editSheet.getSheetName(), "-" + item.getActivity().getCourse().getInstructorName());
+                    if (sheetName.equals(item.getActivity().getCourse().getCourseCode())) {
+                        row.createCell(0).setCellValue(item.getActivity().getCourse().getCourseCode());
+                        row.createCell(1).setCellValue(item.getActivity().getName());
+                        row.createCell(2).setCellValue(item.getActivity().getHoursNeeded());
+                        row.createCell(3).setCellValue(item.getHours());
+                        row.createCell(4).setCellValue(item.getTA().getName());
+                        k++;
+                    }
+
+                }
+            }
+
+            for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
+                XSSFSheet sheet = workbook.getSheetAt(i);
+                if (sheet.getPhysicalNumberOfRows() > 0) {
+                    XSSFRow rowT = sheet.getRow(sheet.getFirstRowNum());
+                    Iterator<Cell> cellIterator = rowT.cellIterator();
+                    while (cellIterator.hasNext()) {
+                        Cell cell = cellIterator.next();
+                        int columnIndex = cell.getColumnIndex();
+                        sheet.autoSizeColumn(columnIndex);
+                    }
+                }
+            }
+
+            Window current = Stage.getWindows().stream().filter(Window::isShowing).findFirst().orElse(null);
+            FileChooser fChooser = new FileChooser();
+            FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Excel Workbook", "*.xlsx");
+            fChooser.getExtensionFilters().add(extFilter);
+            fChooser.setInitialFileName("Generated TA Schedule " + (index + 1));
+            File tempFile = fChooser.showSaveDialog(current);
+
+            if (tempFile != null) {
+                try (FileOutputStream out = new FileOutputStream(tempFile.getAbsolutePath())) {
+                    workbook.write(out);
+                } catch (IOException e) {
+                    Alert errorAlert = new Alert(AlertType.ERROR);
+                    errorAlert.setTitle("Error Occured During Saving");
+                    errorAlert.setHeaderText("Error saving schedule, please close any open schedules and try again.");
+                    errorAlert.showAndWait();
+                    //System.out.println(e);
+                }
+            }
+
+        }
+
+    }
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
