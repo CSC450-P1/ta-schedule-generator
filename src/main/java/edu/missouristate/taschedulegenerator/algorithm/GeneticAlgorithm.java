@@ -161,7 +161,6 @@ public class GeneticAlgorithm implements Runnable, Comparator<int[]> {
 		return schedule;
 	}
 	
-	// TODO: Instead of weighting by hours off, weight by ratio of hours off
 	private int calculateScheduleError(final int[] schedule, final List<String> errorLog) {
 		final boolean log = errorLog != null;
 		int error = 0;
@@ -189,7 +188,7 @@ public class GeneticAlgorithm implements Runnable, Comparator<int[]> {
 			if(schedule[i + 1] > 0) {
 				taHours.put(schedule[i], hours + schedule[i + 1]);
 			} 
-			// TODO: Redo this and add missed TA
+			// TODO: Maybe redo this and add missed TA
 			//else {
 			//	error += MISSED_SECTION;
 			//	if(log) {
@@ -198,12 +197,12 @@ public class GeneticAlgorithm implements Runnable, Comparator<int[]> {
 			//}
 			
 			if(activity.getHoursNeeded() > schedule[i + 1]) {
-				error += ACTIVITY_UNDER_HOURS * (activity.getHoursNeeded() - schedule[i + 1]);
+				error += ACTIVITY_UNDER_HOURS * percentErrorMultiplier(activity.getHoursNeeded(), schedule[i + 1]);
 				if(log) {
 					errorLog.add(String.format("Activity %s under hours", activityName));
 				}
 			} else if(activity.getHoursNeeded() < schedule[i + 1]) {
-				error += ACTIVITY_OVER_HOURS * (schedule[i + 1] - activity.getHoursNeeded());
+				error += ACTIVITY_OVER_HOURS * percentErrorMultiplier(activity.getHoursNeeded(), schedule[i + 1]);
 				if(log) {
 					errorLog.add(String.format("Activity %s over hours", activityName));
 				}
@@ -213,18 +212,22 @@ public class GeneticAlgorithm implements Runnable, Comparator<int[]> {
 			final TA ta = tas.get(i);
 			final int hours = taHours.getOrDefault(i, 0);
 			if(hours > ta.getMaxHours()) {
-				error += TA_OVER_HOURS * (hours - ta.getMaxHours());
+				error += TA_OVER_HOURS * percentErrorMultiplier(ta.getMaxHours(), hours);
 				if(log) {
 					errorLog.add(String.format("TA %s over hours", ta.getName()));
 				}
 			} else if(hours < ta.getMaxHours()) {
-				error += TA_UNDER_HOURS * (ta.getMaxHours() - hours);
+				error += TA_UNDER_HOURS * percentErrorMultiplier(ta.getMaxHours(), hours);
 				if(log) {
 					errorLog.add(String.format("TA %s under hours", ta.getName()));
 				}
 			}
 		}
 		return error >= 0 ? error : Integer.MAX_VALUE; // Just in case of integer overflow
+	}
+	
+	private double percentErrorMultiplier(int expected, int actual) {
+		return (double) Math.abs(expected - actual) + (Math.abs(expected - actual) / (double) expected);
 	}
 
 	@Override
