@@ -10,14 +10,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 import edu.missouristate.taschedulegenerator.domain.Activity;
 import edu.missouristate.taschedulegenerator.domain.Course;
 import edu.missouristate.taschedulegenerator.domain.Schedule;
 import edu.missouristate.taschedulegenerator.domain.TA;
 
-public class TAScheduler implements Supplier<List<Schedule>> {
+public class TAScheduler implements Runnable {
 	
 	private static final long MAX_RUNTIME_MILLISECONDS = 14800l;
 	private static final long SLEEP_TIME_MILLISECONDS = 100l;
@@ -34,7 +33,7 @@ public class TAScheduler implements Supplier<List<Schedule>> {
 		}
 	});
 	
-	public static CompletableFuture<List<Schedule>> schedule(final List<TA> tas, final List<Course> courses, final Consumer<Exception> errorCallback) {
+	public static Future<?> schedule(final List<TA> tas, final List<Course> courses, final Consumer<List<Schedule>> callback, final Consumer<Exception> errorCallback) {
 		final List<Activity> activities = new ArrayList<>();
 		for(final Course course : courses) {
 			final List<Activity> courseActivities = course.getActivities();
@@ -43,23 +42,25 @@ public class TAScheduler implements Supplier<List<Schedule>> {
 			}
 			activities.addAll(courseActivities);
 		}
-		return CompletableFuture.supplyAsync(new TAScheduler(tas, activities, errorCallback), THREAD_POOL);
+		return THREAD_POOL.submit(new TAScheduler(tas, activities, callback, errorCallback));
 	}
 	
 	private final List<TA> tas;
 	private final List<Activity> activities;
 	private final long startTime = System.currentTimeMillis();
+	private final Consumer<List<Schedule>> callback;
 	private final Consumer<Exception> errorCallback;
 	
-	public TAScheduler(final List<TA> tas, final List<Activity> activities, final Consumer<Exception> errorCallback) {
+	public TAScheduler(final List<TA> tas, final List<Activity> activities, final Consumer<List<Schedule>> callback, final Consumer<Exception> errorCallback) {
 		super();
 		this.tas = tas;
 		this.activities = activities;
+		this.callback = callback;
 		this.errorCallback = errorCallback;
 	}
 
 	@Override
-	public List<Schedule> get() {
+	public void run() {
 		final List<Future<?>> threads = new ArrayList<>(MAX_THREADS - 1);
 		final List<CompletableFuture<List<Schedule>>> futures = new ArrayList<>(MAX_THREADS - 1);
 		try {
@@ -71,11 +72,14 @@ public class TAScheduler implements Supplier<List<Schedule>> {
 			while(System.currentTimeMillis() - startTime < MAX_RUNTIME_MILLISECONDS) {
 				try {
 					if(Thread.currentThread().isInterrupted()) {
-						return null;
+						throw new InterruptedException();
 					}
 					Thread.sleep(SLEEP_TIME_MILLISECONDS);
 				} catch (InterruptedException e) {
-					return null;
+					for(final Future<?> thread : threads) {
+						thread.cancel(true);
+					}
+					return;
 				}
 			}
 			for(final Future<?> thread : threads) {
@@ -85,17 +89,16 @@ public class TAScheduler implements Supplier<List<Schedule>> {
 			for(final CompletableFuture<List<Schedule>> future : futures) {
 				bestSchedules.addAll(future.get());
 			}
-			final List<Schedule> sortedBestSchedules = new ArrayList<>(bestSchedules);
+			List<Schedule> sortedBestSchedules = new ArrayList<>(bestSchedules);
 			sortedBestSchedules.sort((s1, s2) -> s1.getError() - s2.getError());
 			if(sortedBestSchedules.size() > MAX_SCHEDULES) {
-				return sortedBestSchedules.subList(0, MAX_SCHEDULES);
+				sortedBestSchedules = sortedBestSchedules.subList(0, MAX_SCHEDULES);
 			}
-			return sortedBestSchedules;
+			callback.accept(sortedBestSchedules);
 		} catch(Exception e) {
 			e.printStackTrace();
 			errorCallback.accept(e);
 		}
-		return null;
 	}
 
 }
