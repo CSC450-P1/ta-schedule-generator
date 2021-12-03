@@ -52,15 +52,14 @@ jlink {
         installerOptions = [
             '--name', 'TA Schedule Generator',
             '--win-per-user-install', '--win-dir-chooser',
-            '--win-menu', '--win-shortcut',
-            '--win-console' // TODO: Remove this in release
+            '--win-menu', '--win-shortcut'
         ]
-        imageOptions += ['--icon', 'src/main/resources/icon.ico']
+         imageOptions += ['--icon', 'src/main/resources/icon.ico']
     }
 }
 
 dependencies {
-	compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.20'
+compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.20'
 	annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.20'
 	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.5'
 	implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.12.5'
