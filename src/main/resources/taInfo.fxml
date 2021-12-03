@@ -18,9 +18,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.missouristate.taschedulegenerator.controllers.TAController" stylesheets="style.css">
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" stylesheets="style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.missouristate.taschedulegenerator.controllers.TAController">
    <children>
-      <Label text="Add TA Information">
+      <Label text="Add TA/GA Information">
          <font>
             <Font name="System Bold" size="48.0" />
          </font>
@@ -70,7 +70,7 @@
       </VBox>
       <VBox spacing="2.0">
          <children>
-            <Label text="Is TA a Graduate Assistant?">
+            <Label text="Is the worker a GA or TA?">
                <font>
                   <Font size="18.0" />
                </font>
@@ -80,7 +80,7 @@
             </Label>
             <HBox>
                <children>
-                  <RadioButton fx:id="YesGAButton" mnemonicParsing="false" text="Yes">
+                  <RadioButton fx:id="YesGAButton" mnemonicParsing="false" text="GA Only">
                      <font>
                         <Font size="14.0" />
                      </font>
@@ -88,7 +88,7 @@
                         <ToggleGroup fx:id="isGA" />
                      </toggleGroup>
                   </RadioButton>
-                  <RadioButton fx:id="NoGAButton" mnemonicParsing="false" selected="true" text="No" toggleGroup="$isGA">
+                  <RadioButton fx:id="NoGAButton" mnemonicParsing="false" selected="true" text="TA" toggleGroup="$isGA">
                      <font>
                         <Font size="14.0" />
                      </font>
