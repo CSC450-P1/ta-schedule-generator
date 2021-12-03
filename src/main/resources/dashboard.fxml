@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="TOP_CENTER" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.missouristate.taschedulegenerator.controllers.DashboardController" stylesheets="style.css">
+<VBox alignment="TOP_CENTER" prefHeight="600.0" prefWidth="800.0" stylesheets="style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.missouristate.taschedulegenerator.controllers.DashboardController">
    <children>
       <GridPane alignment="TOP_CENTER" prefHeight="439.0" prefWidth="800.0" VBox.vgrow="ALWAYS">
         <columnConstraints>
@@ -27,7 +27,7 @@
          <children>
             <AnchorPane prefHeight="200.0" prefWidth="200.0">
                <children>
-                  <Label layoutX="10.0" layoutY="10.0" text="Course Information" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="60.0" AnchorPane.topAnchor="0.0">
+                  <Label layoutX="28.0" text="Course Information" AnchorPane.leftAnchor="28.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="0.0">
                      <font>
                         <Font name="System Bold" size="36.0" />
                      </font>
@@ -46,7 +46,7 @@
             </AnchorPane>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
                <children>
-                  <Label text="TA Information" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="0.0">
+                  <Label layoutX="32.0" text="TA/GA Information" AnchorPane.leftAnchor="32.0" AnchorPane.topAnchor="0.0">
                      <font>
                         <Font name="System Bold" size="36.0" />
                      </font>
@@ -60,7 +60,7 @@
                         </TableView>
                      </content>
                   </ScrollPane>
-                  <Button mnemonicParsing="false" onAction="#addTAInfo" text="Add TA Information" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="0.0" />
+                  <Button mnemonicParsing="false" onAction="#addTAInfo" text="Add TA/GA Information" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="0.0" />
                </children>
             </AnchorPane>
          </children>
