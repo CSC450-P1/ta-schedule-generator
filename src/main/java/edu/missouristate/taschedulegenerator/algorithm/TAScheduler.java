@@ -97,6 +97,9 @@ public class TAScheduler implements Runnable {
 			callback.accept(sortedBestSchedules);
 		} catch(Exception e) {
 			e.printStackTrace();
+			for(final Future<?> thread : threads) {
+				thread.cancel(true);
+			}
 			errorCallback.accept(e);
 		}
 	}
