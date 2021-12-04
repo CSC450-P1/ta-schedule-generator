@@ -15,6 +15,7 @@ import edu.missouristate.taschedulegenerator.domain.Course;
 import edu.missouristate.taschedulegenerator.domain.TimeBlock;
 import edu.missouristate.taschedulegenerator.util.ActionCellFactory;
 import edu.missouristate.taschedulegenerator.util.AppData;
+import edu.missouristate.taschedulegenerator.util.AutoCompleteComboBoxListener;
 import edu.missouristate.taschedulegenerator.util.SceneManager;
 import edu.missouristate.taschedulegenerator.util.SceneManager.Controller;
 import javafx.event.ActionEvent;
@@ -138,6 +139,9 @@ public class CourseController implements Controller<Course>, Initializable {
 		daysOfWeek = Arrays.asList(Monday, Tuesday, Wednesday, Thursday, Friday);
 		startSelection.setItems(AppData.TIMES);
 		endSelection.setItems(AppData.TIMES);
+		
+		AutoCompleteComboBoxListener.addAutoComplete(startSelection);
+        AutoCompleteComboBoxListener.addAutoComplete(endSelection);
 
 		final TableColumn<Activity, String> activityColumn = new TableColumn<>("Activity");
 		activityColumn.setCellValueFactory(new PropertyValueFactory<>("name"));

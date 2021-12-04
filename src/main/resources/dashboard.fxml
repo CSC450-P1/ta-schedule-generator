@@ -8,31 +8,22 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <VBox alignment="TOP_CENTER" prefHeight="600.0" prefWidth="800.0" stylesheets="style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.missouristate.taschedulegenerator.controllers.DashboardController">
    <children>
-      <GridPane alignment="TOP_CENTER" prefHeight="439.0" prefWidth="800.0" VBox.vgrow="ALWAYS">
-        <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-        </columnConstraints>
-        <rowConstraints>
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        </rowConstraints>
+      <HBox prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
          <children>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0">
+            <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Label layoutX="28.0" text="Course Information" AnchorPane.leftAnchor="28.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="0.0">
+                  <Label text="Course Information">
                      <font>
-                        <Font name="System Bold" size="36.0" />
+                        <Font name="Arial Bold" size="36.0" />
                      </font>
                   </Label>
-                  <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="50.0">
+                  <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                      <content>
                         <TableView fx:id="courseTable" prefHeight="121.0" prefWidth="200.0">
                            <columnResizePolicy>
@@ -40,18 +31,25 @@
                            </columnResizePolicy>
                         </TableView>
                      </content>
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" />
+                     </VBox.margin>
                   </ScrollPane>
-                  <Button mnemonicParsing="false" onAction="#addCourseInfo" text="Add Course Information" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="5.0" />
+                  <AnchorPane>
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#addCourseInfo" text="Add Course Information" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
+                     </children>
+                  </AnchorPane>
                </children>
-            </AnchorPane>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
+            </VBox>
+            <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Label layoutX="32.0" text="TA/GA Information" AnchorPane.leftAnchor="32.0" AnchorPane.topAnchor="0.0">
+                  <Label text="TA/GA Information">
                      <font>
-                        <Font name="System Bold" size="36.0" />
+                        <Font name="Arial Bold" size="36.0" />
                      </font>
                   </Label>
-                  <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0">
+                  <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                      <content>
                         <TableView fx:id="TAtable" prefHeight="121.0" prefWidth="200.0" styleClass="tables">
                            <columnResizePolicy>
@@ -59,15 +57,19 @@
                            </columnResizePolicy>
                         </TableView>
                      </content>
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" />
+                     </VBox.margin>
                   </ScrollPane>
-                  <Button mnemonicParsing="false" onAction="#addTAInfo" text="Add TA/GA Information" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="0.0" />
+                  <AnchorPane>
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#addTAInfo" text="Add TA/GA Information" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
+                     </children>
+                  </AnchorPane>
                </children>
-            </AnchorPane>
+            </VBox>
          </children>
-         <opaqueInsets>
-            <Insets />
-         </opaqueInsets>
-      </GridPane>
+      </HBox>
       <Separator prefWidth="200.0">
          <padding>
             <Insets bottom="5.0" top="5.0" />
@@ -81,7 +83,7 @@
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </padding>
          <font>
-            <Font name="System Bold" size="14.0" />
+            <Font name="Arial Bold" size="14.0" />
          </font>
       </Button>
       <ButtonBar prefHeight="40.0" prefWidth="200.0">
@@ -91,7 +93,7 @@
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding>
                <font>
-                  <Font name="System Bold" size="14.0" />
+                  <Font name="Arial Bold" size="14.0" />
                </font>
             </Button>
         </buttons>

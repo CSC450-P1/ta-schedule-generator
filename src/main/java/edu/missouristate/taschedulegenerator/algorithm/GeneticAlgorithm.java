@@ -69,7 +69,7 @@ public class GeneticAlgorithm implements Runnable, Comparator<int[]> {
 					taHours += ta.getMaxHours();
 				}
 				// If activity needs TA and if TA unavailable times don't intersect with activity time
-				if(!(activity.isMustBeTA() && ta.isGA()) &&
+				if((ta.isTA() || !activity.isMustBeTA()) &&
 						(activity.getTime() == null || ta.getNotAvailable().stream().noneMatch(notAvailable -> notAvailable.intersects(activity.getTime())))) {
 					tasForActivity.add(taIdx);
 				}
