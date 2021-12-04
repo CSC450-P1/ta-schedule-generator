@@ -1,7 +1,3 @@
-* {
-	-fx-font-family: "Arial";
-}
-
 .root {
     -fx-accent: #333;
     -fx-focus-color: #333;
