@@ -293,7 +293,8 @@ public class ScheduleController implements Controller<Void>, Initializable{
 			System.out.println("All Schedules Errors: " + schedules.stream().map(s -> String.valueOf(s.getError())).collect(Collectors.joining("\n")));
 		},
 		(ex) -> {
-			// TODO: Show error message here
+			showErrorMessage("An error occurred while generating schedules. Please check your course and TA/GA information for any errors.");
+			SceneManager.showScene("dashboard");
 		});
 	}
 	
