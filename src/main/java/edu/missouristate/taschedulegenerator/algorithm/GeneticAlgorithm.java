@@ -99,6 +99,7 @@ public class GeneticAlgorithm implements Runnable, Comparator<int[]> {
 		}
 		final LinkedHashSet<Schedule> bestSchedules = new LinkedHashSet<>();
 		for(int i = 0; bestSchedules.size() < SCHEDULE_RETURN_COUNT && i < POPULATION_SIZE; i++) {
+			repair(population[i]);
 			final List<ScheduledActivity> scheduledActivities = new ArrayList<>(activities.size());
 			for(int j = 0; j < geneLength - 1; j += 2) {
 				scheduledActivities.add(new ScheduledActivity(activities.get(j / 2), tas.get(population[i][j]), population[i][j + 1]));
@@ -242,6 +243,37 @@ public class GeneticAlgorithm implements Runnable, Comparator<int[]> {
 			s2[geneLength - 1] = calculateScheduleError(s2, null);
 		}
 		return s1[geneLength - 1] - s2[geneLength - 1];
+	}
+	
+	private void repair(final int[] schedule) {
+		Map<Integer, List<Integer>> activitiesByTA = new HashMap<>();
+		for(int i = 0; i < geneLength - 2; i += 2) {
+			List<Integer> activities = activitiesByTA.getOrDefault(schedule[i], new ArrayList<>());
+			activities.add(i / 2);
+			activitiesByTA.put(schedule[i], activities);
+		}
+		// TA has too many in one activity and too few in another
+		for(List<Integer> activities : activitiesByTA.values()) {
+			while(true) {
+				int[] min = {Integer.MAX_VALUE, -1}, max = {Integer.MIN_VALUE, -1};
+				for(int activityIdx : activities) {
+					int diff = schedule[activityIdx * 2 + 1] - this.activities.get(activityIdx).getHoursNeeded();
+					if(diff < min[0]) {
+						min[0] = diff;
+						min[1] = activityIdx * 2 + 1;
+					}
+					if(diff > max[0]) {
+						max[0] = diff;
+						max[1] = activityIdx * 2 + 1;
+					}
+				}
+				if(min[0] >= 0 || max[0] <= 0) break;
+				schedule[max[1]]--;
+				schedule[min[1]]++;
+			}
+		}
+		// TODO: Two TAs have the activity with same hours, but switching them would join one of them with another activity they are in
+		// TODO: Maybe a combination of both?
 	}
 
 }
