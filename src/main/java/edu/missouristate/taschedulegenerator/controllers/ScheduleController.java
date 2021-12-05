@@ -21,6 +21,7 @@ import edu.missouristate.taschedulegenerator.domain.Schedule;
 import edu.missouristate.taschedulegenerator.domain.Schedule.ScheduledActivity;
 import edu.missouristate.taschedulegenerator.domain.Schedule.ScheduledTA;
 import edu.missouristate.taschedulegenerator.util.AppData;
+import edu.missouristate.taschedulegenerator.util.GUIUtils;
 import edu.missouristate.taschedulegenerator.util.SceneManager;
 import edu.missouristate.taschedulegenerator.util.SceneManager.Controller;
 import javafx.beans.property.SimpleStringProperty;
@@ -31,8 +32,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -73,12 +72,7 @@ public class ScheduleController implements Controller<Void>, Initializable{
 	
 	@FXML
     public void saveSchedule(ActionEvent event) throws IOException {
-        String errorMessage = null;
-        if (taTable.getItems().size() == 0 && courseTable.getItems().size() == 0) {
-            errorMessage = "Please wait until schedules have been generated.";
-            showErrorMessage(errorMessage);
-            // Processing not done - prompt user with Alert
-        } else if (taTable.getItems().size() > 0 && courseTable.getItems().size() > 0) {
+        if (taTable.getItems().size() > 0 && courseTable.getItems().size() > 0) {
 
             // Data has been processed 
             XSSFWorkbook workbook = new XSSFWorkbook();
@@ -174,11 +168,8 @@ public class ScheduleController implements Controller<Void>, Initializable{
                 try (FileOutputStream out = new FileOutputStream(tempFile.getAbsolutePath())) {
                     workbook.write(out);
                 } catch (IOException e) {
-                    Alert errorAlert = new Alert(AlertType.ERROR);
-                    errorAlert.setTitle("Error Occured During Saving");
-                    errorAlert.setHeaderText("Error saving schedule, please close any open schedules and try again.");
-                    errorAlert.showAndWait();
-                    //System.out.println(e);
+                	GUIUtils.showError("Error Occured During Saving", 
+                			"Error saving schedule, please close any open schedules and try again.");
                 }
             }
             workbook.close();
@@ -280,7 +271,9 @@ public class ScheduleController implements Controller<Void>, Initializable{
 			showSchedule();
 		},
 		(ex) -> {
-			showErrorMessage("An error occurred while generating schedules. Please check your course and TA/GA information for any errors.\nError: " + ex.getMessage());
+			GUIUtils.showError("Unexpected output",
+					"An error occurred while generating schedules. Please check your course and TA/GA "
+					+ "information for any errors.\nError: " + ex.getMessage());
 			SceneManager.showScene("dashboard");
 		});
 	}
@@ -326,7 +319,7 @@ public class ScheduleController implements Controller<Void>, Initializable{
             stage.initOwner(Window.getWindows().get(0));
             stage.show();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			System.err.println("Error loading errors.fxml");
 			e.printStackTrace();
 		}
 	}
@@ -335,6 +328,7 @@ public class ScheduleController implements Controller<Void>, Initializable{
 		final Schedule schedule = schedules.get(index);
 		courseTable.setItems(FXCollections.observableArrayList(schedule.getScheduledActivities()));
 		taTable.setItems(FXCollections.observableArrayList(schedule.getActivitiesByTA()));
+		GUIUtils.autoResizeColumns(taTable);
 		scheduleNum.setText("Schedule " + (index + 1) + " of " + schedules.size());
 		ErrorsController.setData(schedule.getError(), schedule.getErrorLog());
 	}
@@ -346,17 +340,9 @@ public class ScheduleController implements Controller<Void>, Initializable{
 			errorMessage = "No schedules available to be displayed.";
 		
 		if(errorMessage != null) {
-			showErrorMessage(errorMessage);
+			GUIUtils.showError("Unexpected output", errorMessage);
 		}
 		
 		return errorMessage == null;
-	}
-	
-	private void showErrorMessage(String message) {
-		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-		alert.setTitle("Warning");
-		alert.setHeaderText("Unexpected output");
-		alert.setContentText(message);
-		alert.showAndWait();
 	}
 }
