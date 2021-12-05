@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -64,9 +65,7 @@ public class ScheduleController implements Controller<Void>, Initializable{
 	
 	@FXML
 	public void backToDashboard(ActionEvent event) {
-		if(Window.getWindows().size() > 1) {
-			((Stage)Window.getWindows().get(1)).close();
-		}
+		ErrorsController.setData(0, Collections.emptyList());
 		SceneManager.showScene("dashboard");
 	}
 	
