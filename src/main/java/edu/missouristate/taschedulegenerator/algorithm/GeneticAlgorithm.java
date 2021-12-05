@@ -18,9 +18,6 @@ import edu.missouristate.taschedulegenerator.domain.Schedule;
 import edu.missouristate.taschedulegenerator.domain.Schedule.ScheduledActivity;
 import edu.missouristate.taschedulegenerator.domain.TA;
 
-/*
- * TODO: Add repair method that fixes simple issues like GA sections having over/under or GAs over/under
- */
 public class GeneticAlgorithm implements Runnable, Comparator<int[]> {
 	
 	private static final int POPULATION_SIZE = 250;
@@ -85,6 +82,7 @@ public class GeneticAlgorithm implements Runnable, Comparator<int[]> {
 		int[][] population = new int[POPULATION_SIZE][];
 		for(int i = 0; i < POPULATION_SIZE; i++) {
 			population[i] = getRandomSchedule();
+			repair(population[i]);
 		}
 		Arrays.sort(population, this);
 		while(!Thread.currentThread().isInterrupted()) {
@@ -159,6 +157,7 @@ public class GeneticAlgorithm implements Runnable, Comparator<int[]> {
 						+ activities.get(entry.getKey()).getHoursNeeded() * taActivityHoursRatio,
 					1.0));
 		}
+		schedule[geneLength - 1] = -1;
 		return schedule;
 	}
 	
@@ -272,8 +271,25 @@ public class GeneticAlgorithm implements Runnable, Comparator<int[]> {
 				schedule[min[1]]++;
 			}
 		}
-		// TODO: Two TAs have the activity with same hours, but switching them would join one of them with another activity they are in
-		// TODO: Maybe a combination of both?
+		// Two TAs have the activity with same hours, but switching them would reduce NOT_ALL_SAME_TA error
+		for(int i = 0; i < geneLength - 3; i += 2) {
+			for(int j = i + 2; j < geneLength - 2; j += 2) {
+				if(schedule[i] == schedule[j] || schedule[i + 1] != schedule[j + 1]) continue;
+				if(schedule[geneLength - 1] == -1) {
+					schedule[geneLength - 1] = calculateScheduleError(schedule, null);
+				}
+				int temp = schedule[i];
+				schedule[i] = schedule[j];
+				schedule[j] = temp;
+				int newError = calculateScheduleError(schedule, null);
+				if(newError < schedule[geneLength - 1]) {
+					schedule[geneLength - 1] = newError;
+				} else {
+					temp = schedule[i];
+					schedule[i] = schedule[j];
+					schedule[j] = temp;
+				}
+			}
+		}
 	}
-
 }
