@@ -273,31 +273,11 @@ public class ScheduleController implements Controller<Void>, Initializable{
 			if(schedules == null) {
 				return;
 			}
+			System.out.println("Generated schedules in " + (System.currentTimeMillis() - startTime) + "ms" );
 			loadingPane.setVisible(false);
 			this.schedules = schedules;
 			this.index = 0;
 			showSchedule();
-			
-			// The code below is just for testing the genetic algorithm
-			System.out.println("Generated " + schedules.size() + " schedules in " + (System.currentTimeMillis() - startTime) + "ms" );
-			System.out.println("Best Generated Schedule:");
-			System.out.println(String.format("%s %10s %s %s", "Course", "Activity", "TA", "Hours"));
-			final Schedule bestSchedule = schedules.get(0);
-			System.out.println("Error Total: " + bestSchedule.getError());
-			for(final ScheduledActivity activity : bestSchedule.getScheduledActivities()) {
-				System.out.println(
-						String.format(
-								"%s %15s %s %dhrs",
-								activity.getActivity().getCourse().getCourseCode(),
-								activity.getActivity().getName(),
-								activity.getTA().getName(),
-								(activity.getHours())
-								)
-						);
-			}
-			System.out.println("Errors:");
-			System.out.println(String.join("\n", bestSchedule.getErrorLog()));
-			System.out.println("All Schedules Errors: " + schedules.stream().map(s -> String.valueOf(s.getError())).collect(Collectors.joining("\n")));
 		},
 		(ex) -> {
 			showErrorMessage("An error occurred while generating schedules. Please check your course and TA/GA information for any errors.\nError: " + ex.getMessage());
