@@ -27,13 +27,17 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -61,6 +65,9 @@ public class ScheduleController implements Controller<Void>, Initializable{
 	
 	@FXML
 	public void backToDashboard(ActionEvent event) {
+		if(Window.getWindows().size() > 1) {
+			((Stage)Window.getWindows().get(1)).close();
+		}
 		SceneManager.showScene("dashboard");
 	}
 	
@@ -324,10 +331,32 @@ public class ScheduleController implements Controller<Void>, Initializable{
 		showSchedule();
 	}
 	
+	@FXML
+	private void showErrors() {
+		if(Window.getWindows().size() > 1) {
+			Window.getWindows().get(1).requestFocus();
+			return;
+		}
+		try {
+			Parent root = FXMLLoader.load(SceneManager.class.getClassLoader().getResource("errors.fxml"));
+			Stage stage = new Stage();
+            stage.setTitle("Schedule Errors");
+            stage.getIcons().add(new Image("/icon.png"));
+            stage.setScene(new Scene(root));
+            stage.initOwner(Window.getWindows().get(0));
+            stage.show();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+ 	
 	private void showSchedule() {
-		courseTable.setItems(FXCollections.observableArrayList(schedules.get(index).getScheduledActivities()));
-		taTable.setItems(FXCollections.observableArrayList(schedules.get(index).getActivitiesByTA()));
+		final Schedule schedule = schedules.get(index);
+		courseTable.setItems(FXCollections.observableArrayList(schedule.getScheduledActivities()));
+		taTable.setItems(FXCollections.observableArrayList(schedule.getActivitiesByTA()));
 		scheduleNum.setText("Schedule " + (index + 1) + " of " + schedules.size());
+		ErrorsController.setData(schedule.getError(), schedule.getErrorLog());
 	}
 	
 	private boolean validateDisplay() {
