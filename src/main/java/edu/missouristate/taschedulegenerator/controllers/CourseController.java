@@ -90,7 +90,7 @@ public class CourseController implements Controller<Course>, Initializable {
 		
 		course.getActivities().add(new Activity(name, mustBeTA, hours, time, course));
 		
-		clearActivityInputs(null);
+		clearActivityInputs();
 	}
 
 	@FXML
@@ -111,15 +111,7 @@ public class CourseController implements Controller<Course>, Initializable {
 		SceneManager.showScene("dashboard", true);
 	}
 	
-	@FXML
-	private void clearActivityInputs(ActionEvent event) {
-		activityName.setText(null);
-		estimatedHours.setText(null);
-		noTA.setSelected(true);
-		daysOfWeek.forEach(day -> day.setSelected(false));
-		startSelection.setValue(null);
-		endSelection.setValue(null);
-	}
+	
 
 	@Override
 	public void initData(Course course) {
@@ -131,7 +123,7 @@ public class CourseController implements Controller<Course>, Initializable {
 		courseCode.setText(course.getCourseCode());
 		instructorName.setText(course.getInstructorName());
 		activityTable.setItems(course.getActivities());
-		clearActivityInputs(null);
+		clearActivityInputs();
 	}
 
 	@Override
@@ -168,6 +160,15 @@ public class CourseController implements Controller<Course>, Initializable {
 					activityTable.getItems().remove(activity);
 				}));
 		activityTable.getColumns().add(actionColumn);
+	}
+	
+	private void clearActivityInputs() {
+		activityName.setText(null);
+		estimatedHours.setText(null);
+		noTA.setSelected(true);
+		daysOfWeek.forEach(day -> day.setSelected(false));
+		startSelection.setValue(null);
+		endSelection.setValue(null);
 	}
 	
 	private boolean validate() {

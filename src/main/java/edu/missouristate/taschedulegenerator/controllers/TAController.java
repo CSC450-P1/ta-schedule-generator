@@ -74,7 +74,7 @@ public class TAController implements Controller<TA>, Initializable {
 
 		ta.getNotAvailable().add(new TimeBlock(beginTime, endTime, daysSelected));
 
-		clearCurrentTimeBlockEntry(null);
+		clearCurrentTimeBlockEntry();
 	}
 	
 	
@@ -145,20 +145,6 @@ public class TAController implements Controller<TA>, Initializable {
 		
 		return errorMessage == null;
 	}
-	
-	@FXML
-	public void clearCurrentTimeBlockEntry(ActionEvent event) {
-		//Restting Day CheckBoxes
-		for(CheckBox day : daysOfWeek) {
-			if(day.isSelected()) {
-				day.setSelected(false);
-			} 
-		}
-		//Resetting Time Selections
-		startSelection.setValue(null);
-		endSelection.setValue(null);
-	}
-	
 
 	@Override
 	public void initData(TA ta) {
@@ -176,7 +162,7 @@ public class TAController implements Controller<TA>, Initializable {
 		}
 		unavailableTable.setItems(ta.getNotAvailable());
 
-		clearCurrentTimeBlockEntry(null);
+		clearCurrentTimeBlockEntry();
 	}
 
 	@Override
@@ -213,6 +199,18 @@ public class TAController implements Controller<TA>, Initializable {
 					unavailableTable.getItems().remove(time);
 				}));
 		unavailableTable.getColumns().add(actionColumn);
+	}
+	
+	public void clearCurrentTimeBlockEntry() {
+		//Restting Day CheckBoxes
+		for(CheckBox day : daysOfWeek) {
+			if(day.isSelected()) {
+				day.setSelected(false);
+			} 
+		}
+		//Resetting Time Selections
+		startSelection.setValue(null);
+		endSelection.setValue(null);
 	}
 
 	private void showErrorMessage(String message) {
