@@ -102,8 +102,8 @@ public class GeneticAlgorithm implements Runnable, Comparator<int[]> {
 			for(int j = 0; j < geneLength - 1; j += 2) {
 				scheduledActivities.add(new ScheduledActivity(activities.get(j / 2), tas.get(population[i][j]), population[i][j + 1]));
 			}
-			final Schedule schedule = new Schedule(scheduledActivities, population[i][geneLength - 1]);
-			calculateScheduleError(population[i], schedule.getErrorLog());
+			final Schedule schedule = new Schedule(scheduledActivities);
+			schedule.setError(calculateScheduleError(population[i], schedule.getErrorLog()));
 			bestSchedules.add(schedule);
 		}
 		completableFuture.complete(new ArrayList<>(bestSchedules));
