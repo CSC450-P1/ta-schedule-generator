@@ -18,7 +18,7 @@ import edu.missouristate.taschedulegenerator.domain.TA;
 
 public class TAScheduler implements Runnable {
 	
-	private static final long MAX_RUNTIME_MILLISECONDS = 14800l;
+	private static final long MAX_RUNTIME_MILLISECONDS = 14750l;
 	private static final long SLEEP_TIME_MILLISECONDS = 100l;
 	
 	private static final int MAX_SCHEDULES = 30;
