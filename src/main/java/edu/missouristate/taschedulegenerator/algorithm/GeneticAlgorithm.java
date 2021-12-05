@@ -20,7 +20,6 @@ import edu.missouristate.taschedulegenerator.domain.TA;
 
 /*
  * TODO: Add repair method that fixes simple issues like GA sections having over/under or GAs over/under
- * TODO: Improve error calculating
  */
 public class GeneticAlgorithm implements Runnable, Comparator<int[]> {
 	
@@ -33,13 +32,11 @@ public class GeneticAlgorithm implements Runnable, Comparator<int[]> {
 	private static final int SCHEDULE_RETURN_COUNT = 10;
 	// Error multipliers
 	private static final int SECTION_OVERLAP = 1000;
-	private static final int MISSED_SECTION = 1000;
 	private static final int TA_OVER_HOURS = 500; // TA got assigned too many hours
-	private static final int TA_UNDER_HOURS = 150; // TA got assigned too few hours
+	private static final int TA_UNDER_HOURS = 125; // TA got assigned too few hours
 	private static final int ACTIVITY_UNDER_HOURS = 100; // Activity got assigned too few hours
 	private static final int ACTIVITY_OVER_HOURS = 50; // Activity got assigned too many hours
 	private static final int NOT_ALL_SAME_TA = 50; // Course activities were assigned to different TAs
-	private static final int RANKINGS_DISTANCE = 5; // The difference between TA course preferences and actual assigned courses
 	
 	private final List<TA> tas;
 	private final List<Activity> activities;
@@ -191,14 +188,7 @@ public class GeneticAlgorithm implements Runnable, Comparator<int[]> {
 			Integer hours = taHours.getOrDefault(schedule[i], 0);	
 			if(schedule[i + 1] > 0) {
 				taHours.put(schedule[i], hours + schedule[i + 1]);
-			} 
-			// TODO: Maybe redo this and add missed TA
-			//else {
-			//	error += MISSED_SECTION;
-			//	if(log) {
-			//		errorLog.add(String.format("Missed Activity %s", activityName));
-			//	}
-			//}
+			}
 			
 			if(activity.getHoursNeeded() > schedule[i + 1]) {
 				error += ACTIVITY_UNDER_HOURS * percentErrorMultiplier(activity.getHoursNeeded(), schedule[i + 1]);
