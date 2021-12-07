@@ -13,6 +13,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+/** JavaDoc comment for public class SceneManager
+*/
 public class SceneManager {
 	
 	private static Stage primaryStage;
@@ -21,6 +23,8 @@ public class SceneManager {
 	
 	private SceneManager() { }
 	
+	/** JavaDoc comment for public method init
+	*/
 	public static void init(final Stage primaryStage, final String ... scenes) {
 		SceneManager.primaryStage = primaryStage;
 		for(final String scene : scenes) {
@@ -41,11 +45,15 @@ public class SceneManager {
 		primaryStage.setScene(new Scene(root));
 	}
 	
+	/** JavaDoc comment for public method showScene
+	*/
 	public static void showScene(final String scene) {
 		final Parent root = scenes.get(scene);
 		primaryStage.getScene().setRoot(root);
 	}
 	
+	/** JavaDoc comment for public method showScene
+	*/
 	public static <T> void showScene(final String scene, T data) {
 		boolean error = false;
 		try {

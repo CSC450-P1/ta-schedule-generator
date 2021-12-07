@@ -14,16 +14,22 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.layout.HBox;
 import javafx.util.Callback;
 
+/** JavaDoc comment for public class ActionCellFactory
+*/
 public class ActionCellFactory<T> implements Callback<TableColumn<T, Void>, TableCell<T, Void>> {
 
     private final Consumer<T> editCallback;
     private final Consumer<T> removeCallback;
 
+	/** JavaDoc comment for public method ActionCellFactory
+	*/
     public ActionCellFactory(final Consumer<T> editCallback, final Consumer<T> removeCallback) {
         this.editCallback = editCallback;
         this.removeCallback = removeCallback;
     }
 
+	/** JavaDoc comment for public method TableCell
+	*/
     @Override
     public TableCell<T, Void> call(TableColumn<T, Void> param) {
         return new ActionCell(editCallback, removeCallback);

@@ -20,6 +20,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+
+/** JavaDoc comment for public class TA
+*/
 public class TA {
     private String name;
     private boolean isGA;

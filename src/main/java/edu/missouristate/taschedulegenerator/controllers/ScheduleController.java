@@ -44,6 +44,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
+/** JavaDoc comment for public class ScheduleController
+*/
 public class ScheduleController implements Controller<Void>, Initializable{
 	
 	private List<Schedule> schedules;
@@ -64,11 +66,15 @@ public class ScheduleController implements Controller<Void>, Initializable{
 	@FXML
 	private TableView<ScheduledActivity> courseTable;
 	
+	/** JavaDoc comment for public method backToDashboard
+	*/
 	@FXML
 	public void backToDashboard(ActionEvent event) {
 		SceneManager.showScene("dashboard");
 	}
-	
+
+	/** JavaDoc comment for public method saveSchedule
+	*/
 	@FXML
     public void saveSchedule(ActionEvent event) throws IOException {
         String errorMessage = null;
@@ -184,6 +190,8 @@ public class ScheduleController implements Controller<Void>, Initializable{
 
     }
 
+	/** JavaDoc comment for public method initialize
+	*/
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		taTable.setEditable(true);
@@ -261,7 +269,9 @@ public class ScheduleController implements Controller<Void>, Initializable{
 		courseTable.getColumns().add(taTableColumn);
 
 	}
-	
+
+	/** JavaDoc comment for public method initData
+	*/
 	@Override
 	public void initData(Void data) {
 		loadingPane.setVisible(true);
@@ -302,6 +312,8 @@ public class ScheduleController implements Controller<Void>, Initializable{
 		});
 	}
 	
+	/** JavaDoc comment for public method cancelButton
+	*/
 	@FXML
 	public void cancelButton(ActionEvent event) {
 		if (generator != null) {
@@ -310,6 +322,8 @@ public class ScheduleController implements Controller<Void>, Initializable{
 		SceneManager.showScene("dashboard");
 	}
 
+	/** JavaDoc comment for public method nextSchedule
+	*/
 	@FXML
 	public void nextSchedule(ActionEvent event) {		
 		if(!validateDisplay()) {
@@ -318,7 +332,9 @@ public class ScheduleController implements Controller<Void>, Initializable{
 		index = (index + 1) % schedules.size();
 		showSchedule();
 	}
-	
+
+	/** JavaDoc comment for public method previousSchedule
+	*/	
 	@FXML
 	public void previousSchedule(ActionEvent event) {
 		if(!validateDisplay()) {

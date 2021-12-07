@@ -16,6 +16,9 @@ import javafx.collections.ObservableList;
 import lombok.Data;
 
 @Data
+
+/** JavaDoc comment for public class Schedule
+*/
 public class Schedule {
 	
 	private final List<ScheduledActivity> scheduledActivities;
@@ -40,6 +43,9 @@ public class Schedule {
 	}
 
 	@Data
+
+	/** JavaDoc comment for public class ScheduleActivity
+	*/
 	public static class ScheduledActivity {
 		
 		private final Activity activity;
@@ -53,6 +59,9 @@ public class Schedule {
 	}
 	
 	@Data
+
+	/** JavaDoc comment for public class ScheduledTA
+	*/
 	public static class ScheduledTA {
 		
 		private final TA ta;

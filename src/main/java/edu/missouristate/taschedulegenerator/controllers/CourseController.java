@@ -34,6 +34,10 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+/**JavaDoc comment for public class CourseController
+*
+*/
+
 public class CourseController implements Controller<Course>, Initializable {
 	
 	@FXML
@@ -63,11 +67,15 @@ public class CourseController implements Controller<Course>, Initializable {
 	private boolean isNew;
 	private Course course;
 
+	/** JavaDoc comment for public method cancel
+	*/
 	@FXML
 	public void cancel(ActionEvent event) {
 		SceneManager.showScene("dashboard");
 	}
 
+	/** JavaDoc comment for public method addActivity
+	*/
 	@FXML
 	public void addActivity(ActionEvent event) {
 		if(!validateActivity()) {
@@ -97,6 +105,8 @@ public class CourseController implements Controller<Course>, Initializable {
 		clearActivityInputs(null);
 	}
 
+	/** JavaDoc comment for public method saveCourseInfo
+	*/
 	@FXML
 	public void saveCourseInfo(ActionEvent event) {
 		if(!validate()) {
@@ -115,6 +125,8 @@ public class CourseController implements Controller<Course>, Initializable {
 		SceneManager.showScene("dashboard", true);
 	}
 	
+	/** JavaDoc comment for public method clearActivityInputs
+	*/
 	@FXML
 	private void clearActivityInputs(ActionEvent event) {
 		activityName.setText(null);
@@ -125,6 +137,8 @@ public class CourseController implements Controller<Course>, Initializable {
 		endSelection.setValue(null);
 	}
 
+	/** JavaDoc comment for public method initData
+	*/
 	@Override
 	public void initData(Course course) {
 		isNew = course == null;
@@ -138,6 +152,8 @@ public class CourseController implements Controller<Course>, Initializable {
 		clearActivityInputs(null);
 	}
 
+	/** JavaDoc comment for public method initialize
+	*/
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		daysOfWeek = Arrays.asList(Monday, Tuesday, Wednesday, Thursday, Friday);

@@ -22,6 +22,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+/** JavaDoc comment for public class DashboardController
+*/
 public class DashboardController implements Controller<Boolean> , Initializable {
 	
 	@FXML
@@ -30,23 +32,30 @@ public class DashboardController implements Controller<Boolean> , Initializable 
 	@FXML 
 	private TableView<Course> courseTable;
 	
+	/** JavaDoc comment for public method addCourseInfo
+	*/
 	@FXML
 	public void addCourseInfo(ActionEvent event) {
 		// This is an example of how to switch scenes and pass data to the new scene's controller to process before showing
 		SceneManager.showScene("courseInfo", null);
 	}
 	
+	/** JavaDoc comment for public method addTAInfo
+	*/
 	@FXML
 	public void addTAInfo(ActionEvent event) {
 		SceneManager.showScene("taInfo", null);
 	}
 	
+	/** JavaDoc comment for public method generateSchedules
+	*/
 	@FXML
 	public void generateSchedules(ActionEvent event) {
 		SceneManager.showScene("schedules", null);
 	}
 
-	
+	/** JavaDoc comment for public method initialize
+	*/
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		//Course Table
@@ -91,6 +100,8 @@ public class DashboardController implements Controller<Boolean> , Initializable 
 		
 	}
 
+	/** JavaDoc comment for public method initData
+	*/
 	@Override
 	public void initData(Boolean refresh) {
 		if(refresh) {
@@ -99,6 +110,8 @@ public class DashboardController implements Controller<Boolean> , Initializable 
 			}
 	}
 
+	/** JavaDoc comment for public method clearInfo
+	*/
 	@FXML
 	public void clearInfo(ActionEvent event) {
 		AppData.getCourses().clear();

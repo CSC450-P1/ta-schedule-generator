@@ -18,6 +18,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+
+/** JavaDoc comment for public class TimeBlock
+*/
 public class TimeBlock {
 	
 	private LocalTime startTime;

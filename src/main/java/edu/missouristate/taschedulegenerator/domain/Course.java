@@ -20,6 +20,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+
+/** JavaDoc comment for public class Course
+*/
 public class Course {
     private String courseCode;
     private String instructorName;

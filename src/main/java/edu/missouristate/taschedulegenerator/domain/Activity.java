@@ -17,6 +17,9 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+
+/** JavaDoc comment for public class Activity
+*/
 public class Activity {
 	
 	private String name;

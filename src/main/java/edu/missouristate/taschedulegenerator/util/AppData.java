@@ -26,6 +26,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
+/** JavaDoc comment for public class AppData
+*/
 public class AppData {
 	
 	public static final ObservableList<String> TIMES;
@@ -51,14 +53,20 @@ public class AppData {
 	
 	private AppData() {}
 
+	/** JavaDoc comment for public method getCourses
+	*/
 	public static ObservableList<Course> getCourses() {
 		return courses;
 	}
 	
+	/** JavaDoc comment for public method getTAs
+	*/
 	public static ObservableList<TA> getTAs() {
 		return tas;
 	}
 	
+	/** JavaDoc comment for public method load
+	*/
 	public static void load() {
 		if(SAVE_FILE.exists()) {
 			try {
@@ -88,6 +96,8 @@ public class AppData {
 		});
 	}
 	
+	/** JavaDoc comment for public method save
+	*/
 	public static void save() {
 		try {
 			MAPPER.writeValue(SAVE_FILE, new CoursesAndTAs(courses, tas));
@@ -97,6 +107,8 @@ public class AppData {
 		}
 	}
 	
+	/** JavaDoc comment for public method generateSchedules
+	*/
 	public static Future<?> generateSchedules(final Consumer<List<Schedule>> callback, final Consumer<Exception> errorCallback) {
 		return TAScheduler.schedule(tas, courses,
 				schedules -> {

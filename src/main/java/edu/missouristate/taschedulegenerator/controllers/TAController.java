@@ -37,6 +37,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 
+/** JavaDoc comment for public class TAController
+*/
 public class TAController implements Controller<TA>, Initializable {
 	
 	@FXML
@@ -62,6 +64,8 @@ public class TAController implements Controller<TA>, Initializable {
 	private boolean isNew;
 	private TA ta;
 	
+	/** JavaDoc comment for public method addTimeUnavailable
+	*/
 	@FXML
 	public void addTimeUnavailable(ActionEvent event) {
 		if(!validateTimeUnavailable()) {
@@ -81,12 +85,15 @@ public class TAController implements Controller<TA>, Initializable {
 		clearCurrentTimeBlockEntry(null);
 	}
 	
-	
+	/** JavaDoc comment for public method cancel
+	*/
 	@FXML
 	public void cancel(ActionEvent event) {
 		SceneManager.showScene("dashboard");
 	}
 	
+	/** JavaDoc comment for public method saveTAInfo
+	*/
 	@FXML
 	public void saveTAInfo(ActionEvent event) {
 		if(!validate()) {
@@ -150,6 +157,8 @@ public class TAController implements Controller<TA>, Initializable {
 		return errorMessage == null;
 	}
 	
+	/** JavaDoc comment for public method clearCurrentTimeBlockEntry
+	*/
 	@FXML
 	public void clearCurrentTimeBlockEntry(ActionEvent event) {
 		//Restting Day CheckBoxes
@@ -163,7 +172,8 @@ public class TAController implements Controller<TA>, Initializable {
 		endSelection.setValue(null);
 	}
 	
-
+	/** JavaDoc comment for public method initData
+	*/
 	@Override
 	public void initData(TA ta) {
 		isNew = ta == null;
@@ -183,6 +193,8 @@ public class TAController implements Controller<TA>, Initializable {
 		clearCurrentTimeBlockEntry(null);
 	}
 
+	/** JavaDoc comment for public method initialize
+	*/
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		daysOfWeek = Arrays.asList(Monday, Tuesday, Wednesday, Thursday, Friday);
