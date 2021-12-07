@@ -1,0 +1,36 @@
+.root {
+    -fx-accent: #333;
+    -fx-focus-color: #333;
+    -fx-background-color: white;
+}
+
+.button{
+    -fx-color: #5E0009;
+}
+.button:hover{
+    -fx-color: #87000c;
+}
+
+.label{
+    -fx-text-fill: #5E0009;
+}
+
+.text-field:focused, .radio-button:focused, .check-box:focused, .combo-box:focused, .button:focused{
+    -fx-faint-focus-color: #33333333;
+    -fx-focus-color: #333;
+}
+.table-view .table-cell{
+    -fx-font-size:14px;
+}
+
+.table-view .table-cell .button {
+	-fx-font-size:12px;
+}
+
+.check-box:selected .mark {
+    -fx-background-color: #5E0009;
+}
+.radio-button:selected .radio .dot {
+    -fx-background-color: #5E0009;
+    -fx-background-insets: 0;
+}

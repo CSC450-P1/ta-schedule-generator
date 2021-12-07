@@ -19,7 +19,7 @@ REV###      Name     Date     Description
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="TOP_CENTER" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.missouristate.taschedulegenerator.controllers.DashboardController">
+<VBox alignment="TOP_CENTER" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.missouristate.taschedulegenerator.controllers.DashboardController" stylesheets="style.css">
    <children>
       <GridPane alignment="TOP_CENTER" prefHeight="439.0" prefWidth="800.0" VBox.vgrow="ALWAYS">
         <columnConstraints>
@@ -58,7 +58,7 @@ REV###      Name     Date     Description
                   </Label>
                   <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0">
                      <content>
-                        <TableView fx:id="TAtable" prefHeight="121.0" prefWidth="200.0">
+                        <TableView fx:id="TAtable" prefHeight="121.0" prefWidth="200.0" styleClass="tables">
                            <columnResizePolicy>
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                            </columnResizePolicy>

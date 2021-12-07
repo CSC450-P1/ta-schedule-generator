@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -39,10 +39,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import javafx.scene.layout.Pane;
 
 public class ScheduleController implements Controller<Void>, Initializable{
 	
@@ -50,7 +50,7 @@ public class ScheduleController implements Controller<Void>, Initializable{
 	
 	private int index = 0;
 	
-	private CompletableFuture<List<Schedule>> generator = null;
+	private Future<?> generator = null;
 	
 	@FXML
 	private Pane loadingPane;

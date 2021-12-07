@@ -17,7 +17,7 @@ REV###      Name     Date     Description
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<StackPane xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.missouristate.taschedulegenerator.controllers.ScheduleController">
+<StackPane xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.missouristate.taschedulegenerator.controllers.ScheduleController" stylesheets="style.css">
    <children>
       <VBox alignment="CENTER" prefHeight="600.0" prefWidth="800.0">
          <children>
@@ -50,9 +50,9 @@ REV###      Name     Date     Description
                   </Button>
                </right>
             </BorderPane>
-            <ScrollPane fitToHeight="true" fitToWidth="true" style="-fx-background-color: transparent;" VBox.vgrow="ALWAYS">
+            <ScrollPane fitToHeight="true" fitToWidth="true" style="-fx-background-color: white;" VBox.vgrow="ALWAYS">
                <content>
-                  <VBox prefHeight="200.0" prefWidth="100.0">
+                  <VBox prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: white;">
                      <children>
                         <Label text="TA Schedules">
                            <font>

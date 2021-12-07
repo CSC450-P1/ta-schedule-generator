@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -97,13 +97,12 @@ public class AppData {
 		}
 	}
 	
-	public static CompletableFuture<List<Schedule>> generateSchedules(final Consumer<List<Schedule>> callback, final Consumer<Exception> errorCallback) {
-		final CompletableFuture<List<Schedule>> future = TAScheduler.schedule(tas, courses, 
-				(e) -> Platform.runLater(() -> errorCallback.accept(e)));
-		future.thenAccept(schedules -> {
-			Platform.runLater(() -> callback.accept(schedules));
-		});
-		return future;
+	public static Future<?> generateSchedules(final Consumer<List<Schedule>> callback, final Consumer<Exception> errorCallback) {
+		return TAScheduler.schedule(tas, courses,
+				schedules -> {
+					Platform.runLater(() -> callback.accept(schedules));
+				},
+				e -> Platform.runLater(() -> errorCallback.accept(e)));
 	}
 
 }
