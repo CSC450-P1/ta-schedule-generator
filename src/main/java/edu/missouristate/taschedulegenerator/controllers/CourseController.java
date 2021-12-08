@@ -15,12 +15,13 @@ import edu.missouristate.taschedulegenerator.domain.Course;
 import edu.missouristate.taschedulegenerator.domain.TimeBlock;
 import edu.missouristate.taschedulegenerator.util.ActionCellFactory;
 import edu.missouristate.taschedulegenerator.util.AppData;
+import edu.missouristate.taschedulegenerator.util.AutoCompleteComboBoxListener;
+import edu.missouristate.taschedulegenerator.util.GUIUtils;
 import edu.missouristate.taschedulegenerator.util.SceneManager;
 import edu.missouristate.taschedulegenerator.util.SceneManager.Controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.RadioButton;
@@ -89,7 +90,7 @@ public class CourseController implements Controller<Course>, Initializable {
 		
 		course.getActivities().add(new Activity(name, mustBeTA, hours, time, course));
 		
-		clearActivityInputs(null);
+		clearActivityInputs();
 	}
 
 	@FXML
@@ -110,15 +111,7 @@ public class CourseController implements Controller<Course>, Initializable {
 		SceneManager.showScene("dashboard", true);
 	}
 	
-	@FXML
-	private void clearActivityInputs(ActionEvent event) {
-		activityName.setText(null);
-		estimatedHours.setText(null);
-		noTA.setSelected(true);
-		daysOfWeek.forEach(day -> day.setSelected(false));
-		startSelection.setValue(null);
-		endSelection.setValue(null);
-	}
+	
 
 	@Override
 	public void initData(Course course) {
@@ -130,7 +123,7 @@ public class CourseController implements Controller<Course>, Initializable {
 		courseCode.setText(course.getCourseCode());
 		instructorName.setText(course.getInstructorName());
 		activityTable.setItems(course.getActivities());
-		clearActivityInputs(null);
+		clearActivityInputs();
 	}
 
 	@Override
@@ -138,6 +131,9 @@ public class CourseController implements Controller<Course>, Initializable {
 		daysOfWeek = Arrays.asList(Monday, Tuesday, Wednesday, Thursday, Friday);
 		startSelection.setItems(AppData.TIMES);
 		endSelection.setItems(AppData.TIMES);
+		
+		AutoCompleteComboBoxListener.addAutoComplete(startSelection);
+        AutoCompleteComboBoxListener.addAutoComplete(endSelection);
 
 		final TableColumn<Activity, String> activityColumn = new TableColumn<>("Activity");
 		activityColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -166,6 +162,15 @@ public class CourseController implements Controller<Course>, Initializable {
 		activityTable.getColumns().add(actionColumn);
 	}
 	
+	private void clearActivityInputs() {
+		activityName.setText(null);
+		estimatedHours.setText(null);
+		noTA.setSelected(true);
+		daysOfWeek.forEach(day -> day.setSelected(false));
+		startSelection.setValue(null);
+		endSelection.setValue(null);
+	}
+	
 	private boolean validate() {
 		String errorMessage = null;
 		if(StringUtils.isBlank(courseCode.getText())) {
@@ -177,7 +182,7 @@ public class CourseController implements Controller<Course>, Initializable {
 		}
 		
 		if(errorMessage != null) {
-			showErrorMessage(errorMessage);
+			GUIUtils.showError("Invalid Data Entry", errorMessage);
 		}
 		
 		return errorMessage == null;
@@ -206,18 +211,10 @@ public class CourseController implements Controller<Course>, Initializable {
 		}
 		
 		if(errorMessage != null) {
-			showErrorMessage(errorMessage);
+			GUIUtils.showError("Invalid Data Entry", errorMessage);
 		}
 		
 		return errorMessage == null;
-	}
-	
-	private void showErrorMessage(String message) {
-		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-		alert.setTitle("Warning");
-		alert.setHeaderText("Invalid Data Entry");
-		alert.setContentText(message);
-		alert.showAndWait();
 	}
 
 }
