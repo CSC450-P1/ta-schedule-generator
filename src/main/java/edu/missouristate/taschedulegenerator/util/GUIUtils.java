@@ -8,8 +8,19 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.text.Text;
 
+/**
+ * Utility class that provides useful GUI related methods.
+ * 
+ * @author Noah Geren
+ *
+ */
 public class GUIUtils {
 
+	/**
+	 * Attempts to resize the columns of a table to take up the proper amount of space.
+	 * 
+	 * @param table The table of which columns should be resized.
+	 */
 	public static void autoResizeColumns(TableView<?> table) {
 		// Set the right policy
 		table.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
@@ -46,6 +57,12 @@ public class GUIUtils {
 		
 	}
 	
+	/**
+	 * Shows an error popup alert.
+	 * 
+	 * @param header The header of the alert.
+	 * @param message The message of the alert.
+	 */
 	public static void showError(String header, String message) {
 		Alert alert = new Alert(Alert.AlertType.ERROR);
 		alert.setTitle("Error");

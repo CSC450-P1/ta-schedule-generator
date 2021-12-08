@@ -18,7 +18,15 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+/**
+ * Controller for the dashboard scene.
+ * 
+ * @author Noah Geren, Cody Sullins, Corey Rusher, Keegan Maynard
+ *
+ */
 public class DashboardController implements Controller<Boolean> , Initializable {
+	
+	// All @FMXL fields are injected from the dashboard scene
 	
 	@FXML
 	private TableView<TA> TAtable;
@@ -26,19 +34,38 @@ public class DashboardController implements Controller<Boolean> , Initializable 
 	@FXML 
 	private TableView<Course> courseTable;
 	
+	/**
+	 * Shows the courseInfo scene.
+	 * 
+	 * @param event The event that triggered this method.
+	 * @see SceneManager
+	 */
 	@FXML
 	public void addCourseInfo(ActionEvent event) {
 		// This is an example of how to switch scenes and pass data to the new scene's controller to process before showing
 		SceneManager.showScene("courseInfo", null);
 	}
 	
+	/**
+	 * Shows the taInfo scene.
+	 * 
+	 * @param event The event that triggered this method.
+	 * @see SceneManager
+	 */
 	@FXML
 	public void addTAInfo(ActionEvent event) {
 		SceneManager.showScene("taInfo", null);
 	}
 	
+	/**
+	 * Shows the schedules scene.
+	 * 
+	 * @param event The event that triggered this method.
+	 * @see SceneManager
+	 */
 	@FXML
 	public void generateSchedules(ActionEvent event) {
+		// Cannot generate schedules if there are no courses or TAs
 		if(AppData.getCourses().isEmpty() || AppData.getTAs().isEmpty()) {
 			GUIUtils.showError("Invalid Data Entry", "There must be at least one course and one TA/GA to generate schedules.");
 			return;
@@ -47,6 +74,9 @@ public class DashboardController implements Controller<Boolean> , Initializable 
 	}
 
 	
+	/**
+	 * Setups up any fields or tables that are included in the scene.
+	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		//Course Table
@@ -63,10 +93,10 @@ public class DashboardController implements Controller<Boolean> , Initializable 
 		
 		final TableColumn<Course, Void> courseActionColumn = new TableColumn<>("Action");
 		courseActionColumn.setCellFactory(new ActionCellFactory<>(
-				(course) -> {
+				(course) -> { // Edit
 					SceneManager.showScene("courseInfo", course);
 				},
-				(course) -> {
+				(course) -> { // Remove
 					AppData.getCourses().remove(course);
 				}));
 		courseTable.getColumns().add(courseActionColumn);
@@ -91,6 +121,11 @@ public class DashboardController implements Controller<Boolean> , Initializable 
 		
 	}
 
+	/**
+	 * Refreshes the course and TA tables if refresh is true.
+	 * 
+	 * @param refresh If the tables should be refreshed.
+	 */
 	@Override
 	public void initData(Boolean refresh) {
 		if(refresh) {
@@ -99,6 +134,11 @@ public class DashboardController implements Controller<Boolean> , Initializable 
 			}
 	}
 
+	/**
+	 * Clears the existing course and TA data.
+	 * 
+	 * @param event The event that triggered this method.
+	 */
 	@FXML
 	public void clearInfo(ActionEvent event) {
 		AppData.getCourses().clear();

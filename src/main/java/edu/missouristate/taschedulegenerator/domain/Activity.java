@@ -8,20 +8,40 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-
+/**
+ * Represents a course activity.
+ * 
+ * @author Carlos Izaguirre
+ *
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 public class Activity {
 	
+	/**
+	 * The activity name. Ex. Grading or Lab
+	 */
 	private String name;
 	
+	/**
+	 * True if the activity must be assisted by a TA (rather than only a GA)
+	 */
 	private boolean mustBeTA;
 	
+	/**
+	 * The estimated weekly hours needed.
+	 */
 	private int hoursNeeded;
 
+	/**
+	 * The time that a TA must be available for.
+	 */
 	private TimeBlock time;
 	
+	/**
+	 * The course that this activity belongs to.
+	 */
 	@ToString.Exclude
 	@EqualsAndHashCode.Exclude
 	@JsonIgnore

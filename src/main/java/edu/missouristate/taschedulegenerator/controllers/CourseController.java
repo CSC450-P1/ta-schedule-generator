@@ -30,7 +30,15 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+/**
+ * Controller for the courseInfo scene.
+ * 
+ * @author Noah Geren, Corey Rusher
+ *
+ */
 public class CourseController implements Controller<Course>, Initializable {
+	
+	// All @FMXL fields are injected from the courseInfo scene
 	
 	@FXML
 	private TextField courseCode;
@@ -54,22 +62,44 @@ public class CourseController implements Controller<Course>, Initializable {
 	@FXML private ComboBox<String> endSelection;
 	@FXML private TableView<Activity> activityTable;
 	
+	/**
+	 * Contains each day of the week checkbox.
+	 */
 	private List<CheckBox> daysOfWeek = null;
 	
+	/**
+	 * Used for creating new course vs. editing a course
+	 */
 	private boolean isNew;
+	/**
+	 * The course being created or edited.
+	 */
 	private Course course;
 
+	/**
+	 * Cancels creating/editing a course. Returns back to dashboard scene.
+	 * 
+	 * @param event The event that triggered this method.
+	 * @see SceneManager
+	 */
 	@FXML
 	public void cancel(ActionEvent event) {
 		SceneManager.showScene("dashboard");
 	}
 
+	/**
+	 * Validates the current activity fields. If valid then it adds the activity to the course's activity list.
+	 * 
+	 * @param event The event that triggered this method.
+	 */
 	@FXML
 	public void addActivity(ActionEvent event) {
+		// Validate activity fields
 		if(!validateActivity()) {
 			return;
 		}
 		
+		// Collect data for new activity
 		final String name = activityName.getText();
 		final int hours = Integer.parseInt(estimatedHours.getText());
 		final boolean mustBeTA = yesTA.isSelected();
@@ -88,11 +118,18 @@ public class CourseController implements Controller<Course>, Initializable {
 			time = new TimeBlock(startTime, endTime, daysSelected);
 		}
 		
+		// Add new activity
 		course.getActivities().add(new Activity(name, mustBeTA, hours, time, course));
 		
+		// Clear activity fields
 		clearActivityInputs();
 	}
 
+	/**
+	 * Validates course info fields. If valid then either saves the the new course or updates the course being edited.
+	 * 
+	 * @param event The event that triggered this method.
+	 */
 	@FXML
 	public void saveCourseInfo(ActionEvent event) {
 		if(!validate()) {
@@ -111,8 +148,11 @@ public class CourseController implements Controller<Course>, Initializable {
 		SceneManager.showScene("dashboard", true);
 	}
 	
-	
-
+	/**
+	 * Initializes data for the courseInfo scene.
+	 * 
+	 * @param course The course that is being edited. Should be null if creating a new course.
+	 */
 	@Override
 	public void initData(Course course) {
 		isNew = course == null;
@@ -126,22 +166,28 @@ public class CourseController implements Controller<Course>, Initializable {
 		clearActivityInputs();
 	}
 
+	/**
+	 * Setups up any fields or tables that are included in the scene.
+	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		daysOfWeek = Arrays.asList(Monday, Tuesday, Wednesday, Thursday, Friday);
+		// Populate start and end time options
 		startSelection.setItems(AppData.TIMES);
 		endSelection.setItems(AppData.TIMES);
-		
+		// Setup autocomplete for start and end times
 		AutoCompleteComboBoxListener.addAutoComplete(startSelection);
         AutoCompleteComboBoxListener.addAutoComplete(endSelection);
 
+        // Setup activity table columns
 		final TableColumn<Activity, String> activityColumn = new TableColumn<>("Activity");
 		activityColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 		activityTable.getColumns().add(activityColumn);
 		
 		final TableColumn<Activity, Void> actionColumn = new TableColumn<>("Action");
 		actionColumn.setCellFactory(new ActionCellFactory<>(
-				(activity) -> {
+				(activity) -> { // Edit button clicked
+					// Populate activity fields
 					activityName.setText(activity.getName());
 					estimatedHours.setText(String.valueOf(activity.getHoursNeeded()));
 					if(activity.isMustBeTA()) {
@@ -156,12 +202,15 @@ public class CourseController implements Controller<Course>, Initializable {
 					}
 					activityTable.getItems().remove(activity);
 				},
-				(activity) -> {
+				(activity) -> { // Remove button clicked
 					activityTable.getItems().remove(activity);
 				}));
 		activityTable.getColumns().add(actionColumn);
 	}
 	
+	/**
+	 * Clears the activity input fields.
+	 */
 	private void clearActivityInputs() {
 		activityName.setText(null);
 		estimatedHours.setText(null);
@@ -171,6 +220,11 @@ public class CourseController implements Controller<Course>, Initializable {
 		endSelection.setValue(null);
 	}
 	
+	/**
+	 * Validates the course info fields. Course code and instructor name cannot be empty. There also must be at least one activity.
+	 * 
+	 * @return True if the course info fields are valid.
+	 */
 	private boolean validate() {
 		String errorMessage = null;
 		if(StringUtils.isBlank(courseCode.getText())) {
@@ -188,6 +242,11 @@ public class CourseController implements Controller<Course>, Initializable {
 		return errorMessage == null;
 	}
 	
+	/**
+	 * Validates the activity info fields.
+	 * 
+	 * @return True if the activity fields are valid.
+	 */
 	private boolean validateActivity() {
 		String errorMessage = null;
 		

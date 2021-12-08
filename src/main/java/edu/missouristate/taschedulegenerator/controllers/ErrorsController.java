@@ -16,11 +16,24 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
+/**
+ * Controller for the errors scene.
+ * 
+ * @author Noah Geren
+ *
+ */
 public class ErrorsController implements Initializable {
 	
+	/**
+	 * Stores the error log messages.
+	 */
 	private static ObservableList<String> errors = FXCollections.observableArrayList();
-	
+	/**
+	 * Stores the error value.
+	 */
 	private static SimpleIntegerProperty error = new SimpleIntegerProperty(0);
+	
+	// All @FMXL fields are injected from the errors scene
 	
 	@FXML
 	private TableView<String> errorTable;
@@ -28,6 +41,9 @@ public class ErrorsController implements Initializable {
 	@FXML
 	private Label totalError;
 
+	/**
+	 * Setups up any fields or tables that are included in the scene.
+	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		errorTable.setPlaceholder(new Label("No errors."));
@@ -45,6 +61,12 @@ public class ErrorsController implements Initializable {
 		});
 	}
 	
+	/**
+	 * Sets the displayed error value and error messages.
+	 * 
+	 * @param error The error value to be displayed.
+	 * @param errors The error messages to be displayed.
+	 */
 	public static void setData(int error, List<String> errors) {
 		ErrorsController.error.set(error);
 		ErrorsController.errors.setAll(errors);

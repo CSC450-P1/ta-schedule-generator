@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"edu.missouristate.taschedulegenerator"},{"l":"edu.missouristate.taschedulegenerator.algorithm"},{"l":"edu.missouristate.taschedulegenerator.controllers"},{"l":"edu.missouristate.taschedulegenerator.domain"},{"l":"edu.missouristate.taschedulegenerator.util"}]
