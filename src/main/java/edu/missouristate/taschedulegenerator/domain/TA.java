@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TA {
     private String name;
-    private boolean isGA;
+    private boolean isTA;
     private int maxHours = 20;
     private ObservableList < TimeBlock > notAvailable = FXCollections.observableArrayList();
 
