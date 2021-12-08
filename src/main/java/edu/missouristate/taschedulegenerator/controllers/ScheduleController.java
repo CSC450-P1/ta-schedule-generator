@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -26,19 +27,22 @@ import edu.missouristate.taschedulegenerator.domain.Schedule;
 import edu.missouristate.taschedulegenerator.domain.Schedule.ScheduledActivity;
 import edu.missouristate.taschedulegenerator.domain.Schedule.ScheduledTA;
 import edu.missouristate.taschedulegenerator.util.AppData;
+import edu.missouristate.taschedulegenerator.util.GUIUtils;
 import edu.missouristate.taschedulegenerator.util.SceneManager;
 import edu.missouristate.taschedulegenerator.util.SceneManager.Controller;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -70,6 +74,7 @@ public class ScheduleController implements Controller<Void>, Initializable{
 	*/
 	@FXML
 	public void backToDashboard(ActionEvent event) {
+		ErrorsController.setData(0, Collections.emptyList());
 		SceneManager.showScene("dashboard");
 	}
 
@@ -77,12 +82,7 @@ public class ScheduleController implements Controller<Void>, Initializable{
 	*/
 	@FXML
     public void saveSchedule(ActionEvent event) throws IOException {
-        String errorMessage = null;
-        if (taTable.getItems().size() == 0 && courseTable.getItems().size() == 0) {
-            errorMessage = "Please wait until schedules have been generated.";
-            showErrorMessage(errorMessage);
-            // Processing not done - prompt user with Alert
-        } else if (taTable.getItems().size() > 0 && courseTable.getItems().size() > 0) {
+        if (taTable.getItems().size() > 0 && courseTable.getItems().size() > 0) {
 
             // Data has been processed 
             XSSFWorkbook workbook = new XSSFWorkbook();
@@ -178,11 +178,8 @@ public class ScheduleController implements Controller<Void>, Initializable{
                 try (FileOutputStream out = new FileOutputStream(tempFile.getAbsolutePath())) {
                     workbook.write(out);
                 } catch (IOException e) {
-                    Alert errorAlert = new Alert(AlertType.ERROR);
-                    errorAlert.setTitle("Error Occured During Saving");
-                    errorAlert.setHeaderText("Error saving schedule, please close any open schedules and try again.");
-                    errorAlert.showAndWait();
-                    //System.out.println(e);
+                	GUIUtils.showError("Error Occured During Saving", 
+                			"Error saving schedule, please close any open schedules and try again.");
                 }
             }
             workbook.close();
@@ -281,34 +278,17 @@ public class ScheduleController implements Controller<Void>, Initializable{
 			if(schedules == null) {
 				return;
 			}
+			System.out.println("Generated schedules in " + (System.currentTimeMillis() - startTime) + "ms" );
 			loadingPane.setVisible(false);
 			this.schedules = schedules;
 			this.index = 0;
 			showSchedule();
-			
-			// The code below is just for testing the genetic algorithm
-			System.out.println("Generated " + schedules.size() + " schedules in " + (System.currentTimeMillis() - startTime) + "ms" );
-			System.out.println("Best Generated Schedule:");
-			System.out.println(String.format("%s %10s %s %s", "Course", "Activity", "TA", "Hours"));
-			final Schedule bestSchedule = schedules.get(0);
-			System.out.println("Error Total: " + bestSchedule.getError());
-			for(final ScheduledActivity activity : bestSchedule.getScheduledActivities()) {
-				System.out.println(
-						String.format(
-								"%s %15s %s %dhrs",
-								activity.getActivity().getCourse().getCourseCode(),
-								activity.getActivity().getName(),
-								activity.getTA().getName(),
-								(activity.getHours())
-								)
-						);
-			}
-			System.out.println("Errors:");
-			System.out.println(String.join("\n", bestSchedule.getErrorLog()));
-			System.out.println("All Schedules Errors: " + schedules.stream().map(s -> String.valueOf(s.getError())).collect(Collectors.joining("\n")));
 		},
 		(ex) -> {
-			// TODO: Show error message here
+			GUIUtils.showError("Unexpected output",
+					"An error occurred while generating schedules. Please check your course and TA/GA "
+					+ "information for any errors.\nError: " + ex.getMessage());
+			SceneManager.showScene("dashboard");
 		});
 	}
 	
@@ -344,10 +324,33 @@ public class ScheduleController implements Controller<Void>, Initializable{
 		showSchedule();
 	}
 	
+	@FXML
+	private void showErrors() {
+		if(Window.getWindows().size() > 1) {
+			Window.getWindows().get(1).requestFocus();
+			return;
+		}
+		try {
+			Parent root = FXMLLoader.load(SceneManager.class.getClassLoader().getResource("errors.fxml"));
+			Stage stage = new Stage();
+            stage.setTitle("Schedule Errors");
+            stage.getIcons().add(new Image("/icon.png"));
+            stage.setScene(new Scene(root));
+            stage.initOwner(Window.getWindows().get(0));
+            stage.show();
+		} catch (IOException e) {
+			System.err.println("Error loading errors.fxml");
+			e.printStackTrace();
+		}
+	}
+ 	
 	private void showSchedule() {
-		courseTable.setItems(FXCollections.observableArrayList(schedules.get(index).getScheduledActivities()));
-		taTable.setItems(FXCollections.observableArrayList(schedules.get(index).getActivitiesByTA()));
+		final Schedule schedule = schedules.get(index);
+		courseTable.setItems(FXCollections.observableArrayList(schedule.getScheduledActivities()));
+		taTable.setItems(FXCollections.observableArrayList(schedule.getActivitiesByTA()));
+		GUIUtils.autoResizeColumns(taTable);
 		scheduleNum.setText("Schedule " + (index + 1) + " of " + schedules.size());
+		ErrorsController.setData(schedule.getError(), schedule.getErrorLog());
 	}
 	
 	private boolean validateDisplay() {
@@ -357,17 +360,9 @@ public class ScheduleController implements Controller<Void>, Initializable{
 			errorMessage = "No schedules available to be displayed.";
 		
 		if(errorMessage != null) {
-			showErrorMessage(errorMessage);
+			GUIUtils.showError("Unexpected output", errorMessage);
 		}
 		
 		return errorMessage == null;
-	}
-	
-	private void showErrorMessage(String message) {
-		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-		alert.setTitle("Warning");
-		alert.setHeaderText("Unexpected output");
-		alert.setContentText(message);
-		alert.showAndWait();
 	}
 }

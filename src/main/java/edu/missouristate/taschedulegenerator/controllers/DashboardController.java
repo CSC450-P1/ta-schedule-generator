@@ -12,6 +12,7 @@ import edu.missouristate.taschedulegenerator.domain.Course;
 import edu.missouristate.taschedulegenerator.domain.TA;
 import edu.missouristate.taschedulegenerator.util.ActionCellFactory;
 import edu.missouristate.taschedulegenerator.util.AppData;
+import edu.missouristate.taschedulegenerator.util.GUIUtils;
 import edu.missouristate.taschedulegenerator.util.SceneManager;
 import edu.missouristate.taschedulegenerator.util.SceneManager.Controller;
 import javafx.event.ActionEvent;
@@ -51,6 +52,10 @@ public class DashboardController implements Controller<Boolean> , Initializable 
 	*/
 	@FXML
 	public void generateSchedules(ActionEvent event) {
+		if(AppData.getCourses().isEmpty() || AppData.getTAs().isEmpty()) {
+			GUIUtils.showError("Invalid Data Entry", "There must be at least one course and one TA/GA to generate schedules.");
+			return;
+		}
 		SceneManager.showScene("schedules", null);
 	}
 

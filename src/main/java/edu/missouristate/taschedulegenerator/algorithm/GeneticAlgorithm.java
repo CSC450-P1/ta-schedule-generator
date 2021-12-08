@@ -23,10 +23,6 @@ import edu.missouristate.taschedulegenerator.domain.Schedule;
 import edu.missouristate.taschedulegenerator.domain.Schedule.ScheduledActivity;
 import edu.missouristate.taschedulegenerator.domain.TA;
 
-/*
- * TODO: Add repair method that fixes simple issues like GA sections having over/under or GAs over/under
- * TODO: Improve error calculating
- */
 public class GeneticAlgorithm implements Runnable, Comparator<int[]> {
 	
 	private static final int POPULATION_SIZE = 250;
@@ -38,13 +34,11 @@ public class GeneticAlgorithm implements Runnable, Comparator<int[]> {
 	private static final int SCHEDULE_RETURN_COUNT = 10;
 	// Error multipliers
 	private static final int SECTION_OVERLAP = 1000;
-	private static final int MISSED_SECTION = 1000;
 	private static final int TA_OVER_HOURS = 500; // TA got assigned too many hours
-	private static final int TA_UNDER_HOURS = 150; // TA got assigned too few hours
+	private static final int TA_UNDER_HOURS = 125; // TA got assigned too few hours
 	private static final int ACTIVITY_UNDER_HOURS = 100; // Activity got assigned too few hours
 	private static final int ACTIVITY_OVER_HOURS = 50; // Activity got assigned too many hours
 	private static final int NOT_ALL_SAME_TA = 50; // Course activities were assigned to different TAs
-	private static final int RANKINGS_DISTANCE = 5; // The difference between TA course preferences and actual assigned courses
 	
 	private final List<TA> tas;
 	private final List<Activity> activities;
@@ -74,7 +68,7 @@ public class GeneticAlgorithm implements Runnable, Comparator<int[]> {
 					taHours += ta.getMaxHours();
 				}
 				// If activity needs TA and if TA unavailable times don't intersect with activity time
-				if(!(activity.isMustBeTA() && ta.isGA()) &&
+				if((ta.isTA() || !activity.isMustBeTA()) &&
 						(activity.getTime() == null || ta.getNotAvailable().stream().noneMatch(notAvailable -> notAvailable.intersects(activity.getTime())))) {
 					tasForActivity.add(taIdx);
 				}
@@ -93,6 +87,7 @@ public class GeneticAlgorithm implements Runnable, Comparator<int[]> {
 		int[][] population = new int[POPULATION_SIZE][];
 		for(int i = 0; i < POPULATION_SIZE; i++) {
 			population[i] = getRandomSchedule();
+			repair(population[i]);
 		}
 		Arrays.sort(population, this);
 		while(!Thread.currentThread().isInterrupted()) {
@@ -107,12 +102,13 @@ public class GeneticAlgorithm implements Runnable, Comparator<int[]> {
 		}
 		final LinkedHashSet<Schedule> bestSchedules = new LinkedHashSet<>();
 		for(int i = 0; bestSchedules.size() < SCHEDULE_RETURN_COUNT && i < POPULATION_SIZE; i++) {
+			repair(population[i]);
 			final List<ScheduledActivity> scheduledActivities = new ArrayList<>(activities.size());
 			for(int j = 0; j < geneLength - 1; j += 2) {
 				scheduledActivities.add(new ScheduledActivity(activities.get(j / 2), tas.get(population[i][j]), population[i][j + 1]));
 			}
-			final Schedule schedule = new Schedule(scheduledActivities, population[i][geneLength - 1]);
-			calculateScheduleError(population[i], schedule.getErrorLog());
+			final Schedule schedule = new Schedule(scheduledActivities);
+			schedule.setError(calculateScheduleError(population[i], schedule.getErrorLog()));
 			bestSchedules.add(schedule);
 		}
 		completableFuture.complete(new ArrayList<>(bestSchedules));
@@ -166,6 +162,7 @@ public class GeneticAlgorithm implements Runnable, Comparator<int[]> {
 						+ activities.get(entry.getKey()).getHoursNeeded() * taActivityHoursRatio,
 					1.0));
 		}
+		schedule[geneLength - 1] = -1;
 		return schedule;
 	}
 	
@@ -196,14 +193,7 @@ public class GeneticAlgorithm implements Runnable, Comparator<int[]> {
 			Integer hours = taHours.getOrDefault(schedule[i], 0);	
 			if(schedule[i + 1] > 0) {
 				taHours.put(schedule[i], hours + schedule[i + 1]);
-			} 
-			// TODO: Maybe redo this and add missed TA
-			//else {
-			//	error += MISSED_SECTION;
-			//	if(log) {
-			//		errorLog.add(String.format("Missed Activity %s", activityName));
-			//	}
-			//}
+			}
 			
 			if(activity.getHoursNeeded() > schedule[i + 1]) {
 				error += ACTIVITY_UNDER_HOURS * percentErrorMultiplier(activity.getHoursNeeded(), schedule[i + 1]);
@@ -258,5 +248,53 @@ public class GeneticAlgorithm implements Runnable, Comparator<int[]> {
 		}
 		return s1[geneLength - 1] - s2[geneLength - 1];
 	}
-
+	
+	private void repair(final int[] schedule) {
+		Map<Integer, List<Integer>> activitiesByTA = new HashMap<>();
+		for(int i = 0; i < geneLength - 2; i += 2) {
+			List<Integer> activities = activitiesByTA.getOrDefault(schedule[i], new ArrayList<>());
+			activities.add(i / 2);
+			activitiesByTA.put(schedule[i], activities);
+		}
+		// TA has too many in one activity and too few in another
+		for(List<Integer> activities : activitiesByTA.values()) {
+			while(true) {
+				int[] min = {Integer.MAX_VALUE, -1}, max = {Integer.MIN_VALUE, -1};
+				for(int activityIdx : activities) {
+					int diff = schedule[activityIdx * 2 + 1] - this.activities.get(activityIdx).getHoursNeeded();
+					if(diff < min[0]) {
+						min[0] = diff;
+						min[1] = activityIdx * 2 + 1;
+					}
+					if(diff > max[0]) {
+						max[0] = diff;
+						max[1] = activityIdx * 2 + 1;
+					}
+				}
+				if(min[0] >= 0 || max[0] <= 0) break;
+				schedule[max[1]]--;
+				schedule[min[1]]++;
+			}
+		}
+		// Two TAs have the activity with same hours, but switching them would reduce NOT_ALL_SAME_TA error
+		for(int i = 0; i < geneLength - 3; i += 2) {
+			for(int j = i + 2; j < geneLength - 2; j += 2) {
+				if(schedule[i] == schedule[j] || schedule[i + 1] != schedule[j + 1]) continue;
+				if(schedule[geneLength - 1] == -1) {
+					schedule[geneLength - 1] = calculateScheduleError(schedule, null);
+				}
+				int temp = schedule[i];
+				schedule[i] = schedule[j];
+				schedule[j] = temp;
+				int newError = calculateScheduleError(schedule, null);
+				if(newError < schedule[geneLength - 1]) {
+					schedule[geneLength - 1] = newError;
+				} else {
+					temp = schedule[i];
+					schedule[i] = schedule[j];
+					schedule[j] = temp;
+				}
+			}
+		}
+	}
 }

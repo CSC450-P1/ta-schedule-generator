@@ -15,7 +15,6 @@ REV###      Name     Date     Description
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleGroup?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
@@ -23,11 +22,11 @@ REV###      Name     Date     Description
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.missouristate.taschedulegenerator.controllers.TAController" stylesheets="style.css">
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" stylesheets="style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.missouristate.taschedulegenerator.controllers.TAController">
    <children>
-      <Label text="Add TA Information">
+      <Label text="Add TA/GA Information">
          <font>
-            <Font name="System Bold" size="48.0" />
+            <Font name="Arial Bold" size="48.0" />
          </font>
          <VBox.margin>
             <Insets />
@@ -43,7 +42,7 @@ REV###      Name     Date     Description
                   <Insets />
                </VBox.margin>
             </Label>
-            <TextField fx:id="TAName" prefHeight="30.0" prefWidth="320.0" promptText="The TA's name">
+            <TextField fx:id="TAName" prefHeight="30.0" prefWidth="320.0" promptText="The TA/GA's name">
                <font>
                   <Font size="14.0" />
                </font>
@@ -63,7 +62,7 @@ REV###      Name     Date     Description
                   <Insets />
                </VBox.margin>
             </Label>
-            <TextField fx:id="MaxHoursPerWeek" promptText="The max hours per week the TA can work">
+            <TextField fx:id="MaxHoursPerWeek" promptText="The max hours per week the TA/GA can work">
                <font>
                   <Font size="14.0" />
                </font>
@@ -75,7 +74,7 @@ REV###      Name     Date     Description
       </VBox>
       <VBox spacing="2.0">
          <children>
-            <Label text="Is TA a Graduate Assistant?">
+            <Label text="Is the GA also a TA?">
                <font>
                   <Font size="18.0" />
                </font>
@@ -85,7 +84,7 @@ REV###      Name     Date     Description
             </Label>
             <HBox>
                <children>
-                  <RadioButton fx:id="YesGAButton" mnemonicParsing="false" text="Yes">
+                  <RadioButton fx:id="TAButton" mnemonicParsing="false" text="TA">
                      <font>
                         <Font size="14.0" />
                      </font>
@@ -93,7 +92,7 @@ REV###      Name     Date     Description
                         <ToggleGroup fx:id="isGA" />
                      </toggleGroup>
                   </RadioButton>
-                  <RadioButton fx:id="NoGAButton" mnemonicParsing="false" selected="true" text="No" toggleGroup="$isGA">
+                  <RadioButton fx:id="GAButton" mnemonicParsing="false" selected="true" text="GA only" toggleGroup="$isGA">
                      <font>
                         <Font size="14.0" />
                      </font>
@@ -109,6 +108,12 @@ REV###      Name     Date     Description
          </VBox.margin>
       </VBox>
       <Separator prefHeight="10.0" prefWidth="697.0" />
+      <Label alignment="CENTER" text="Add Times Unavailable">
+         <font>
+            <Font name="Arial Bold" size="19.0" />
+         </font>
+      </Label>
+      <Separator prefHeight="10.0" prefWidth="697.0" />
       <GridPane VBox.vgrow="ALWAYS">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -118,92 +123,134 @@ REV###      Name     Date     Description
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <AnchorPane prefHeight="190.0" prefWidth="200.0">
-               <padding>
-                  <Insets right="5.0" />
-               </padding>
-            </AnchorPane>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
+            <VBox>
                <children>
-                  <TableView id="unavailableTable" fx:id="unavailableTable" layoutX="-4.0" layoutY="60.0" prefHeight="205.0" prefWidth="359.0">
-                     <columnResizePolicy>
-                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                     </columnResizePolicy>
-                  </TableView>
-                  <Separator layoutX="-348.0" layoutY="33.0" prefHeight="10.0" prefWidth="697.0" />
+                  <HBox prefHeight="200.0">
+                     <children>
+                        <VBox alignment="TOP_CENTER" maxWidth="200.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label text="Day of Week">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets bottom="5.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <VBox fillWidth="false" maxWidth="110.0" prefWidth="110.0">
+                                 <children>
+                                    <CheckBox fx:id="Monday" mnemonicParsing="false" prefHeight="20.0" prefWidth="86.0" text="Monday">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                       <VBox.margin>
+                                          <Insets bottom="3.0" left="3.0" right="3.0" />
+                                       </VBox.margin>
+                                    </CheckBox>
+                                    <CheckBox fx:id="Tuesday" mnemonicParsing="false" prefHeight="20.0" prefWidth="86.0" text="Tuesday">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                       <VBox.margin>
+                                          <Insets bottom="3.0" left="3.0" right="3.0" />
+                                       </VBox.margin>
+                                    </CheckBox>
+                                    <CheckBox fx:id="Wednesday" mnemonicParsing="false" prefHeight="20.0" prefWidth="102.0" text="Wednesday">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                       <VBox.margin>
+                                          <Insets bottom="3.0" left="3.0" right="3.0" />
+                                       </VBox.margin>
+                                    </CheckBox>
+                                    <CheckBox fx:id="Thursday" mnemonicParsing="false" prefHeight="20.0" prefWidth="86.0" text="Thursday">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                       <VBox.margin>
+                                          <Insets bottom="3.0" left="3.0" right="3.0" />
+                                       </VBox.margin>
+                                    </CheckBox>
+                                    <CheckBox fx:id="Friday" mnemonicParsing="false" prefHeight="20.0" prefWidth="86.0" text="Friday">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                       <VBox.margin>
+                                          <Insets bottom="3.0" left="3.0" right="3.0" />
+                                       </VBox.margin>
+                                    </CheckBox>
+                                 </children>
+                              </VBox>
+                           </children>
+                           <HBox.margin>
+                              <Insets left="5.0" />
+                           </HBox.margin>
+                        </VBox>
+                        <VBox alignment="TOP_CENTER" prefWidth="100.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label text="Start Time">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                              </Label>
+                              <ComboBox fx:id="startSelection" maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="100.0" visibleRowCount="5">
+                                 <VBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </VBox.margin>
+                              </ComboBox>
+                           </children>
+                        </VBox>
+                        <VBox alignment="TOP_CENTER" prefWidth="100.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label text="End Time">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                              </Label>
+                              <ComboBox fx:id="endSelection" maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="100.0" visibleRowCount="5">
+                                 <VBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </VBox.margin>
+                              </ComboBox>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#addTimeUnavailable" text="Add Time Unavailable">
+                           <padding>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </padding>
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                  </HBox>
                </children>
-            </AnchorPane>
-            <AnchorPane fx:id="anchorTest" prefHeight="271.0" prefWidth="323.0">
-               <padding>
-                  <Insets right="5.0" />
-               </padding>
-               <children>
-                  <Label layoutX="133.0" layoutY="57.0" text="Start Time">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
-                  <Label layoutX="243.0" layoutY="57.0" text="End Time">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
-                  <Label layoutX="7.0" layoutY="57.0" text="Day of Week">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
-                  <Button layoutX="101.0" layoutY="231.0" mnemonicParsing="false" onAction="#clearCurrentTimeBlockEntry" text="Clear">
-                     <padding>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </padding>
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Button>
-                  <Button layoutX="204.0" layoutY="231.0" mnemonicParsing="false" onAction="#addTimeUnavailable" text="Add">
-                     <padding>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </padding>
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Button>
-                  <ComboBox fx:id="startSelection" layoutX="123.0" layoutY="86.0" prefHeight="25.0" prefWidth="100.0" visibleRowCount="5" />
-                  <ComboBox fx:id="endSelection" layoutX="230.0" layoutY="86.0" prefHeight="25.0" prefWidth="100.0" visibleRowCount="5" />
-                  <CheckBox fx:id="Monday" layoutX="15.0" layoutY="98.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="86.0" text="Monday">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </CheckBox>
-                  <CheckBox fx:id="Tuesday" layoutX="15.0" layoutY="119.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="86.0" text="Tuesday">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </CheckBox>
-                  <CheckBox fx:id="Wednesday" layoutX="15.0" layoutY="140.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="102.0" text="Wednesday">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </CheckBox>
-                  <CheckBox fx:id="Thursday" layoutX="15.0" layoutY="161.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="86.0" text="Thursday">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </CheckBox>
-                  <CheckBox fx:id="Friday" layoutX="15.0" layoutY="182.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="86.0" text="Friday">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </CheckBox>
-                  <Label alignment="CENTER" layoutX="230.0" layoutY="14.0" text="Add Times Unavailable">
-                     <font>
-                        <Font name="System Bold" size="19.0" />
-                     </font>
-                  </Label>
-               </children>
-            </AnchorPane>
+            </VBox>
+            <TableView id="unavailableTable" fx:id="unavailableTable" prefHeight="205.0" prefWidth="359.0" GridPane.columnIndex="1">
+               <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
+               <GridPane.margin>
+                  <Insets left="5.0" right="5.0" />
+               </GridPane.margin>
+            </TableView>
          </children>
+         <VBox.margin>
+            <Insets top="10.0" />
+         </VBox.margin>
       </GridPane>
       <Separator prefWidth="200.0">
          <VBox.margin>
@@ -223,12 +270,12 @@ REV###      Name     Date     Description
                   <Insets right="5.0" />
                </HBox.margin>
             </Button>
-            <Button mnemonicParsing="false" onAction="#saveTAInfo" text="Save TA Information">
+            <Button mnemonicParsing="false" onAction="#saveTAInfo" text="Save TA/GA Information">
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding>
                <font>
-                  <Font name="System Bold" size="14.0" />
+                  <Font name="Arial Bold" size="14.0" />
                </font>
                <HBox.margin>
                   <Insets left="5.0" />

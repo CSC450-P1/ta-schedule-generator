@@ -23,7 +23,7 @@ public class Schedule {
 	
 	private final List<ScheduledActivity> scheduledActivities;
 	
-	private final int error;
+	private int error;
 	
 	private final List<String> errorLog = new ArrayList<>();
 	
