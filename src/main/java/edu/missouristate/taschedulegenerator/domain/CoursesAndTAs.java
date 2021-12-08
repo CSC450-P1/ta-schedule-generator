@@ -6,6 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Represents the data saved to/loaded from session.json
+ * 
+ * @author Noah Geren
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

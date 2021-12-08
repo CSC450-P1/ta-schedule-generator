@@ -8,21 +8,40 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
-
+/**
+ * Represents a time duration that has a start time, end time, and days of the week.
+ * 
+ * @author Cody Sullins
+ *
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class TimeBlock {
 	
+	/**
+	 * The start time
+	 */
 	private LocalTime startTime;
+	/**
+	 * The end time
+	 */
 	private LocalTime endTime;
+	/**
+	 * The days of the week
+	 */
 	private List<DayOfWeek> days;
     
-
+	/**
+	 * Checks if this TimeBlock overlaps with another TimeBlock.
+	 * @param t The Timeblock to check if overlapping.
+	 * @return True if this TimeBlock and the one provided overlap.
+	 */
     public boolean intersects(TimeBlock t) {
+    	// To overlap there has to be at least one day in common
         boolean dayOverlap = days.stream().anyMatch(day -> t.days.contains(day));
         if(dayOverlap) {
+        	// Check if starts between other start/end times or ends between other start/end times
             return startTime.compareTo(t.startTime) >= 0 && startTime.compareTo(t.endTime) <= 0
                     || endTime.compareTo(t.startTime) >= 0 && endTime.compareTo(t.endTime) <= 0;
         }
