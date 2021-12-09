@@ -214,7 +214,7 @@ public class ScheduleController implements Controller<Void>, Initializable{
 	public void initialize(URL location, ResourceBundle resources) {
 		taTable.setEditable(true);
 		//TA Table
-		final TableColumn<Schedule.ScheduledTA, String> taColumn = new TableColumn<>("TA");
+		final TableColumn<Schedule.ScheduledTA, String> taColumn = new TableColumn<>("TA/GA");
 		taColumn.setCellFactory(TextFieldTableCell.<Schedule.ScheduledTA>forTableColumn());
 		taColumn.setCellValueFactory(cell -> {
 			return new SimpleStringProperty(cell.getValue().getTA().getName());

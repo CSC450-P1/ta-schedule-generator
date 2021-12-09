@@ -13,6 +13,8 @@ import edu.missouristate.taschedulegenerator.util.SceneManager.Controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -141,7 +143,13 @@ public class DashboardController implements Controller<Boolean> , Initializable 
 	 */
 	@FXML
 	public void clearInfo(ActionEvent event) {
-		AppData.getCourses().clear();
-		AppData.getTAs().clear();
+		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+		alert.setTitle("Clear Course and TA/GA Information");
+		alert.setHeaderText("Are you sure?");
+		alert.setContentText("Are you sure you want to clear all course and \nTA/GA information.");
+		if(alert.showAndWait().get() == ButtonType.OK) {
+			AppData.getCourses().clear();
+			AppData.getTAs().clear();
+		}
 	}
 }
