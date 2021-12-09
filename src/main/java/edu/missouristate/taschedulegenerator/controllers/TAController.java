@@ -31,9 +31,20 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 
+/**
+ * Controller for the taInfo scene.
+ * 
+ * @author Noah Geren, Cody Sullins
+ *
+ */
 public class TAController implements Controller<TA>, Initializable {
 	
+	/**
+	 * Better abbreviations for days of the week.
+	 */
 	private static final String[] DAY_ABBREVIATIONS = {"M", "T", "W", "Th", "F"};
+	
+	// All @FMXL fields are injected from the taInfo scene
 	
 	@FXML
 	private TextField TAName, MaxHoursPerWeek;
@@ -53,16 +64,31 @@ public class TAController implements Controller<TA>, Initializable {
 	@FXML
 	private TableView<TimeBlock> unavailableTable;
 	
+	/**
+	 * Contains each day of the week checkbox.
+	 */
 	private List<CheckBox> daysOfWeek = null;
-	
+	/**
+	 * Used for creating new TA vs. editing a TA
+	 */
 	private boolean isNew;
+	/**
+	 * The TA being created or edited.
+	 */
 	private TA ta;
 	
+	/**
+	 * Validates the current time unavailable fields. If valid then it adds the TimeUnavailable to the TA's unavailable list.
+	 * 
+	 * @param event The event that triggered this method.
+	 */
 	@FXML
 	public void addTimeUnavailable(ActionEvent event) {
+		// Validate
 		if(!validateTimeUnavailable()) {
 			return;
 		}
+		// Collect data for new time unavailable
 		List<DayOfWeek> daysSelected = new ArrayList<DayOfWeek>();
 		for(CheckBox day : daysOfWeek) {
 			if(day.isSelected()) {
@@ -72,17 +98,28 @@ public class TAController implements Controller<TA>, Initializable {
 		LocalTime beginTime = LocalTime.parse(startSelection.getValue(), AppData.TIME_FORMATTER);
 		LocalTime endTime = LocalTime.parse(endSelection.getValue(), AppData.TIME_FORMATTER);
 
+		// Create new time unavailable and add to TA
 		ta.getNotAvailable().add(new TimeBlock(beginTime, endTime, daysSelected));
 
 		clearCurrentTimeBlockEntry();
 	}
 	
-	
+	/**
+	 * Cancels creating/editing TA and returns to dashboard scene.
+	 * 
+	 * @param event The event that triggered this method.
+	 * @see SceneManager
+	 */
 	@FXML
 	public void cancel(ActionEvent event) {
 		SceneManager.showScene("dashboard");
 	}
 	
+	/**
+	 * Validates TA fields. If valid then either saves the the new TA or updates the TA being edited.
+	 * 
+	 * @param event The event that triggered this method.
+	 */
 	@FXML
 	public void saveTAInfo(ActionEvent event) {
 		if(!validate()) {
@@ -101,6 +138,11 @@ public class TAController implements Controller<TA>, Initializable {
 		SceneManager.showScene("dashboard", true);
 	}
 
+	/**
+	 * Validates the TA info fields.
+	 * 
+	 * @return True if the TA is valid.
+	 */
 	private boolean validate() {
 		String errorMessage = null;
 		
@@ -122,6 +164,11 @@ public class TAController implements Controller<TA>, Initializable {
 		return errorMessage == null;
 	}
 	
+	/**
+	 * Validates the time unavailable fields.
+	 * 
+	 * @return True if valid.
+	 */
 	private boolean validateTimeUnavailable() {
 		String errorMessage = null;
 		
@@ -146,6 +193,11 @@ public class TAController implements Controller<TA>, Initializable {
 		return errorMessage == null;
 	}
 
+	/**
+	 * Initializes data for the taInfo scene.
+	 * 
+	 * @param ta The TA being edited. Should be null if creating a new TA.
+	 */
 	@Override
 	public void initData(TA ta) {
 		isNew = ta == null;
@@ -165,6 +217,9 @@ public class TAController implements Controller<TA>, Initializable {
 		clearCurrentTimeBlockEntry();
 	}
 
+	/**
+	 * Setups up any fields or tables that are included in the scene.
+	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		daysOfWeek = Arrays.asList(Monday, Tuesday, Wednesday, Thursday, Friday);
@@ -174,12 +229,12 @@ public class TAController implements Controller<TA>, Initializable {
         
         AutoCompleteComboBoxListener.addAutoComplete(startSelection);
         AutoCompleteComboBoxListener.addAutoComplete(endSelection);
-        
+        // Time availabe table setup
         final TableColumn<TimeBlock, String> timeColumn = new TableColumn<>("Time");
         timeColumn.setCellValueFactory(cell -> {
         	final TimeBlock time = cell.getValue();
+        	// Properly format time unavailable
         	return new SimpleStringProperty(String.format("%s %s - %s", 
-        			
         			time.getDays().stream().map(day -> DAY_ABBREVIATIONS[day.getValue() - 1]).collect(Collectors.joining()),
         			AppData.TIME_FORMATTER.format(time.getStartTime()),
         			AppData.TIME_FORMATTER.format(time.getEndTime())
@@ -189,18 +244,22 @@ public class TAController implements Controller<TA>, Initializable {
 
         final TableColumn<TimeBlock, Void> actionColumn = new TableColumn<>("Action");
 		actionColumn.setCellFactory(new ActionCellFactory<>(
-				(time) -> {
+				(time) -> { // edit
+					// Populate time unavailable fields
 					daysOfWeek.forEach(day -> day.setSelected(time.getDays().contains(DayOfWeek.valueOf(day.getId().toUpperCase()))));
 					startSelection.setValue(AppData.TIME_FORMATTER.format(time.getStartTime()));
 					endSelection.setValue(AppData.TIME_FORMATTER.format(time.getEndTime()));
 					unavailableTable.getItems().remove(time);
 				},
-				(time) -> {
+				(time) -> { // remove
 					unavailableTable.getItems().remove(time);
 				}));
 		unavailableTable.getColumns().add(actionColumn);
 	}
 	
+	/**
+	 * Clear the time unavailable fields.
+	 */
 	public void clearCurrentTimeBlockEntry() {
 		//Restting Day CheckBoxes
 		for(CheckBox day : daysOfWeek) {

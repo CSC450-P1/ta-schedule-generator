@@ -6,12 +6,26 @@ import javafx.application.Application;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
+/**
+ * The starting point for the entire application. Loads scenes and shows the window.
+ * 
+ * @author Noah Geren, Cody Sullins
+ *
+ */
 public class Main extends Application {
 	
+	/**
+	 * The first method called in the application.
+	 * 
+	 * @param args Arguments passed to JavaFX.
+	 */
 	public static void main(String[] args) {
 		launch(args);
 	}
 
+	/**
+	 * Sets up the GUI window, loads session.json, and loads the necessary scenes.
+	 */
 	@Override
 	public void start(final Stage primaryStage) throws Exception {
 		primaryStage.setTitle("TA Schedule Generator");

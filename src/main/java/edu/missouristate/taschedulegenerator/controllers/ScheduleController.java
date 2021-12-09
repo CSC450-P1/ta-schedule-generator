@@ -43,13 +43,28 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
+/**
+ * Controller for the schedule scene.
+ * 
+ * @author Noah Geren, Cody Sullins, Corey Rusher, Carlos Izaguirre
+ *
+ */
 public class ScheduleController implements Controller<Void>, Initializable{
 	
+	/**
+	 * The schedules that were generated.
+	 */
 	private List<Schedule> schedules;
-	
+	/**
+	 * The current index showing of the generated schedules.
+	 */
 	private int index = 0;
-	
+	/**
+	 * The Future that is generating schedules. Used to cancel generating schedules.
+	 */
 	private Future<?> generator = null;
+	
+	// All @FMXL fields are injected from the schedules scene
 	
 	@FXML
 	private Pane loadingPane;
@@ -63,12 +78,24 @@ public class ScheduleController implements Controller<Void>, Initializable{
 	@FXML
 	private TableView<ScheduledActivity> courseTable;
 	
+	/**
+	 * Empties the data in the errors window and shows the dashboard scene.
+	 * 
+	 * @param event The event that triggered this method.
+	 * @see SceneManager
+	 */
 	@FXML
 	public void backToDashboard(ActionEvent event) {
 		ErrorsController.setData(0, Collections.emptyList());
 		SceneManager.showScene("dashboard");
 	}
 	
+	/**
+	 * Generates an Excel file based on the currently viewed schedule. Then shows a file chooser to select where to save the Excel file.
+	 * 
+	 * @param event The event that triggered this method.
+	 * @throws IOException If there is an unhandled exception when saving the schedule.
+	 */
 	@FXML
     public void saveSchedule(ActionEvent event) throws IOException {
         if (taTable.getItems().size() > 0 && courseTable.getItems().size() > 0) {
@@ -84,6 +111,7 @@ public class ScheduleController implements Controller<Void>, Initializable{
                 row.createCell(j).setCellValue(taTable.getColumns().get(j).getText());
             }
 
+            // Populate first sheet
             int l = 1;
             for (ScheduledTA ta: taTable.getItems()) {
                 row = spreadsheet.createRow(l);
@@ -103,6 +131,7 @@ public class ScheduleController implements Controller<Void>, Initializable{
             }
 
 
+            // Start collecting data for each course
             List <String> courses = new ArrayList <String> ();
 
             for (int i = 0; i < courseTable.getItems().size(); i++) {
@@ -119,6 +148,7 @@ public class ScheduleController implements Controller<Void>, Initializable{
 
             }
 
+            // Populate each course sheet
             for (int i = 1; i < workbook.getNumberOfSheets(); i++) {
                 XSSFSheet editSheet = workbook.getSheetAt(i);
                 row = editSheet.createRow(0);
@@ -142,7 +172,7 @@ public class ScheduleController implements Controller<Void>, Initializable{
 
                 }
             }
-
+            // Resize columns on each sheet
             for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
                 XSSFSheet sheet = workbook.getSheetAt(i);
                 if (sheet.getPhysicalNumberOfRows() > 0) {
@@ -155,14 +185,14 @@ public class ScheduleController implements Controller<Void>, Initializable{
                     }
                 }
             }
-
+            // Show file chooser dialog to select where to save
             Window current = Stage.getWindows().stream().filter(Window::isShowing).findFirst().orElse(null);
             FileChooser fChooser = new FileChooser();
             FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Excel Workbook", "*.xlsx");
             fChooser.getExtensionFilters().add(extFilter);
             fChooser.setInitialFileName("Generated TA Schedule " + (index + 1));
             File tempFile = fChooser.showSaveDialog(current);
-
+            // Save excel file
             if (tempFile != null) {
                 try (FileOutputStream out = new FileOutputStream(tempFile.getAbsolutePath())) {
                     workbook.write(out);
@@ -176,6 +206,10 @@ public class ScheduleController implements Controller<Void>, Initializable{
 
     }
 
+
+	/**
+	 * Setups up any fields or tables that are included in the scene.
+	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		taTable.setEditable(true);
@@ -254,22 +288,29 @@ public class ScheduleController implements Controller<Void>, Initializable{
 
 	}
 	
+	/**
+	 * Shows loading message, starts generating schedules, and setup callbacks for when generating is complete or an exception occurs.
+	 */
 	@Override
 	public void initData(Void data) {
 		loadingPane.setVisible(true);
 		System.out.println("Started Generating Schedules");
 		final long startTime = System.currentTimeMillis();
+		// Start generating schedules
 		generator = AppData.generateSchedules(schedules -> {
+			// Generating schedules is complete
 			if(schedules == null) {
 				return;
 			}
 			System.out.println("Generated schedules in " + (System.currentTimeMillis() - startTime) + "ms" );
+			// Show schedules
 			loadingPane.setVisible(false);
 			this.schedules = schedules;
 			this.index = 0;
 			showSchedule();
 		},
 		(ex) -> {
+			// An exception occurred while generating schedules
 			GUIUtils.showError("Unexpected output",
 					"An error occurred while generating schedules. Please check your course and TA/GA "
 					+ "information for any errors.\nError: " + ex.getMessage());
@@ -277,6 +318,12 @@ public class ScheduleController implements Controller<Void>, Initializable{
 		});
 	}
 	
+	/**
+	 * Cancels generating schedules and returns to the dashboard scene.
+	 * 
+	 * @param event The event that triggered this method.
+	 * @see SceneManager
+	 */
 	@FXML
 	public void cancelButton(ActionEvent event) {
 		if (generator != null) {
@@ -285,6 +332,11 @@ public class ScheduleController implements Controller<Void>, Initializable{
 		SceneManager.showScene("dashboard");
 	}
 
+	/**
+	 * Displays the next schedule in the list or cycles back to the beginning.
+	 * 
+	 * @param event The event that triggered this method.
+	 */
 	@FXML
 	public void nextSchedule(ActionEvent event) {		
 		if(!validateDisplay()) {
@@ -294,6 +346,11 @@ public class ScheduleController implements Controller<Void>, Initializable{
 		showSchedule();
 	}
 	
+	/**
+	 * Displays the previous schedule in the list or cycles to the end of the list.
+	 * 
+	 * @param event The event that triggered this method.
+	 */
 	@FXML
 	public void previousSchedule(ActionEvent event) {
 		if(!validateDisplay()) {
@@ -303,8 +360,13 @@ public class ScheduleController implements Controller<Void>, Initializable{
 		showSchedule();
 	}
 	
+	/**
+	 * Opens a new window (if not already open) that shows the errors scene.
+	 * 
+	 * @param event The event that triggered this method.
+	 */
 	@FXML
-	private void showErrors() {
+	private void showErrors(ActionEvent event) {
 		if(Window.getWindows().size() > 1) {
 			Window.getWindows().get(1).requestFocus();
 			return;
@@ -323,6 +385,9 @@ public class ScheduleController implements Controller<Void>, Initializable{
 		}
 	}
  	
+	/**
+	 * Populates the tables with information from the current index.
+	 */
 	private void showSchedule() {
 		final Schedule schedule = schedules.get(index);
 		courseTable.setItems(FXCollections.observableArrayList(schedule.getScheduledActivities()));
@@ -332,6 +397,11 @@ public class ScheduleController implements Controller<Void>, Initializable{
 		ErrorsController.setData(schedule.getError(), schedule.getErrorLog());
 	}
 	
+	/**
+	 * Validates that schedules were generated.
+	 * 
+	 * @return True if schedules were generated.
+	 */
 	private boolean validateDisplay() {
 		String errorMessage = null;
 		
