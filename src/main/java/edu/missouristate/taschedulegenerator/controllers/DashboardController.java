@@ -137,7 +137,7 @@ public class DashboardController implements Controller<Boolean> , Initializable 
 	}
 
 	/**
-	 * Clears the existing course and TA data.
+	 * Asks for confirmation before clearing the existing course and TA data.
 	 * 
 	 * @param event The event that triggered this method.
 	 */
