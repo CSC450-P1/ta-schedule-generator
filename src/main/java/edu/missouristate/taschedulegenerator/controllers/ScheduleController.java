@@ -1,3 +1,11 @@
+/*
+ * MIT License
+ * 
+ * Copyright (c) 2021 Missouri State University
+ * 
+ * See LICENSE in the project's root directory for full license details
+ * 
+ */
 package edu.missouristate.taschedulegenerator.controllers;
 
 import java.io.File;
@@ -214,7 +222,7 @@ public class ScheduleController implements Controller<Void>, Initializable{
 	public void initialize(URL location, ResourceBundle resources) {
 		taTable.setEditable(true);
 		//TA Table
-		final TableColumn<Schedule.ScheduledTA, String> taColumn = new TableColumn<>("TA");
+		final TableColumn<Schedule.ScheduledTA, String> taColumn = new TableColumn<>("TA/GA");
 		taColumn.setCellFactory(TextFieldTableCell.<Schedule.ScheduledTA>forTableColumn());
 		taColumn.setCellValueFactory(cell -> {
 			return new SimpleStringProperty(cell.getValue().getTA().getName());

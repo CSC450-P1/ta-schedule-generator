@@ -1,3 +1,11 @@
+/*
+ * MIT License
+ * 
+ * Copyright (c) 2021 Missouri State University
+ * 
+ * See LICENSE in the project's root directory for full license details
+ * 
+ */
 package edu.missouristate.taschedulegenerator.algorithm;
 
 import java.util.ArrayList;
@@ -207,11 +215,11 @@ public class GeneticAlgorithm implements Runnable, Comparator<int[]> {
 	 */
 	private void crossover(final int[][] population) {
 		for(int i = 0; i < population.length - ELITE_COUNT; i++) {
-			if(i > ELITE_COUNT) { // Do crossover
+			if(i >= ELITE_COUNT) { // Do crossover
 				generateOffspring(population[i], selectParent(population), CROSSOVER_RATE); // Use half of each parent's genes
 			} else { // Do crossover but replace an individual on the opposite end of the population
 				population[population.length - i - 1] = Arrays.copyOf(population[i], population[i].length);
-				generateOffspring(population[population.length - i - 1], selectParent(population), 0.5);
+				generateOffspring(population[population.length - i - 1], selectParent(population), CROSSOVER_RATE);
 			}
 		}
 	}
@@ -258,13 +266,8 @@ public class GeneticAlgorithm implements Runnable, Comparator<int[]> {
 	 * @see MUTATION_RATE
 	 */
 	private void mutate(final int[][] population) {
-		for(int i = 0; i < population.length - ELITE_COUNT; i++) {
-			if(i > ELITE_COUNT) { // Do mutation
-				generateOffspring(population[i], getRandomSchedule(), MUTATION_RATE); // Copy genes from a new random schedule
-			} else { // Do mutation but replace an individual on the opposite end of the population
-				population[population.length - i - 1] = Arrays.copyOf(population[i], population[i].length);
-				generateOffspring(population[population.length - i - 1], getRandomSchedule(), MUTATION_RATE);
-			}
+		for(int i = ELITE_COUNT; i < population.length - ELITE_COUNT; i++) {
+			generateOffspring(population[i], getRandomSchedule(), MUTATION_RATE); // Copy genes from a new random schedule
 		}
 	}
 	

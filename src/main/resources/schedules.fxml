@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+  MIT License
+  
+  Copyright (c) 2021 Missouri State University
+  
+  See LICENSE in the project's root directory for full license details
+ 
+-->
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
@@ -49,7 +58,7 @@
                <content>
                   <VBox prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: white;">
                      <children>
-                        <Label text="TA Schedules">
+                        <Label text="TA/GA Schedules">
                            <font>
                               <Font name="Arial Bold" size="18.0" />
                            </font>

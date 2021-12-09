@@ -1,3 +1,11 @@
+/*
+ * MIT License
+ * 
+ * Copyright (c) 2021 Missouri State University
+ * 
+ * See LICENSE in the project's root directory for full license details
+ * 
+ */
 package edu.missouristate.taschedulegenerator.controllers;
 
 import java.net.URL;
@@ -13,6 +21,8 @@ import edu.missouristate.taschedulegenerator.util.SceneManager.Controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -135,13 +145,19 @@ public class DashboardController implements Controller<Boolean> , Initializable 
 	}
 
 	/**
-	 * Clears the existing course and TA data.
+	 * Asks for confirmation before clearing the existing course and TA data.
 	 * 
 	 * @param event The event that triggered this method.
 	 */
 	@FXML
 	public void clearInfo(ActionEvent event) {
-		AppData.getCourses().clear();
-		AppData.getTAs().clear();
+		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+		alert.setTitle("Clear Course and TA/GA Information");
+		alert.setHeaderText("Are you sure?");
+		alert.setContentText("Are you sure you want to clear all course and \nTA/GA information.");
+		if(alert.showAndWait().get() == ButtonType.OK) {
+			AppData.getCourses().clear();
+			AppData.getTAs().clear();
+		}
 	}
 }
