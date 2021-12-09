@@ -41,5 +41,7 @@ public class Main extends Application {
 		AppData.load();
 		SceneManager.init(primaryStage, "dashboard", "courseInfo", "taInfo", "schedules");
 		primaryStage.show();
+		primaryStage.setMinWidth(primaryStage.getWidth());
+		primaryStage.setMinHeight(primaryStage.getHeight());
 	}
 }
