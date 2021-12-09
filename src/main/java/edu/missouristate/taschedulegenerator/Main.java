@@ -1,3 +1,11 @@
+/*
+ * MIT License
+ * 
+ * Copyright (c) 2021 Missouri State University
+ * 
+ * See LICENSE in the project's root directory for full license details
+ * 
+ */
 package edu.missouristate.taschedulegenerator;
 
 import edu.missouristate.taschedulegenerator.util.AppData;
