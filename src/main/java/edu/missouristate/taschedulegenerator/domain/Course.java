@@ -23,6 +23,8 @@ import lombok.NoArgsConstructor;
 /**
  * Represents a university course.
  * 
+ * SDD 2.1
+ * 
  * @author Noah Geren, Corey Rusher
  *
  */

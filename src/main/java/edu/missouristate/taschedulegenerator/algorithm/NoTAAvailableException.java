@@ -11,6 +11,8 @@ package edu.missouristate.taschedulegenerator.algorithm;
 /**
  * Exception that represents no TA being available to assist an activity.
  * 
+ * SDD 3.2.2
+ * 
  * @author Noah Geren
  *
  */

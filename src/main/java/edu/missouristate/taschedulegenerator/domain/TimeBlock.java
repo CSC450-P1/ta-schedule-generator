@@ -19,6 +19,8 @@ import lombok.NoArgsConstructor;
 /**
  * Represents a time duration that has a start time, end time, and days of the week.
  * 
+ * SDD 2.1
+ * 
  * @author Cody Sullins
  *
  */

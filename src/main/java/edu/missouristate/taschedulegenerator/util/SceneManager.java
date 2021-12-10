@@ -19,6 +19,8 @@ import javafx.stage.Stage;
 /**
  * Utility class that manages loading and swapping scenes.
  * 
+ * SDD 3.2.1 + 3.2.3
+ * 
  * @author Noah Geren
  *
  */

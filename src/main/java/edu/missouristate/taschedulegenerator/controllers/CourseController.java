@@ -41,6 +41,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 /**
  * Controller for the courseInfo scene.
  * 
+ * SDD 3.2.1
+ * 
  * @author Noah Geren, Corey Rusher
  *
  */

@@ -30,6 +30,8 @@ import edu.missouristate.taschedulegenerator.domain.TA;
  * This class represents an independent genetic algorithm that can easily be ran on a new thread.
  * <em>Note: The genetic algorithm will continue to run until the thread it is running on is interrupted.</em>
  * 
+ * SDD 3.2.2
+ * 
  * @author Noah Geren
  *
  */

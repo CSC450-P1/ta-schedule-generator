@@ -19,6 +19,8 @@ import lombok.ToString;
 /**
  * Represents a course activity.
  * 
+ * SDD 2.1
+ * 
  * @author Carlos Izaguirre
  *
  */

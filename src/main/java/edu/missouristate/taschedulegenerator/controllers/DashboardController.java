@@ -31,6 +31,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 /**
  * Controller for the dashboard scene.
  * 
+ * SDD 3.2.1
+ * 
  * @author Noah Geren, Cody Sullins, Corey Rusher, Keegan Maynard
  *
  */

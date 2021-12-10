@@ -42,6 +42,8 @@ import javafx.scene.control.ToggleGroup;
 /**
  * Controller for the taInfo scene.
  * 
+ * SDD 3.2.1
+ * 
  * @author Noah Geren, Cody Sullins
  *
  */

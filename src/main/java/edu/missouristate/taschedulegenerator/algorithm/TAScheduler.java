@@ -27,6 +27,8 @@ import edu.missouristate.taschedulegenerator.domain.TA;
 /**
  * Allows for creating multiple genetic algorithms, timing them, and collecting the best results from each.
  * 
+ * SDD 3.2.2
+ * 
  * @author Noah Geren
  *
  */

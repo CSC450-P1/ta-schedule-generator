@@ -19,6 +19,8 @@ import javafx.scene.input.KeyEvent;
 
 /**
  * Adds auto-complete functionality to a ComboBox. 
+ * 
+ * SDD 3.2.1
  *
  * @param <T> The type of the combobox the auto-complete functionality is being added to.
  */
