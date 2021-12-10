@@ -17,6 +17,8 @@ import lombok.NoArgsConstructor;
 /**
  * Represents the data saved to/loaded from session.json
  * 
+ * SDD 2.3
+ * 
  * @author Noah Geren
  */
 @Data

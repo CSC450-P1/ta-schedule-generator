@@ -32,6 +32,8 @@ import javafx.collections.ObservableList;
 /**
  * Stores all data that is needed for the application to run. Also provides methods for saving/loading app data and for generating schedules.
  * 
+ * SDD 3.2.2
+ * 
  * @author Noah Geren
  *
  */

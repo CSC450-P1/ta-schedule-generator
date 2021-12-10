@@ -23,6 +23,8 @@ import lombok.NoArgsConstructor;
 /**
  * Represents a teaching assistant or graduate assistant.
  * 
+ * SDD 2.1
+ * 
  * @author Corey Rusher, Noah Geren
  *
  */

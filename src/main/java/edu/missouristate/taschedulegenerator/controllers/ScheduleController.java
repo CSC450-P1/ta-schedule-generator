@@ -54,6 +54,8 @@ import javafx.stage.Window;
 /**
  * Controller for the schedule scene.
  * 
+ * SDD 3.2.1
+ * 
  * @author Noah Geren, Cody Sullins, Corey Rusher, Carlos Izaguirre
  *
  */

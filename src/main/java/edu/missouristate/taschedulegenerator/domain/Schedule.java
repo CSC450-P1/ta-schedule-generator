@@ -21,6 +21,8 @@ import lombok.Data;
 /**
  * Represents a schedule of courses and TAs.
  * 
+ * SDD 2.1
+ * 
  * @author Noah Geren
  *
  */
